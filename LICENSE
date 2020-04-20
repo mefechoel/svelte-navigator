@@ -1,6 +1,10 @@
+Copyright for portions of project svelte-navigator are held by [EmilTholin,
+2017] as part of project svelte-routing. All other copyright for project
+svelte-navigator are held by [Michel Strelow, 2020].
+
 The MIT License (MIT)
 
-Copyright (c) 2017 EmilTholin
+Copyright (c) 2020 Michel Strelow
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

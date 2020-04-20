@@ -12,7 +12,7 @@
     path,
     // If no path prop is given, this Route will act as the default Route
     // that is rendered if no other Route in the Router is a match.
-    default: path === ""
+    default: path === "",
   };
   let routeParams = {};
   let routeProps = {};
@@ -22,6 +22,7 @@
   }
 
   $: {
+    // eslint-disable-next-line no-shadow
     const { path, component, ...rest } = $$props;
     routeProps = rest;
   }
@@ -39,8 +40,13 @@
 
 {#if $activeRoute !== null && $activeRoute.route === route}
   {#if component !== null}
-    <svelte:component this="{component}" location={$location} {...routeParams} {...routeProps}  />
+    <svelte:component
+      this={component}
+      location={$location}
+      {...routeParams}
+      {...routeProps}
+    />
   {:else}
-    <slot params="{routeParams}" location={$location}></slot>
+    <slot params={routeParams} location={$location} />
   {/if}
 {/if}

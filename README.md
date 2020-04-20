@@ -1,8 +1,6 @@
-[![npm][npm]][npm-url]
+# Svelte Navigator
 
-# Svelte Routing
-
-A declarative Svelte routing library with SSR support.
+A declarative Svelte routing library.
 
 ## Getting started
 
@@ -11,7 +9,7 @@ Look at the [example folder][example-folder-url] for an example project setup.
 ## Install
 
 ```bash
-npm install --save svelte-routing
+npm install --save svelte-navigator
 ```
 
 ## Usage
@@ -19,7 +17,7 @@ npm install --save svelte-routing
 ```html
 <!-- App.svelte -->
 <script>
-  import { Router, Link, Route } from "svelte-routing";
+  import { Router, Link, Route } from "svelte-navigator";
   import Home from "./routes/Home.svelte";
   import About from "./routes/About.svelte";
   import Blog from "./routes/Blog.svelte";
@@ -48,7 +46,7 @@ import App from "./App.svelte";
 
 const app = new App({
   target: document.getElementById("app"),
-  hydrate: true
+  hydrate: true,
 });
 ```
 
@@ -80,10 +78,10 @@ The `Router` component supplies the `Link` and `Route` descendant components wit
 
 ###### Properties
 
-|  Property  | Required | Default Value | Description                                                                                                                                                                                                                                                                                                 |
-| :--------: | :------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `basepath` |          |     `'/'`     | The `basepath` property will be added to all the `to` properties of `Link` descendants and to all `path` properties of `Route` descendants. This property can be ignored in most cases, but if you host your application on e.g. `https://example.com/my-site`, the `basepath` should be set to `/my-site`. |
-|   `url`    |          |     `''`      | The `url` property is used in SSR to force the current URL of the application and will be used by all `Link` and `Route` descendants. A falsy value will be ignored by the `Router`, so it's enough to declare `export let url = '';` for your topmost component and only give it a value in SSR.           |
+|  Property  | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                               |
+| :--------: | :------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `basepath` |          |     `'/'`     | The `basepath` property will be added to all `path` properties of `Route` descendants and to every navigation (from a `Link` with a `to` property, via `navigate`, etc.). This property can be ignored in most cases, but if you host your application on e.g. `https://example.com/my-site`, the `basepath` should be set to `/my-site`. |
+|   `url`    |          |     `''`      | The `url` property is used in SSR to force the current URL of the application and will be used by all `Link` and `Route` descendants. A falsy value will be ignored by the `Router`, so it's enough to declare `export let url = '';` for your topmost component and only give it a value in SSR.                                         |
 
 #### `Link`
 
@@ -181,7 +179,6 @@ In the browser we wait until all child `Route` components have registered with t
 
 We therefore resort to picking the first matching `Route` that is registered on the server, so it is of utmost importance that you `sort your Route components from the most specific to the least specific if you are using SSR`.
 
-[npm]: https://img.shields.io/npm/v/svelte-routing.svg
-[npm-url]: https://npmjs.com/package/svelte-routing
-[example-folder-url]: https://github.com/EmilTholin/svelte-routing/tree/master/example
-[example-folder-navlink]: https://github.com/EmilTholin/svelte-routing/tree/master/example/src/components/NavLink.svelte
+[npm-url]: https://npmjs.com/package/svelte-navigator
+[example-folder-url]: https://github.com/mefechoel/svelte-navigator/tree/master/example
+[example-folder-navlink]: https://github.com/mefechoel/svelte-navigator/tree/master/example/src/components/NavLink.svelte

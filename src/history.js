@@ -2,17 +2,19 @@
  * Adapted from https://github.com/reach/router/blob/b60e6dd781d5d3a4bdaaf4de665649c0f6a7e78d/src/lib/history.js
  *
  * https://github.com/reach/router/blob/master/LICENSE
- * */
+ */
+
+import { useResolve } from "./contexts";
 
 function getLocation(source) {
   return {
     ...source.location,
     state: source.history.state,
-    key: (source.history.state && source.history.state.key) || "initial"
+    key: (source.history.state && source.history.state.key) || "initial",
   };
 }
 
-function createHistory(source, options) {
+function createHistory(source) {
   const listeners = [];
   let location = getLocation(source);
 
@@ -39,22 +41,24 @@ function createHistory(source, options) {
       };
     },
 
-    navigate(to, { state, replace = false } = {}) {
-      state = { ...state, key: Date.now() + "" };
+    navigate(to, { state, replace = false, autoResolve = true } = {}) {
+      const href = autoResolve ? useResolve(to) : to;
+      // eslint-disable-next-line no-param-reassign
+      state = { ...state, key: `${Date.now()}` };
       // try...catch iOS Safari limits to 100 pushState calls
       try {
         if (replace) {
-          source.history.replaceState(state, null, to);
+          source.history.replaceState(state, null, href);
         } else {
-          source.history.pushState(state, null, to);
+          source.history.pushState(state, null, href);
         }
       } catch (e) {
-        source.location[replace ? "replace" : "assign"](to);
+        source.location[replace ? "replace" : "assign"](href);
       }
 
       location = getLocation(source);
       listeners.forEach(listener => listener({ location, action: "PUSH" }));
-    }
+    },
   };
 }
 
@@ -68,7 +72,9 @@ function createMemorySource(initialPathname = "/") {
     get location() {
       return stack[index];
     },
+    // eslint-disable-next-line no-unused-vars
     addEventListener(name, fn) {},
+    // eslint-disable-next-line no-unused-vars
     removeEventListener(name, fn) {},
     history: {
       get entries() {
@@ -90,8 +96,8 @@ function createMemorySource(initialPathname = "/") {
         const [pathname, search = ""] = uri.split("?");
         stack[index] = { pathname, search };
         states[index] = state;
-      }
-    }
+      },
+    },
   };
 }
 
@@ -100,9 +106,9 @@ function createMemorySource(initialPathname = "/") {
 const canUseDOM = Boolean(
   typeof window !== "undefined" &&
     window.document &&
-    window.document.createElement
+    window.document.createElement,
 );
 const globalHistory = createHistory(canUseDOM ? window : createMemorySource());
 const { navigate } = globalHistory;
 
-export { globalHistory, navigate, createHistory, createMemorySource };
+export { globalHistory, navigate };

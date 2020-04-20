@@ -2,7 +2,7 @@
  * Adapted from https://github.com/reach/router/blob/b60e6dd781d5d3a4bdaaf4de665649c0f6a7e78d/src/lib/utils.js
  *
  * https://github.com/reach/router/blob/master/LICENSE
- * */
+ */
 
 const paramRe = /^:(.+)/;
 
@@ -81,20 +81,21 @@ function stripSlashes(str) {
 function rankRoute(route, index) {
   const score = route.default
     ? 0
-    : segmentize(route.path).reduce((score, segment) => {
-        score += SEGMENT_POINTS;
+    : segmentize(route.path).reduce((acc, segment) => {
+        let nextScore = acc;
+        nextScore += SEGMENT_POINTS;
 
         if (isRootSegment(segment)) {
-          score += ROOT_POINTS;
+          nextScore += ROOT_POINTS;
         } else if (isDynamic(segment)) {
-          score += DYNAMIC_POINTS;
+          nextScore += DYNAMIC_POINTS;
         } else if (isSplat(segment)) {
-          score -= SEGMENT_POINTS + SPLAT_PENALTY;
+          nextScore -= SEGMENT_POINTS + SPLAT_PENALTY;
         } else {
-          score += STATIC_POINTS;
+          nextScore += STATIC_POINTS;
         }
 
-        return score;
+        return nextScore;
       }, 0);
 
   return { route, score, index };
@@ -110,9 +111,15 @@ function rankRoutes(routes) {
     routes
       .map(rankRoute)
       // If two routes have the exact same score, we go by index instead
-      .sort((a, b) =>
-        a.score < b.score ? 1 : a.score > b.score ? -1 : a.index - b.index
-      )
+      .sort((a, b) => {
+        if (a.score < b.score) {
+          return 1;
+        }
+        if (a.score > b.score) {
+          return -1;
+        }
+        return a.index - b.index;
+      })
   );
 }
 
@@ -139,8 +146,8 @@ function rankRoutes(routes) {
  * @return {?object}
  */
 function pick(routes, uri) {
-  let match;
-  let default_;
+  let bestMatch;
+  let defaultMatch;
 
   const [uriPathname] = uri.split("?");
   const uriSegments = segmentize(uriPathname);
@@ -148,14 +155,14 @@ function pick(routes, uri) {
   const ranked = rankRoutes(routes);
 
   for (let i = 0, l = ranked.length; i < l; i++) {
-    const route = ranked[i].route;
+    const { route } = ranked[i];
     let missed = false;
 
     if (route.default) {
-      default_ = {
+      defaultMatch = {
         route,
         params: {},
-        uri
+        uri,
       };
       continue;
     }
@@ -205,16 +212,16 @@ function pick(routes, uri) {
     }
 
     if (!missed) {
-      match = {
+      bestMatch = {
         route,
         params,
-        uri: "/" + uriSegments.slice(0, index).join("/")
+        uri: `/${uriSegments.slice(0, index).join("/")}`,
       };
       break;
     }
   }
 
-  return match || default_ || null;
+  return bestMatch || defaultMatch || null;
 }
 
 /**
@@ -304,7 +311,7 @@ function resolve(to, base) {
     }
   });
 
-  return addQuery("/" + segments.join("/"), toQuery);
+  return addQuery(`/${segments.join("/")}`, toQuery);
 }
 
 /**
@@ -313,9 +320,9 @@ function resolve(to, base) {
  * @param {string} path
  */
 function combinePaths(basepath, path) {
-  return `${stripSlashes(
-    path === "/" ? basepath : `${stripSlashes(basepath)}/${stripSlashes(path)}`
-  )}/`;
+  const barePath =
+    path === "/" ? basepath : `${stripSlashes(basepath)}/${stripSlashes(path)}`;
+  return `${stripSlashes(barePath)}/`;
 }
 
 /**
@@ -331,13 +338,21 @@ function shouldNavigate(event) {
 }
 
 function hostMatches(anchor) {
-  const host = location.host
+  const { host } = window.location;
   return (
-    anchor.host == host ||
+    anchor.host === host ||
     // svelte seems to kill anchor.host value in ie11, so fall back to checking href
     anchor.href.indexOf(`https://${host}`) === 0 ||
     anchor.href.indexOf(`http://${host}`) === 0
-  )
+  );
 }
 
-export { stripSlashes, pick, match, resolve, combinePaths, shouldNavigate, hostMatches };
+export {
+  stripSlashes,
+  pick,
+  match,
+  resolve,
+  combinePaths,
+  shouldNavigate,
+  hostMatches,
+};

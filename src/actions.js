@@ -1,5 +1,5 @@
-import { navigate } from "./history.js";
-import { shouldNavigate, hostMatches } from "./utils.js";
+import { navigate } from "./history";
+import { shouldNavigate, hostMatches } from "./utils";
 
 /**
  * A link action that can be added to <a href=""> tags rather
@@ -14,13 +14,11 @@ function link(node) {
   function onClick(event) {
     const anchor = event.currentTarget;
 
-    if (
-      anchor.target === "" &&
-      hostMatches(anchor) &&
-      shouldNavigate(event)
-    ) {
+    if (anchor.target === "" && hostMatches(anchor) && shouldNavigate(event)) {
       event.preventDefault();
-      navigate(anchor.pathname + anchor.search, { replace: anchor.hasAttribute("replace") });
+      navigate(anchor.pathname + anchor.search, {
+        replace: anchor.hasAttribute("replace"),
+      });
     }
   }
 
@@ -29,7 +27,7 @@ function link(node) {
   return {
     destroy() {
       node.removeEventListener("click", onClick);
-    }
+    },
   };
 }
 
@@ -53,6 +51,7 @@ function link(node) {
 function links(node) {
   function findClosest(tagName, el) {
     while (el && el.tagName !== tagName) {
+      // eslint-disable-next-line no-param-reassign
       el = el.parentNode;
     }
     return el;
@@ -69,7 +68,9 @@ function links(node) {
       !anchor.hasAttribute("noroute")
     ) {
       event.preventDefault();
-      navigate(anchor.pathname + anchor.search, { replace: anchor.hasAttribute("replace") });
+      navigate(anchor.pathname + anchor.search, {
+        replace: anchor.hasAttribute("replace"),
+      });
     }
   }
 
@@ -78,7 +79,7 @@ function links(node) {
   return {
     destroy() {
       node.removeEventListener("click", onClick);
-    }
+    },
   };
 }
 

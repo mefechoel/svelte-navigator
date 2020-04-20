@@ -1,0 +1,45 @@
+{
+  "plugins": [
+    "svelte3",
+    "react"
+  ],
+  "extends": [
+    "airbnb"
+  ],
+  "rules": {
+    "quotes": ["error", "double"],
+    "indent": "off",
+    "no-undef": "off",
+    "no-underscore-dangle": "off",
+    "arrow-parens": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off",
+    "prefer-const": "off",
+    "object-curly-newline": "off",
+    "function-paren-newline": "off",
+    "no-confusing-arrow": "off",
+    "no-continue": "off",
+    "no-plusplus": "off"
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.svelte"],
+      "processor": "svelte3/svelte3",
+      "rules": {
+        "import/first": "off",
+        "import/no-duplicates": "off",
+        "import/no-mutable-exports": "off",
+        "import/extensions": "off",
+        "import/no-unresolved": "off"
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   import { writable, derived } from "svelte/store";
   import { LOCATION, ROUTER } from "./contexts.js";
   import { globalHistory } from "./history.js";
-  import { pick, match, stripSlashes, combinePaths } from "./utils.js";
+  import { pick, match, combinePaths } from "./utils.js";
 
   export let basepath = "/";
   export let url = null;
@@ -29,33 +29,33 @@
     ? routerContext.routerBase
     : writable({
         path: basepath,
-        uri: basepath
+        uri: basepath,
       });
 
-  const routerBase = derived([base, activeRoute], ([base, activeRoute]) => {
+  const routerBase = derived([base, activeRoute], ([_base, _activeRoute]) => {
     // If there is no activeRoute, the routerBase will be identical to the base.
-    if (activeRoute === null) {
-      return base;
+    if (_activeRoute === null) {
+      return _base;
     }
 
-    const { path: basepath } = base;
-    const { route, uri } = activeRoute;
+    const { route, uri } = _activeRoute;
     // Remove the potential /* or /*splatname from
     // the end of the child Routes relative paths.
-    const path = route.default ? basepath : route.path.replace(/\*.*$/, "");
+    const path = route.default ? _base.path : route.path.replace(/\*.*$/, "");
 
     return { path, uri };
   });
 
   function registerRoute(route) {
-    const { path: basepath } = $base;
     let { path } = route;
 
     // We store the original path in the _path property so we can reuse
     // it when the basepath changes. The only thing that matters is that
     // the route reference is intact, so mutation is fine.
+    // eslint-disable-next-line no-param-reassign
     route._path = path;
-    route.path = combinePaths(basepath, path);
+    // eslint-disable-next-line no-param-reassign
+    route.path = combinePaths($base.path, path);
 
     if (typeof window === "undefined") {
       // In SSR we should set the activeRoute immediately if it is a match.
@@ -89,9 +89,11 @@
   // This reactive statement will update all the Routes' path when
   // the basepath changes.
   $: {
-    const { path: basepath } = $base;
     routes.update(rs => {
-      rs.forEach(r => (r.path = combinePaths(basepath, r._path)));
+      rs.forEach(route => {
+        // eslint-disable-next-line no-param-reassign
+        route.path = combinePaths($base.path, route._path);
+      });
       return rs;
     });
   }
@@ -123,8 +125,8 @@
     base,
     routerBase,
     registerRoute,
-    unregisterRoute
+    unregisterRoute,
   });
 </script>
 
-<slot></slot>
+<slot />
