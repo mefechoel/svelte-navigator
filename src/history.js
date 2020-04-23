@@ -1,10 +1,8 @@
-/**
+/*
  * Adapted from https://github.com/reach/router/blob/b60e6dd781d5d3a4bdaaf4de665649c0f6a7e78d/src/lib/history.js
  *
  * https://github.com/reach/router/blob/master/LICENSE
  */
-
-import { useResolve } from "./contexts";
 
 function getLocation(source) {
   return {
@@ -41,19 +39,18 @@ function createHistory(source) {
       };
     },
 
-    navigate(to, { state, replace = false, autoResolve = true } = {}) {
-      const href = autoResolve ? useResolve(to) : to;
+    navigate(to, { state, replace = false } = {}) {
       // eslint-disable-next-line no-param-reassign
       state = { ...state, key: `${Date.now()}` };
       // try...catch iOS Safari limits to 100 pushState calls
       try {
         if (replace) {
-          source.history.replaceState(state, null, href);
+          source.history.replaceState(state, null, to);
         } else {
-          source.history.pushState(state, null, href);
+          source.history.pushState(state, null, to);
         }
       } catch (e) {
-        source.location[replace ? "replace" : "assign"](href);
+        source.location[replace ? "replace" : "assign"](to);
       }
 
       location = getLocation(source);

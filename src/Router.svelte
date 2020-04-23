@@ -1,9 +1,15 @@
 <script>
+  /*
+   * Adapted from https://github.com/EmilTholin/svelte-routing
+   *
+   * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
+   */
+
   import { getContext, setContext, onMount } from "svelte";
   import { writable, derived } from "svelte/store";
-  import { LOCATION, ROUTER } from "./contexts.js";
-  import { globalHistory } from "./history.js";
-  import { pick, match, combinePaths } from "./utils.js";
+  import { LOCATION, ROUTER } from "./contexts";
+  import { globalHistory } from "./history";
+  import { pick, match, combinePaths } from "./utils";
 
   export let basepath = "/";
   export let url = null;
@@ -42,12 +48,11 @@
     // Remove the potential /* or /*splatname from
     // the end of the child Routes relative paths.
     const path = route.default ? _base.path : route.path.replace(/\*.*$/, "");
-
     return { path, uri };
   });
 
   function registerRoute(route) {
-    let { path } = route;
+    const { path } = route;
 
     // We store the original path in the _path property so we can reuse
     // it when the basepath changes. The only thing that matters is that
@@ -71,30 +76,25 @@
         hasActiveRoute = true;
       }
     } else {
-      routes.update(rs => {
-        rs.push(route);
-        return rs;
-      });
+      routes.update(prevRoutes => [...prevRoutes, route]);
     }
   }
 
   function unregisterRoute(route) {
-    routes.update(rs => {
-      const index = rs.indexOf(route);
-      rs.splice(index, 1);
-      return rs;
-    });
+    routes.update(prevRoutes =>
+      prevRoutes.filter(routeItem => routeItem !== route),
+    );
   }
 
   // This reactive statement will update all the Routes' path when
   // the basepath changes.
   $: {
-    routes.update(rs => {
-      rs.forEach(route => {
+    routes.update(prevRoutes => {
+      prevRoutes.forEach(route => {
         // eslint-disable-next-line no-param-reassign
         route.path = combinePaths($base.path, route._path);
       });
-      return rs;
+      return prevRoutes;
     });
   }
   // This reactive statement will be run when the Router is created

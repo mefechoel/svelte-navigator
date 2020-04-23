@@ -1,3 +1,9 @@
+/*
+ * Adapted from https://github.com/EmilTholin/svelte-routing
+ *
+ * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
+ */
+
 export { default as Router } from "./Router.svelte";
 export { default as Route } from "./Route.svelte";
 export { default as Link } from "./Link.svelte";
@@ -7,5 +13,7 @@ export {
   useActiveRoute,
   useLocation,
   useRouterBase,
-  useResolve,
-} from "./contexts";
+  useBase,
+  useLinkResolve,
+  useNavigate,
+} from "./hooks";

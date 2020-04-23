@@ -1,3 +1,9 @@
+/*
+ * Adapted from https://github.com/EmilTholin/svelte-routing
+ *
+ * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
+ */
+
 import { navigate } from "./history";
 import { shouldNavigate, hostMatches } from "./utils";
 

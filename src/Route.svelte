@@ -1,12 +1,20 @@
 <script>
+  /*
+   * Adapted from https://github.com/EmilTholin/svelte-routing
+   *
+   * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
+   */
+
   import { getContext, onDestroy } from "svelte";
-  import { ROUTER, LOCATION } from "./contexts.js";
+  import { ROUTER } from "./contexts";
+  import { useActiveRoute, useLocation } from "./hooks";
 
   export let path = "";
   export let component = null;
 
-  const { registerRoute, unregisterRoute, activeRoute } = getContext(ROUTER);
-  const location = getContext(LOCATION);
+  const { registerRoute, unregisterRoute } = getContext(ROUTER);
+  const activeRoute = useActiveRoute();
+  const location = useLocation();
 
   const route = {
     path,

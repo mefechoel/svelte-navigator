@@ -1,4 +1,4 @@
-/**
+/*
  * Adapted from https://github.com/reach/router/blob/b60e6dd781d5d3a4bdaaf4de665649c0f6a7e78d/src/lib/utils.js
  *
  * https://github.com/reach/router/blob/master/LICENSE
@@ -337,14 +337,44 @@ function shouldNavigate(event) {
   );
 }
 
+/**
+ * Checks if a clicked link triggers a navigation to a route from the same application.
+ * Returns `false` if link leads to a different website.
+ *
+ * @param {Element} anchor The `<a />` element
+ * @returns {boolean}
+ */
 function hostMatches(anchor) {
   const { host } = window.location;
   return (
     anchor.host === host ||
     // svelte seems to kill anchor.host value in ie11, so fall back to checking href
-    anchor.href.indexOf(`https://${host}`) === 0 ||
-    anchor.href.indexOf(`http://${host}`) === 0
+    startsWith(anchor.href, `https://${host}`) ||
+    startsWith(anchor.href, `http://${host}`)
   );
+}
+
+/**
+ * Resolves a link relative to the router basepath and the uri of the current router.
+ *
+ * @param {string} path The given path, that will be resolved against a router base
+ * @param {string} basepath The basepath of the router (i.e. from calling `useBase`)
+ * @param {string} routerBaseUri The current router base (i.e. from calling `useRouterBase`)
+ * @returns {string} The resolved path
+ *
+ * @example
+ * resolveLink("relative", "/", "/currentBase") // -> "/currentBase/relative"
+ * resolveLink("/absolute", "/", "/currentBase") // -> "/absolute"
+ * resolveLink("/absolute", "/base", "/currentBase") // -> "/base/absolute"
+ */
+function resolveLink(path, basepath, routerBaseUri) {
+  if (path === "/") {
+    return basepath;
+  }
+  if (startsWith(path, "/")) {
+    return resolve(stripSlashes(path), basepath);
+  }
+  return resolve(path, routerBaseUri);
 }
 
 export {
@@ -355,4 +385,6 @@ export {
   combinePaths,
   shouldNavigate,
   hostMatches,
+  segmentize,
+  resolveLink,
 };
