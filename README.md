@@ -1,6 +1,10 @@
 # Svelte Navigator
 
-A declarative Svelte routing library.
+Svelte Navigator is declarative routing library for single page applications built with Svelte.
+
+It is a fork of [svelte-navigator](https://github.com/EmilTholin/svelte-navigator) with (in my opinion) better routing defaults for pages served from a subdirectory.
+
+It also exposes a react-esque hooks api for accessing parts of the router context. 
 
 ## Getting started
 
@@ -8,6 +12,12 @@ Look at the [example folder][example-folder-url] for an example project setup.
 
 ## Install
 
+With `yarn`:
+```bash
+yarn add svelte-navigator
+```
+
+With `npm`:
 ```bash
 npm install --save svelte-navigator
 ```
@@ -25,16 +35,16 @@ npm install --save svelte-navigator
   export let url = "";
 </script>
 
-<Router url="{url}">
+<Router url={url}>
   <nav>
     <Link to="/">Home</Link>
     <Link to="about">About</Link>
     <Link to="blog">Blog</Link>
   </nav>
   <div>
-    <Route path="blog/:id" component="{BlogPost}" />
-    <Route path="blog" component="{Blog}" />
-    <Route path="about" component="{About}" />
+    <Route path="blog/:id" component={BlogPost} />
+    <Route path="blog" component={Blog} />
+    <Route path="about" component={About} />
     <Route path="/"><Home /></Route>
   </div>
 </Router>
@@ -91,10 +101,12 @@ A component used to navigate around the application.
 
 |  Property  | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                               |
 | :--------: | :------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|    `to`    |   ✔ ️    |     `'#'`     | URL the component should link to.                                                                                                                                                                                                                                                                                                                                                         |
+|    `to`    |   ✔ ️    |     `'#'`     | URL the component should link to. It will be resolved relative to the current route.                                                                                                                                                                                                                                                                                                                       |
 | `replace`  |          |    `false`    | When `true`, clicking the `Link` will replace the current entry in the history stack instead of adding a new one.                                                                                                                                                                                                                                                                         |
 |  `state`   |          |     `{}`      | An object that will be pushed to the history stack when the `Link` is clicked.                                                                                                                                                                                                                                                                                                            |
 | `getProps` |          | `() => ({})`  | A function that returns an object that will be spread on the underlying anchor element's attributes. The first argument given to the function is an object with the properties `location`, `href`, `isPartiallyCurrent`, `isCurrent`. Look at the [`NavLink` component in the example project setup][example-folder-navlink] to see how you can build your own link components with this. |
+
+All other props will be passed to the underlying `<a />` element if no `getProps` function is provided.
 
 #### `Route`
 
@@ -127,7 +139,7 @@ The first argument is a string denoting where to navigate to, and the second arg
 
 ```html
 <script>
-  import { navigate } from "svelte-routing";
+  import { navigate } from "svelte-navigator";
 
   function onSubmit() {
     login().then(() => {
@@ -141,14 +153,20 @@ The first argument is a string denoting where to navigate to, and the second arg
 
 An action used on anchor tags to navigate around the application. You can add an attribute `replace` to replace the current entry in the history stack instead of adding a new one.
 
+You should note that an action has no access to sveltes context, so links will not automatically be resolved on navigation. This will be a problem when your app is served from a subdirectory. You can use the `useLinkResolve` hook to resolve the link manually.
+
 ```html
 <script>
-  import { link } from "svelte-routing";
+  import { link, useLinkResolve } from "svelte-navigator";
+
+  const resolve = useLinkResolve();
+  const resolvedLink = resolve('relativeLink');
 </script>
 
 <Router>
   <a href="/" use:link>Home</a>
   <a href="/replace" use:link replace>Replace this URL</a>
+  <a href={resolvedLink} use:link>Relative link</a>
   <!-- ... -->
 </Router>
 ```
@@ -160,7 +178,7 @@ An action used on a root element to make all relative anchor elements navigate a
 ```html
 <!-- App.svelte -->
 <script>
-  import { links } from "svelte-routing";
+  import { links } from "svelte-navigator";
 </script>
 
 <div use:links>
