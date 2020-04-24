@@ -1,6 +1,6 @@
 {
   "name": "svelte-navigator",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A declarative Svelte routing library with SSR support",
   "main": "src/index.js",
   "svelte": "src/index.js",
@@ -15,6 +15,7 @@
   },
   "homepage": "https://github.com/mefechoel/svelte-navigator#readme",
   "keywords": [
+    "svelte-navigator",
     "svelte",
     "router",
     "routing",

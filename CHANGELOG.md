@@ -1,3 +1,7 @@
+# 0.4.0
+
+- Remove default value for `to` prop in `Link`
+
 # 0.3.0
 
 - Remove confusing `useRouterBase` hook. Use `useActiveRoute` instead.

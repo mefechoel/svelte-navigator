@@ -2,7 +2,9 @@
 
 Svelte Navigator is declarative routing library for single page applications built with Svelte.
 
-It is a fork of [svelte-navigator](https://github.com/EmilTholin/svelte-navigator) with (in my opinion) better routing defaults for pages served from a subdirectory.
+It is a fork of [svelte-routing](https://github.com/EmilTholin/svelte-routing).
+I had a few issues with `link`s and `navigate`, when using a `basepath` in Router, and absolute `Link`s in a nested Router. 
+Svelte Navigator tries to always resolve links relative to the Routers `basepath` and to the parent Route.
 
 It also exposes a react-esque hooks api for accessing parts of the Router context. 
 
@@ -117,11 +119,11 @@ createServer((req, res) => {
 The `Router` component supplies the `Link` and `Route` descendant components with routing information through context, so you need at least one `Router` at the top of your application. It assigns a score to all its `Route` descendants and picks the best match to render.
 
 ```html
-<Router basepath="/base">
-  <Route path="blog/*">
-    <Link to="svelte">Go to /base/blog/svelte</Link>
-    <Link to="/profile">Go to /base/profile</Link>
-  </Route>
+<Router>
+  <Link to="profile">Go to /profile</Link>
+  <Link to="blog">Go to /blog</Link>
+  <Route path="blog" component={Blog} />
+  <Route path="profile" component={Profile} />
 </Router>
 ```
 
@@ -148,6 +150,19 @@ The `Router` component supplies the `Link` and `Route` descendant components wit
       </Route>
     </Router>
   </Route>
+</Router>
+```
+
+When you are serving your app from a subdirectory on your server, you can add a `basepath` prop to the router.
+It will be prepended to all routes and to all resolved navigations (i.e. using `Link`, `useNavigate` or `useLinkResolve`).
+A `basepath` should have a leading, but no trailing slash.
+
+```html
+<Router basepath="/base">
+  <Link to="profile">Go to /base/profile</Link>
+  <Link to="blog">Go to /base/blog</Link>
+  <Route path="blog" component={Blog} />
+  <Route path="profile" component={Profile} />
 </Router>
 ```
 
@@ -182,10 +197,10 @@ A component used to navigate around the application. It will automatically resol
 
 |  Property  | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                               |
 | :--------: | :------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|    `to`    |   ✔ ️    |     `'#'`     | URL the component should link to. It will be resolved relative to the current Route.                                                                                                                                                                                                                                                                                                                       |
+|    `to`    |   ✔ ️    |               | URL the component should link to. It will be resolved relative to the current Route.                                                                                                                                                                                                                                                                                                                       |
 | `replace`  |          |    `false`    | When `true`, clicking the `Link` will replace the current entry in the history stack instead of adding a new one.                                                                                                                                                                                                                                                                         |
 |  `state`   |          |     `{}`      | An object that will be pushed to the history stack when the `Link` is clicked.                                                                                                                                                                                                                                                                                                            |
-| `getProps` |          | `() => ({})`  | A function that returns an object that will be spread on the underlying anchor element's attributes. The first argument given to the function is an object with the properties `location`, `href`, `isPartiallyCurrent`, `isCurrent`. Look at the [`NavLink` component in the example project setup][example-folder-navlink] to see how you can build your own link components with this. |
+| `getProps` |          |    `null`    | A function that returns an object that will be spread on the underlying anchor element's attributes. The first argument given to the function is an object with the properties `location`, `href`, `isPartiallyCurrent`, `isCurrent`. Look at the [`NavLink` component in the example project setup][example-folder-navlink] to see how you can build your own link components with this. |
 
 All other props will be passed to the underlying `<a />` element if no `getProps` function is provided.
 
