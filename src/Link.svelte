@@ -10,7 +10,7 @@
   import { navigate } from "./history";
   import { startsWith, shouldNavigate } from "./utils";
 
-  export let to = "#";
+  export let to;
   export let replace = false;
   export let state = {};
   export let getProps = null;
