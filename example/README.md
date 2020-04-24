@@ -3,9 +3,9 @@
 Example project setup. Disable JavaScript in your browser to see SSR in action.
 
 ```bash
-git clone git@github.com:EmilTholin/svelte-routing.git
-cd svelte-routing/example
-npm install
-npm start
+git clone https://github.com/mefechoel/svelte-navigator.git
+cd svelte-navigator/example
+yarn install # npm install
+yarn start # npm install
 # open http://localhost:3000
 ```

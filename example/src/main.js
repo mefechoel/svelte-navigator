@@ -1,6 +1,6 @@
 import App from "./App.svelte";
 
-new App({
+export default new App({
   target: document.getElementById("app"),
-  hydrate: true
+  hydrate: true,
 });

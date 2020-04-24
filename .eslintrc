@@ -38,7 +38,9 @@
         "import/no-duplicates": "off",
         "import/no-mutable-exports": "off",
         "import/extensions": "off",
-        "import/no-unresolved": "off"
+        "import/no-unresolved": "off",
+        "import/prefer-default-export": "off",
+        "no-multiple-empty-lines": "off"
       }
     }
   ]

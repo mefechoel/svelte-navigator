@@ -1,8 +1,9 @@
 <script>
-  import { Link } from "svelte-routing";
+  import { Link } from "svelte-navigator";
 
   export let to = "";
 
+  // eslint-disable-next-line no-unused-vars
   function getProps({ location, href, isPartiallyCurrent, isCurrent }) {
     const isActive = href === "/" ? isCurrent : isPartiallyCurrent || isCurrent;
 
@@ -14,6 +15,6 @@
   }
 </script>
 
-<Link to="{to}" getProps="{getProps}">
+<Link {to} {getProps}>
   <slot />
 </Link>

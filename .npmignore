@@ -1,2 +1,8 @@
 node_modules
 example
+.editorconfig
+.eslintignore
+.eslintrc
+.prettierignore
+.prettierrc.js
+yarn.lock

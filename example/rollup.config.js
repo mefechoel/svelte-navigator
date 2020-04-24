@@ -14,14 +14,14 @@ export default [
       sourcemap: true,
       format: "iife",
       name: "app",
-      file: "public/bundle.js"
+      file: "public/bundle.js",
     },
     plugins: [
       svelte({
         hydratable: true,
         css: css => {
           css.write("public/bundle.css");
-        }
+        },
       }),
       resolve(),
       commonjs(),
@@ -30,10 +30,10 @@ export default [
       isDev &&
         livereload({
           watch: "public/App.js",
-          delay: 200
+          delay: 200,
         }),
-      !isDev && terser()
-    ]
+      !isDev && terser(),
+    ],
   },
   // Server bundle
   {
@@ -42,15 +42,15 @@ export default [
       sourcemap: false,
       format: "cjs",
       name: "app",
-      file: "public/App.js"
+      file: "public/App.js",
     },
     plugins: [
       svelte({
-        generate: "ssr"
+        generate: "ssr",
       }),
       resolve(),
       commonjs(),
-      !isDev && terser()
-    ]
-  }
+      !isDev && terser(),
+    ],
+  },
 ];

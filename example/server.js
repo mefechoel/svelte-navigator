@@ -6,7 +6,7 @@ const server = express();
 
 server.use(express.static(path.join(__dirname, "public")));
 
-server.get("*", function(req, res) {
+server.get("*", (req, res) => {
   const { html } = app.render({ url: req.url });
 
   res.write(`
