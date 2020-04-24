@@ -39,6 +39,15 @@ function createHistory(source) {
       };
     },
 
+    /**
+     * Navigate to a new absolute route.
+     *
+     * @param {string} to The path to navigate to
+     * @param {Object} options
+     * @param {*} [options.state] The state will be accessible through `location.state`
+     * @param {boolean} [options.replace=false] Replace the current entry in the history
+     * stack, instead of pushing on a new one
+     */
     navigate(to, { state, replace = false } = {}) {
       // eslint-disable-next-line no-param-reassign
       state = { ...state, key: `${Date.now()}` };
