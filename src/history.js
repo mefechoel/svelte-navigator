@@ -12,6 +12,12 @@ function getLocation(source) {
   };
 }
 
+function createKey() {
+  return Math.random()
+    .toString(36)
+    .replace(".", "");
+}
+
 function createHistory(source) {
   const listeners = [];
   let location = getLocation(source);
@@ -50,7 +56,7 @@ function createHistory(source) {
      */
     navigate(to, { state, replace = false } = {}) {
       // eslint-disable-next-line no-param-reassign
-      state = { ...state, key: `${Date.now()}` };
+      state = { ...state, key: createKey() };
       // try...catch iOS Safari limits to 100 pushState calls
       try {
         if (replace) {
