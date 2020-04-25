@@ -7,7 +7,7 @@
 
   import { getContext, onDestroy } from "svelte";
   import { ROUTER } from "./contexts";
-  import { useActiveRoute, useLocation } from "./hooks";
+  import { useActiveRoute, useLocation, useNavigate } from "./hooks";
 
   export let path = "";
   export let component = null;
@@ -15,6 +15,7 @@
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
   const activeRoute = useActiveRoute();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const route = {
     path,
@@ -51,10 +52,11 @@
     <svelte:component
       this={component}
       location={$location}
+      {navigate}
       {...routeParams}
       {...routeProps}
     />
   {:else}
-    <slot params={routeParams} location={$location} />
+    <slot params={routeParams} location={$location} {navigate} />
   {/if}
 {/if}
