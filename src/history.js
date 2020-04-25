@@ -100,9 +100,6 @@ function createMemorySource(initialPathname = "/") {
     // eslint-disable-next-line no-unused-vars
     removeEventListener(name, fn) {},
     history: {
-      get index() {
-        return index;
-      },
       get state() {
         return stack[index].state;
       },
