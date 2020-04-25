@@ -6,8 +6,7 @@
    */
 
   import { createEventDispatcher } from "svelte";
-  import { useLocation, useLinkResolve } from "./hooks";
-  import { navigate } from "./history";
+  import { useLocation, useLinkResolve, useHistory } from "./hooks";
   import { startsWith, shouldNavigate } from "./utils";
 
   export let to;
@@ -18,6 +17,7 @@
   const location = useLocation();
   const dispatch = createEventDispatcher();
   const resolveLink = useLinkResolve();
+  const { navigate } = useHistory();
 
   $: href = resolveLink(to);
   $: isPartiallyCurrent = startsWith($location.pathname, href);

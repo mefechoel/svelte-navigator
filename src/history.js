@@ -7,6 +7,7 @@
 function getLocation(source) {
   return {
     ...source.location,
+    pathname: encodeURI(decodeURI(source.location.pathname)),
     state: source.history.state,
     key: (source.history.state && source.history.state.key) || "initial",
   };
@@ -15,18 +16,18 @@ function getLocation(source) {
 function createKey() {
   return Math.random()
     .toString(36)
-    .replace(".", "");
+    .replace(".", "")
+    .substring(1);
 }
 
 function createHistory(source) {
-  const listeners = [];
+  let listeners = [];
   let location = getLocation(source);
 
   return {
     get location() {
       return location;
     },
-
     listen(listener) {
       listeners.push(listener);
 
@@ -39,33 +40,36 @@ function createHistory(source) {
 
       return () => {
         source.removeEventListener("popstate", popstateListener);
-
-        const index = listeners.indexOf(listener);
-        listeners.splice(index, 1);
+        listeners = listeners.filter(fn => fn !== listener);
       };
     },
-
     /**
      * Navigate to a new absolute route.
      *
-     * @param {string} to The path to navigate to
+     * @param {string|number} to The path to navigate to.
+     *
+     * If `to` is a number we will navigate to the stack entry index + `to`
+     * (-> `navigate(-1)`, is equivalent to hitting the back button of the browser)
      * @param {Object} options
      * @param {*} [options.state] The state will be accessible through `location.state`
      * @param {boolean} [options.replace=false] Replace the current entry in the history
      * stack, instead of pushing on a new one
      */
     navigate(to, { state, replace = false } = {}) {
-      // eslint-disable-next-line no-param-reassign
-      state = { ...state, key: createKey() };
-      // try...catch iOS Safari limits to 100 pushState calls
-      try {
-        if (replace) {
-          source.history.replaceState(state, null, to);
-        } else {
-          source.history.pushState(state, null, to);
+      if (typeof to === "number") {
+        source.history.go(to);
+      } else {
+        const keyedState = { ...state, key: createKey() };
+        // try...catch iOS Safari limits to 100 pushState calls
+        try {
+          if (replace) {
+            source.history.replaceState(keyedState, "", to);
+          } else {
+            source.history.pushState(keyedState, "", to);
+          }
+        } catch (e) {
+          source.location[replace ? "replace" : "assign"](to);
         }
-      } catch (e) {
-        source.location[replace ? "replace" : "assign"](to);
       }
 
       location = getLocation(source);
@@ -77,8 +81,15 @@ function createHistory(source) {
 // Stores history entries in memory for testing or other platforms like Native
 function createMemorySource(initialPathname = "/") {
   let index = 0;
-  const stack = [{ pathname: initialPathname, search: "" }];
-  const states = [];
+  let stack = [{ pathname: initialPathname, search: "", state: null }];
+
+  const createStackFrame = (state, uri) => {
+    const [pathname, queryParams = ""] = uri.split("?");
+    // Browsers add a "?" to the start of a search if there is any.
+    // Otherwise they return ""
+    const search = queryParams.length ? `?${queryParams}` : "";
+    return { pathname, search, state };
+  };
 
   return {
     get location() {
@@ -89,25 +100,32 @@ function createMemorySource(initialPathname = "/") {
     // eslint-disable-next-line no-unused-vars
     removeEventListener(name, fn) {},
     history: {
-      get entries() {
-        return stack;
-      },
       get index() {
         return index;
       },
       get state() {
-        return states[index];
+        return stack[index].state;
       },
-      pushState(state, _, uri) {
-        const [pathname, search = ""] = uri.split("?");
+      pushState(state, title, uri) {
         index++;
-        stack.push({ pathname, search });
-        states.push(state);
+        // Throw away anything in the stack with an index greater than the current index.
+        // This happens, when we go back using `go(-n)`. The index is now less than `stack.length`.
+        // If we call `go(+n)` the stack entries with an index greater than the current index can
+        // be reused.
+        // However, if we navigate to a path, instead of a number, we want to create a new branch
+        // of navigation.
+        stack = stack.slice(0, index);
+        stack.push(createStackFrame(state, uri));
       },
-      replaceState(state, _, uri) {
-        const [pathname, search = ""] = uri.split("?");
-        stack[index] = { pathname, search };
-        states[index] = state;
+      replaceState(state, title, uri) {
+        stack[index] = createStackFrame(state, uri);
+      },
+      go(to) {
+        let newIndex = index + to;
+        if (newIndex < 0 || newIndex > stack.length - 1) {
+          return;
+        }
+        index = newIndex;
       },
     },
   };
@@ -123,4 +141,4 @@ const canUseDOM = Boolean(
 const globalHistory = createHistory(canUseDOM ? window : createMemorySource());
 const { navigate } = globalHistory;
 
-export { globalHistory, navigate };
+export { globalHistory, navigate, createHistory, createMemorySource };

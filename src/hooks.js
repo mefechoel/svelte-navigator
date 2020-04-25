@@ -2,7 +2,6 @@ import { getContext } from "svelte";
 import { get } from "svelte/store";
 import { LOCATION, ROUTER } from "./contexts";
 import { resolveLink } from "./utils";
-import { navigate } from "./history";
 
 /**
  * Access the current location via a readable store.
@@ -87,6 +86,11 @@ export function useActiveRoute() {
 export function useRouterBase() {
   const { routerBase } = getContext(ROUTER);
   return routerBase;
+}
+
+export function useHistory() {
+  const { history } = getContext(ROUTER);
+  return history;
 }
 
 /**
@@ -233,16 +237,24 @@ export function useLinkResolve() {
  */
 export function useNavigate() {
   const resolve = useLinkResolve();
+  const { navigate } = useHistory();
   /**
    * Navigate to a new route.
    * Resolves the link relative to the current route and basepath.
    *
-   * @param {string} to The path to navigate to
+   * @param {string|number} to The path to navigate to.
+   *
+   * If `to` is a number we will navigate to the stack entry index + `to`
+   * (-> `navigate(-1)`, is equivalent to hitting the back button of the browser)
    * @param {Object} options
    * @param {*} [options.state]
    * @param {boolean} [options.replace=false]
    */
-  const navigateRelative = (to, { state, replace = false } = {}) =>
-    navigate(resolve(to), { state, replace });
+  const navigateRelative = (to, { state, replace = false } = {}) => {
+    // If to is a number, we navigate to the target stack entry via `history.go`.
+    // Otherwise resolve the link
+    const target = typeof to === "number" ? to : resolve(to);
+    return navigate(target, { state, replace });
+  };
   return navigateRelative;
 }

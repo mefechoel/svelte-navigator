@@ -4,7 +4,7 @@
  * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
  */
 
-import { navigate } from "./history";
+import { navigate as defaultNavigate } from "./history";
 import { shouldNavigate, hostMatches } from "./utils";
 
 /**
@@ -16,7 +16,7 @@ import { shouldNavigate, hostMatches } from "./utils";
  * <a href="/post/{postId}" use:link>{post.title}</a>
  * ```
  */
-function link(node) {
+function link(node, navigate = defaultNavigate) {
   function onClick(event) {
     const anchor = event.currentTarget;
 
@@ -54,7 +54,7 @@ function link(node) {
  * </div>
  * ```
  */
-function links(node) {
+function links(node, navigate = defaultNavigate) {
   function findClosest(tagName, el) {
     while (el && el.tagName !== tagName) {
       // eslint-disable-next-line no-param-reassign
