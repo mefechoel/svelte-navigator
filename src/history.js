@@ -16,8 +16,7 @@ function getLocation(source) {
 function createKey() {
   return Math.random()
     .toString(36)
-    .replace(".", "")
-    .substring(1);
+    .substring(2);
 }
 
 function createHistory(source) {
