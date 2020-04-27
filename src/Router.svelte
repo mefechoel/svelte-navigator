@@ -33,10 +33,7 @@
   // have the value of the basepath prop.
   const base = routerContext
     ? routerContext.routerBase
-    : writable({
-        path: basepath,
-        uri: basepath,
-      });
+    : writable({ path: basepath, uri: basepath });
 
   const routerBase = derived([base, activeRoute], ([_base, _activeRoute]) => {
     // If there is no activeRoute, the routerBase will be identical to the base.
@@ -130,4 +127,4 @@
   });
 </script>
 
-<slot navigate={history.navigate} />
+<slot />
