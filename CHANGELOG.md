@@ -1,3 +1,10 @@
+# 1.0.0
+
+- Expose scoped `navigate` function as prop of `Route` `component` and in slots with `let:navigate`
+- Allow configuration of `Router` history through `history` prop, and exposition of `createHistory` and `createMemorySource` functions
+- Allow passing of custom `navigate` function to `link` and `links` actions via `use:link={myCustomNavigate}`
+- Add more examples and improve documentation
+
 # 0.4.0
 
 - Remove default value for `to` prop in `Link`

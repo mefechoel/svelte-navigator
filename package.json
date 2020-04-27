@@ -1,7 +1,7 @@
 {
   "name": "svelte-navigator",
-  "version": "0.4.0",
-  "description": "A declarative Svelte routing library with SSR support",
+  "version": "1.0.0",
+  "description": "Simple, declarative routing for single page apps built with Svelte",
   "main": "src/index.js",
   "svelte": "src/index.js",
   "author": "Michel Strelow @mefechoel",

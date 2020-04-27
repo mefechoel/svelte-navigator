@@ -1,5 +1,5 @@
-node_modules
-example/public/*
-!example/public/global.css
-!example/public/App.js
+/**/node_modules
+example/**/public/build
+example/**/public/bundle.*
+example/**/yarn.lock
 .vscode

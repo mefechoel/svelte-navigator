@@ -1,18 +1,55 @@
 # Svelte Navigator
 
-Svelte Navigator is declarative routing library for single page applications built with Svelte.
+> Simple, declarative routing for single page apps built with Svelte.
 
-It is a fork of [svelte-routing](https://github.com/EmilTholin/svelte-routing).
-I had a few issues with `link`s and `navigate`, when using a `basepath` in Router, and absolute `Link`s in a nested Router. 
-Svelte Navigator tries to always resolve links relative to the Routers `basepath` and to the parent Route.
+This started as a fork of [svelte-routing](https://github.com/EmilTholin/svelte-routing), with added configuration options and access to parts of the Routers context through React-esque hooks.
 
-It also exposes a react-esque hooks api for accessing parts of the Router context. 
+## Features
+
+- Declarative configuration inspired by react-router and @reach/router
+- Relative routing (paths and links are relative to the current route and parent router)
+- Automatic route ranking
+- Route parameters `user/:id` and (namable) wildcards `blog/*`, `blog/*wildcardName`
+- React-esque hooks api for accessing parts of the Router context
+- Nestable Routers for seamless merging of many smaller apps
+- HTML5 history mode by default (Memory mode as fallback, or for testing)
+- Configurable history mode ([allows for custom history implementation][example-custom-hash-history])
+
+## Table of Contents
+
+- [Getting started](#getting-started)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API](#api)
+  - [Components](#components)
+    - [Router](#router)
+    - [Link](#link)
+    - [Route](#route)
+  - [Hooks](#hooks)
+    - [useNavigate](#usenavigate)
+    - [useLocation](#uselocation)
+    - [useActiveRoute](#useactiveroute)
+    - [useLinkResolve](#uselinkresolve)
+    - [useBase](#usebase)
+  - [Programmatic Navigation](#programmatic-navigation)
+    - [navigate](#navigate)
+  - [Actions](#actions)
+    - [link](#link-1)
+    - [links](#links)
+  - [Custom History](#custom-history)
+- [SSR Caveat](#ssr-caveat)
 
 ## Getting started
 
-Look at the [example folder][example-folder-url] for an example project setup.
+Look at the [example folder][example-folder-url] for a few example project setups.
 
-## Install
+- [Simple basic usage in a client side rendered app][example-basic-client-side]
+- [Private Routes for authenticated users only][example-private-routes]
+- [SSR][example-ssr]
+- [Using hash based navigation with a custom history][example-custom-hash-history]
+
+
+## Installation
 
 With `yarn`:
 ```bash
@@ -54,65 +91,28 @@ Basic Setup for a client-side SPA:
 </Router>
 ```
 
-Basic Setup for a server-side rendered app:
-
-```html
-<!-- App.svelte -->
-<script>
-  import { Router, Link, Route } from "svelte-navigator";
-  import Home from "./routes/Home.svelte";
-  import About from "./routes/About.svelte";
-  import Blog from "./routes/Blog.svelte";
-
-  export let url = "";
-</script>
-
-<Router url={url}>
-  <nav>
-    <Link to="/">Home</Link>
-    <Link to="about">About</Link>
-    <Link to="blog">Blog</Link>
-  </nav>
-  <div>
-    <Route path="blog/:id" component={BlogPost} />
-    <Route path="blog" component={Blog} />
-    <Route path="about" component={About} />
-    <Route path="/">
-      <Home />
-    </Route>
-  </div>
-</Router>
-```
-
-```javascript
-// main.js
-import App from "./App.svelte";
-
-const app = new App({
-  target: document.getElementById("app"),
-  hydrate: true,
-});
-```
-
-```javascript
-// server.js
-const { createServer } = require("http");
-const app = require("./dist/App.js");
-
-createServer((req, res) => {
-  const { html } = app.render({ url: req.url });
-
-  res.write(`
-    <!DOCTYPE html>
-    <div id="app">${html}</div>
-    <script src="/dist/bundle.js"></script>
-  `);
-
-  res.end();
-}).listen(3000);
-```
-
 ## API
+
+- [Components](#components)
+  - [Router](#router)
+  - [Link](#link)
+  - [Route](#route)
+- [Hooks](#hooks)
+  - [useNavigate](#usenavigate)
+  - [useLocation](#uselocation)
+  - [useActiveRoute](#useactiveroute)
+  - [useLinkResolve](#uselinkresolve)
+  - [useBase](#usebase)
+- [Programmatic Navigation](#programmatic-navigation)
+  - [navigate](#navigate)
+- [Actions](#actions)
+  - [link](#link-1)
+  - [links](#links)
+- [Custom History](#custom-history)
+
+### Components
+
+The main elements to configure and use routing in your Svelte app.
 
 #### `Router`
 
@@ -166,22 +166,39 @@ A `basepath` should have a leading, but no trailing slash.
 </Router>
 ```
 
+By default `Router`s use the HTML5 history API for navigation. You can provide a different history through the `history` prop. Svelte Navigator ships with a memory based history, which is used, when the application does not seem to run in a browser (i.e. in a test environment). You can explicitly set the memory history or you can provide your own implementation (for example a [Hash based history][example-custom-hash-history]).
+
+```html
+<script>
+  import { createHistory, createMemorySource } from 'svelte-navigator';
+
+  const memoryHistory = createHistory(createMemorySource());
+</script>
+
+<Router history={memoryHistory}>
+  <!-- ... -->
+</Router>
+```
+
 ###### Properties
 
 |  Property  | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                               |
 | :--------: | :------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `basepath` |          |     `'/'`     | The `basepath` property will be added to all `path` properties of `Route` descendants and to every navigation, that has access to the Routers context (from a `Link` with a `to` property or via `useNavigate`). This property can be ignored in most cases, but if you host your application on e.g. `https://example.com/my-site`, the `basepath` should be set to `/my-site`. Note that `navigate` and the `link` and `links` actions don't have access to the context. You may resolve the link manually using the `useLinkResolve` hook. |
 |   `url`    |          |     `''`      | The `url` property is used in SSR to force the current URL of the application and will be used by all `Link` and `Route` descendants. A falsy value will be ignored by the `Router`, so it's enough to declare `export let url = '';` for your topmost component and only give it a value in SSR.                                         |
+|   `history`  |          | \<HTML5 History> | The `history` property can be used to use a navigation method other than the browsers History API (See [custom Hash based history][example-custom-hash-history]).              |
 
 #### `Link`
 
 A component used to navigate around the application. It will automatically resolve the `to` path relative to the current Route and to the Router `basepath`.
 
 ```html
-<Route path="blog/*">
-  <Link to="svelte">Go to /blog/svelte</Link>
-  <Link to="/profile">Go to /profile</Link>
-</Route>
+<Router>
+  <Route path="blog/*">
+    <Link to="svelte">Go to /blog/svelte</Link>
+    <Link to="/profile">Go to /profile</Link>
+  </Route>
+</Router>
 ```
 
 ```html
@@ -199,7 +216,7 @@ A component used to navigate around the application. It will automatically resol
 | :--------: | :------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |    `to`    |   ✔ ️    |               | URL the component should link to. It will be resolved relative to the current Route.                                                                                                                                                                                                                                                                                                                       |
 | `replace`  |          |    `false`    | When `true`, clicking the `Link` will replace the current entry in the history stack instead of adding a new one.                                                                                                                                                                                                                                                                         |
-|  `state`   |          |     `{}`      | An object that will be pushed to the history stack when the `Link` is clicked.                                                                                                                                                                                                                                                                                                            |
+|  `state`   |          |     `{}`      | An object that will be pushed to the history stack when the `Link` is clicked. A state is arbitrary data, that you don't want to communicate through the url, much like the body of a HTTP POST request.                                                                          |
 | `getProps` |          |    `null`    | A function that returns an object that will be spread on the underlying anchor element's attributes. The first argument given to the function is an object with the properties `location`, `href`, `isPartiallyCurrent`, `isCurrent`. Look at the [`NavLink` component in the example project setup][example-folder-navlink] to see how you can build your own link components with this. |
 
 All other props will be passed to the underlying `<a />` element if no `getProps` function is provided.
@@ -210,11 +227,9 @@ A component that will render its `component` property or children when its ances
 
 All properties other than `path` and `component` given to the `Route` will be passed to the rendered `component`.
 
-Potential path parameters will be passed to the rendered `component` as properties. A wildcard `*` can be given a name with `*wildcardName` to pass the wildcard string as the `wildcardName` property instead of as the `*` property.
+A Route path can match parameters with `"path/:parameterName"` and wildcards with `"path/*"` or `"path/*wildcardName"`. All parameters and wildcard values will be provided to the `component` as props. They can also be accessed inside a Route slot via `let:params`.
 
-Potential path parameters are passed back to the parent using props, so they can be exposed to the slot template using `let:params`.
-
-The current location is exposed to a slot via `let:location`
+The Route `component` will also receive the current `location`, as well as the `navigate` function, that is scoped to the current route as props. The can be accessed inside the Route slot, via `let:location` and `let:navigate`.
 
 ```html
 <!-- Both variants will do the same -->
@@ -242,81 +257,11 @@ The current location is exposed to a slot via `let:location`
 |   `path`    |          | `''`          | The path for when this component should be rendered. If no `path` is given the `Route` will act as the default that matches if no other `Route` in the `Router` matches. |
 | `component` |          | `null`        | The component constructor that will be used for rendering when the `Route` matches. If `component` is not set, the children of `Route` will be rendered instead.         |
 
-#### `navigate`
+### Hooks
 
-A function that allows you to imperatively navigate around the application for those use cases where a `Link` component is not suitable, e.g. after submitting a form.
+Svelte Navigator exposes a few React-esque hooks to access parts of the `Router`s context. These hooks must always be called during component initialization, because thats when Sveltes `getContext` must be called.
 
-The first argument is a string denoting where to navigate to, and the second argument is an object with a `replace` and `state` property equivalent to those in the `Link` component.
-
-Note that `navigate` does not have access to the Routers context, so it cannot automatically resolve relative links. You might prefer `useNavigate` instead.
-
-```html
-<script>
-  import { navigate } from "svelte-navigator";
-
-  function onSubmit() {
-    login().then(() => {
-      navigate("/success", { replace: true });
-    });
-  }
-</script>
-```
-
-#### `link`
-
-An action used on anchor tags to navigate around the application. You can add an attribute `replace` to replace the current entry in the history stack instead of adding a new one.
-
-You should note that an action has no access to sveltes context, so links will not automatically be resolved on navigation. This will be a problem when your app is served from a subdirectory. You can use the `useLinkResolve` hook to resolve the link manually.
-
-```html
-<!-- App.svelte -->
-<script>
-  import { link, Route } from "svelte-navigator";
-  import RouteComponent from "./RouteComponent.svelte";
-</script>
-
-<Router>
-  <a href="/" use:link>Home</a>
-  <a href="/replace" use:link replace>Replace this URL</a>
-  <Route path="route1">
-    <RouteComponent />
-  </Route>
-  <!-- ... -->
-</Router>
-
-<!-- RouteComponent.svelte --> 
-<script>
-  import { link, useLinkResolve } from "svelte-navigator";
-
-  const resolve = useLinkResolve();
-  // `resolvedLink` will be "/route1/relativePath"
-  const resolvedLink = resolve("relativePath");
-</script>
-
-<a href={resolvedLink} use:link>Relative link</a>
-```
-
-#### `links`
-
-An action used on a root element to make all relative anchor elements navigate around the application. You can add an attribute `replace` on any anchor to replace the current entry in the history stack instead of adding a new one. You can add an attribute `noroute` for this action to skip over the anchor and allow it to use the native browser action.
-
-As for the `link` action, the `href` attribute of the used `<a />` elements will not be resolved automativcally.
-
-```html
-<!-- App.svelte -->
-<script>
-  import { links } from "svelte-navigator";
-</script>
-
-<div use:links>
-  <Router>
-    <a href="/">Home</a>
-    <a href="/replace" replace>Replace this URL</a>
-    <a href="/native" noroute>Use the native action</a>
-    <!-- ... -->
-  </Router>
-</div>
-```
+All navigator hooks return either a readable store you can subscibe to, or a function, that internally interacts with the Routers context.
 
 #### `useNavigate`
 
@@ -325,12 +270,12 @@ A hook, that returns a context-aware version of `navigate`. It will automaticall
 ```html
 <!-- App.svelte -->
 <script>
-  import { link, Route } from "svelte-navigator";
+  import { Router, Route } from "svelte-navigator";
   import RouteComponent from "./RouteComponent.svelte";
 </script>
 
 <Router>
-  <Route path="route1">
+  <Route path="routePath">
     <RouteComponent />
   </Route>
   <!-- ... -->
@@ -344,7 +289,7 @@ A hook, that returns a context-aware version of `navigate`. It will automaticall
 </script>
 
 <button on:click="{() => navigate('relativePath')}">
-  go to /route1/relativePath
+  go to /routePath/relativePath
 </button>
 <button on:click="{() => navigate('/absolutePath')}">
   go to /absolutePath
@@ -355,13 +300,8 @@ It will also resolve a link against the `basepath` of the Router
 
 ```html
 <!-- App.svelte -->
-<script>
-  import { link, Route } from "svelte-navigator";
-  import RouteComponent from "./RouteComponent.svelte";
-</script>
-
 <Router basepath="/base">
-  <Route path="route1">
+  <Route path="routePath">
     <RouteComponent />
   </Route>
   <!-- ... -->
@@ -375,16 +315,60 @@ It will also resolve a link against the `basepath` of the Router
 </script>
 
 <button on:click="{() => navigate('relativePath')}">
-  go to /base/route1/relativePath
+  go to /base/routePath/relativePath
 </button>
 <button on:click="{() => navigate('/absolutePath')}">
   go to /base/absolutePath
 </button>
 ```
 
+The returned `navigate` function is identical to the `navigate` prop, that is passed to Route `component`s. `useNavigate`s advantage is, that you can use it easily in deeply nested components.
+
+```html
+<!-- App.svelte -->
+<Router>
+  <Route path="routeA" component={RouteA} />
+  <Route path="routeB" let:navigate>
+    <RouteB {navigate} />
+  </Route>
+  <Route path="routeC">
+    <RouteC />
+  </Route>
+  <!-- ... -->
+</Router>
+
+<!-- All three components can use the navigate function in the same way --> 
+<!-- RouteA.svelte --> 
+<script>
+  export let navigate;
+</script>
+
+<!-- RouteB.svelte --> 
+<script>
+  export let navigate;
+</script>
+
+<!-- RouteC.svelte --> 
+<script>
+  import { useNavigate } from "svelte-navigator";
+  const navigate = useNavigate();
+</script>
+```
+
+The returned `navigate` function accepts the same parameters as the global [`navigate`](#navigate) function.
+
+###### Parameters
+
+|  Parameter   | Type | Default Value | Description                                                                                                                                                              |
+| :---------: | :------: | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   `to`    | `string` \| `number` |           | The path you want to navigate to. If `to` is a number, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
+| `options` |    `object`    |        | The navigation options      |
+| `options.state` |    `object`    |    `{}`    | An arbitrary object, that will be pushed to the history state stack |
+| `options.replace` |    `boolean`    |    `false`    | If true, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack |
+
 #### `useLocation`
 
-Access the current location via a readable store.
+Access the current location via a readable store and react to changes in location.
 
 ```html
 <!-- RouteComponent.svelte --> 
@@ -413,7 +397,7 @@ Access the current location via a readable store.
 
 #### `useActiveRoute`
 
-Access the Route currenty matched by the Router from anywhere inside the Router context. You can for example access Route params from outside the rendered Route or from a deeply nested component without prop-drilling.
+Access the Route currenty matched by the parent Router from anywhere inside the Routers context. You can for example access Route params from outside the rendered Route or from a deeply nested component without prop-drilling.
 
 ```html
 <script>
@@ -457,7 +441,7 @@ You can use it to manually resolve links, when using the `link` or `links` actio
 
 #### `useBase`
 
-Access the parent `Router`s base.
+Access the parent `Router`s base via a readable store.
 
 ```html
 <!-- Inside top-level Router -->
@@ -491,6 +475,170 @@ Access the parent `Router`s base.
 </script>
 ```
 
+### Programmatic Navigation
+
+Svelte Navigator exports a global `navigate` function, you can use to programmatically navigate around your application.
+
+It will however not be able to perform relative navigation. Use the `useNavigate` hook instead.
+
+If your using a custom history (for example with `createMemorySource`), the created history will have its own `navigate` function. Calling the globally exported function, will not work as intended.
+
+If you're serving your app from a subdirectory or if you're using a custom history, it is not advised to use `navigate`. Use `useNavigate` instead.
+
+#### `navigate`
+
+A function that allows you to imperatively navigate around the application for those use cases where a `Link` component is not suitable, e.g. after submitting a form.
+
+The first argument is a string denoting where to navigate to, and the second argument is an object with a `replace` and `state` property equivalent to those in the `Link` component.
+
+Note that `navigate` does not have access to the Routers context, so it cannot automatically resolve relative links. You might prefer `useNavigate` instead.
+
+```html
+<script>
+  import { navigate } from "svelte-navigator";
+
+  function onSubmit() {
+    login().then(() => {
+      navigate("/success", { replace: true });
+    });
+  }
+</script>
+```
+
+If the first parameter to `navigate` is a number, it is used to navigate the history stack (for example for a browser like "go back/go forward" functionality).
+
+```html
+<script>
+  import { navigate } from "svelte-navigator";
+</script>
+
+<button on:click="{() => navigate(-1)}">Back</button>
+<button on:click="{() => navigate(1)}">Forward</button>
+```
+
+###### Parameters
+
+|  Parameter   | Type | Default Value | Description                                                                                                                                                              |
+| :---------: | :------: | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   `to`    | `string` \| `number` |           | The path you want to navigate to. If `to` is a number, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
+| `options` |    `object`    |        | The navigation options      |
+| `options.state` |    `object`    |    `{}`    | An arbitrary object, that will be pushed to the history state stack |
+| `options.replace` |    `boolean`    |    `false`    | If true, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack |
+
+### Actions
+
+You can use the `link` and `links` actions, to use standard `<a href=".." />` elements for navigation.
+
+#### `link`
+
+An action used on anchor tags to navigate around the application. You can add an attribute `replace` to replace the current entry in the history stack instead of adding a new one.
+
+```html
+<!-- App.svelte -->
+<script>
+  import { link, Route, Router } from "svelte-navigator";
+  import RouteComponent from "./RouteComponent.svelte";
+</script>
+
+<Router>
+  <a href="/" use:link>Home</a>
+  <a href="/replace" use:link replace>Replace this URL</a>
+  <!-- ... -->
+</Router>
+```
+
+You should note that an action has no access to sveltes context, so links will not automatically be resolved on navigation. This will be a problem when you want to take advantage of Svelte Navigators relative navigation or when your app is served from a subdirectory. You can use the `useLinkResolve` hook to resolve the link manually.
+
+```html
+<script>
+  import { link, useLinkResolve } from "svelte-navigator";
+
+  const resolve = useLinkResolve();
+  // `resolvedLink` will be "/route1/relativePath"
+  const resolvedLink = resolve("relativePath");
+</script>
+
+<a href={resolvedLink} use:link>Relative link</a>
+```
+
+`link` uses the global `navigate` function by default, so if you're not using the default history mode (for example, memory mode or a [custom history][example-custom-hash-history]), navigating with it will not work as intended. To fix this, you could either use a `Link` component, or you can pass a custom `navigate` function to the action.
+
+```html
+<!-- App.svelte -->
+<script>
+  import {
+    link,
+    Route,
+    Router,
+    createHistory,
+    createMemorySource,
+  } from "svelte-navigator";
+
+  const memoryHistory = createHistory(createMemorySource());
+  const { navigate } = memoryHistory;
+</script>
+
+<Router history={memoryHistory}>
+  <a href="/" use:link={navigate}>Home</a>
+  <!-- ... -->
+</Router>
+```
+
+Because the issues with link resolution and the dependency on the global navigation function, it is generally advised, not to use the `link` and `links` actions if you're not using a standard app, with all the default configuration.
+
+#### `links`
+
+An action used on a root element to make all relative anchor elements navigate around the application. You can add an attribute `replace` on any anchor to replace the current entry in the history stack instead of adding a new one. You can add an attribute `noroute` for this action to skip over the anchor and allow it to use the native browser action.
+
+```html
+<!-- App.svelte -->
+<script>
+  import { links, Router } from "svelte-navigator";
+</script>
+
+<div use:links>
+  <Router>
+    <a href="/">Home</a>
+    <a href="/replace" replace>Replace this URL</a>
+    <a href="/native" noroute>Use the native action</a>
+    <!-- ... -->
+  </Router>
+</div>
+```
+
+As with the `link` action, the `href` attribute of the used `<a />` elements will not be resolved automatically.
+
+If you're using a custom history, you need to pass its `navigate` function to the `links` function, just like you have to do with `link`.
+
+### Custom History
+
+If you don't want to use the HTML5 History API for Navigation, you can use a custom history.
+
+Svelte Navigator comes with a memory based history, you can use. It is practical for testing.
+
+To create a custom history, pass a history source to the `createHistory` function.
+
+You could use multiple Routers, that don't interfere with each other, by using a different history for each one.
+
+```html
+<script>
+  import { Router, createHistory, createMemorySource } from 'svelte-navigator';
+
+  const html5History = createHistory(window);
+  const memoryHistory = createHistory(createMemorySource());
+</script>
+
+<Router history={html5History}>
+  <!-- I will function like the standard Router -->
+</Router>
+
+<Router history={memoryHistory}>
+  <!-- I store the history stack in memory -->
+</Router>
+```
+
+For a more advanced example, checkout the [Custom Hash History example][example-custom-hash-history].
+
 ## SSR Caveat
 
 In the browser we wait until all child `Route` components have registered with their ancestor `Router` component before we let the `Router` pick the best match. This approach is not possible on the server, because when all `Route` components have registered and it is time to pick a match the SSR has already completed, and a document with no matching Route will be returned.
@@ -499,4 +647,8 @@ We therefore resort to picking the first matching `Route` that is registered on 
 
 [npm-url]: https://npmjs.com/package/svelte-navigator
 [example-folder-url]: https://github.com/mefechoel/svelte-navigator/tree/master/example
-[example-folder-navlink]: https://github.com/mefechoel/svelte-navigator/tree/master/example/src/components/NavLink.svelte
+[example-basic-client-side]: https://github.com/mefechoel/svelte-navigator/tree/master/example/basic-client-side
+[example-custom-hash-history]: https://github.com/mefechoel/svelte-navigator/tree/master/example/custom-hash-history
+[example-private-routes]: https://github.com/mefechoel/svelte-navigator/tree/master/example/private-routes
+[example-ssr]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr
+[example-folder-navlink]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
