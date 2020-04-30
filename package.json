@@ -1,6 +1,6 @@
 {
   "name": "svelte-navigator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple, declarative routing for single page apps built with Svelte",
   "main": "src/index.js",
   "svelte": "src/index.js",

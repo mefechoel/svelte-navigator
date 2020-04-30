@@ -6,7 +6,7 @@ This started as a fork of [svelte-routing](https://github.com/EmilTholin/svelte-
 
 ## Features
 
-- Declarative configuration inspired by react-router and @reach/router
+- Declarative configuration inspired by [react-router](https://github.com/ReactTraining/react-router) and [@reach/router](https://github.com/reach/router)
 - Relative routing (paths and links are relative to the current route and parent router)
 - Automatic route ranking
 - Route parameters `user/:id` and (namable) wildcards `blog/*`, `blog/*wildcardName`
@@ -250,12 +250,31 @@ The Route `component` will also receive the current `location`, as well as the `
 <Route component="{Home}">
 ```
 
+You can also provide a `name` prop to a `Route`, that you can use to identify the `Route` for example, when using `useActiveRoute`.
+
+```html
+<Route name="blog-post" path="blog/:id" component="{BlogPost}" />
+
+<!-- SomeComponent.svelte -->
+<script>
+  import { useActiveRoute } from "svelte-navigator";
+
+  const activeRoute = useActiveRoute();
+
+  $: if ($activeRoute.name === "blog-post") {
+    const { id } = $activeRoute.params;
+    // Do something with the id...
+  }
+</script>
+```
+
 ###### Properties
 
 |  Property   | Required | Default Value | Description                                                                                                                                                              |
 | :---------: | :------: | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |   `path`    |          | `''`          | The path for when this component should be rendered. If no `path` is given the `Route` will act as the default that matches if no other `Route` in the `Router` matches. |
 | `component` |          | `null`        | The component constructor that will be used for rendering when the `Route` matches. If `component` is not set, the children of `Route` will be rendered instead.         |
+| `name` |          | `null`        | A name you can give the `Route`, to later identify it.         |
 
 ### Hooks
 
@@ -397,7 +416,7 @@ Access the current location via a readable store and react to changes in locatio
 
 #### `useActiveRoute`
 
-Access the Route currenty matched by the parent Router from anywhere inside the Routers context. You can for example access Route params from outside the rendered Route or from a deeply nested component without prop-drilling.
+Access the Route currently matched by the parent Router from anywhere inside the Routers context. You can for example access Route params from outside the rendered Route or from a deeply nested component without prop-drilling.
 
 ```html
 <script>
@@ -410,6 +429,9 @@ Access the Route currenty matched by the parent Router from anywhere inside the 
     {
       route: {
         path: "blog/:id/",
+        fullPath: "[basepath/]blog/:id/",
+        id: 1,
+        name: "route-name",
         default: false
       },
       params: {

@@ -1,3 +1,9 @@
+# 1.1.0
+
+- Add `name` prop to `Route`, to identify a specific `Route` for example, when using the `useActiveRoute` hook
+- Always keep the `route.path` intact. Use `route.fullPath` for resolved absolute path in navigation
+- Use a unique id internally for matching, instead of object identity
+
 # 1.0.0
 
 - Expose scoped `navigate` function as prop of `Route` `component` and in slots with `let:navigate`
