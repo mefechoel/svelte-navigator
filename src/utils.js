@@ -4,7 +4,7 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
-const paramRe = /^:(.+)/;
+const paramRegex = /^:(.+)/;
 
 const SEGMENT_POINTS = 4;
 const STATIC_POINTS = 3;
@@ -37,7 +37,7 @@ function isRootSegment(segment) {
  * @return {boolean}
  */
 function isDynamic(segment) {
-  return paramRe.test(segment);
+  return paramRegex.test(segment);
 }
 
 /**
@@ -81,7 +81,7 @@ function stripSlashes(str) {
 function rankRoute(route, index) {
   const score = route.default
     ? 0
-    : segmentize(route.path).reduce((acc, segment) => {
+    : segmentize(route.fullPath).reduce((acc, segment) => {
         let nextScore = acc;
         nextScore += SEGMENT_POINTS;
 
@@ -135,7 +135,7 @@ function rankRoutes(routes) {
  *
  * A route looks like this
  *
- *  { path, default, value }
+ *  { fullPath, default, value }
  *
  * And a returned match looks like:
  *
@@ -167,7 +167,7 @@ function pick(routes, uri) {
       continue;
     }
 
-    const routeSegments = segmentize(route.path);
+    const routeSegments = segmentize(route.fullPath);
     const params = {};
     const max = Math.max(uriSegments.length, routeSegments.length);
     let index = 0;
@@ -176,7 +176,7 @@ function pick(routes, uri) {
       const routeSegment = routeSegments[index];
       const uriSegment = uriSegments[index];
 
-      if (routeSegment !== undefined && isSplat(routeSegment)) {
+      if (typeof routeSegment !== "undefined" && isSplat(routeSegment)) {
         // Hit a splat, just grab the rest, and return a match
         // uri:   /files/documents/work
         // route: /files/* or /files/*splatname
@@ -189,7 +189,7 @@ function pick(routes, uri) {
         break;
       }
 
-      if (uriSegment === undefined) {
+      if (typeof uriSegment === "undefined") {
         // URI is shorter than the route, no match
         // uri:   /users
         // route: /users/:userId
@@ -197,7 +197,7 @@ function pick(routes, uri) {
         break;
       }
 
-      let dynamicMatch = paramRe.exec(routeSegment);
+      let dynamicMatch = paramRegex.exec(routeSegment);
 
       if (dynamicMatch && !isRootUri) {
         const value = decodeURIComponent(uriSegment);
@@ -225,8 +225,8 @@ function pick(routes, uri) {
 }
 
 /**
- * Check if the `path` matches the `uri`.
- * @param {string} path
+ * Check if the `route.fullPath` matches the `uri`.
+ * @param {Object} route
  * @param {string} uri
  * @return {?object}
  */
@@ -291,7 +291,6 @@ function resolve(to, base) {
   // profile, /users/789 => /users/789/profile
   if (!startsWith(toSegments[0], ".")) {
     const pathname = baseSegments.concat(toSegments).join("/");
-
     return addQuery((basePathname === "/" ? "" : "/") + pathname, toQuery);
   }
 
@@ -377,6 +376,16 @@ function resolveLink(path, basepath, routerBaseUri) {
   return resolve(path, routerBaseUri);
 }
 
+/**
+ * Create a unique id
+ *
+ * @returns {number}
+ */
+const createId = (() => {
+  let id = 0;
+  return () => id++;
+})();
+
 export {
   stripSlashes,
   pick,
@@ -387,4 +396,5 @@ export {
   hostMatches,
   segmentize,
   resolveLink,
+  createId,
 };

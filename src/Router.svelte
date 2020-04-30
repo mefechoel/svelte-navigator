@@ -37,27 +37,26 @@
 
   const routerBase = derived([base, activeRoute], ([_base, _activeRoute]) => {
     // If there is no activeRoute, the routerBase will be identical to the base.
-    if (_activeRoute === null) {
+    if (!_activeRoute) {
       return _base;
     }
 
     const { route, uri } = _activeRoute;
     // Remove the potential /* or /*splatname from
     // the end of the child Routes relative paths.
-    const path = route.default ? _base.path : route.path.replace(/\*.*$/, "");
+    const path = route.default
+      ? _base.path
+      : route.fullPath.replace(/\*.*$/, "");
     return { path, uri };
   });
 
-  function registerRoute(route) {
-    const { path } = route;
-
-    // We store the original path in the _path property so we can reuse
-    // it when the basepath changes. The only thing that matters is that
-    // the route reference is intact, so mutation is fine.
-    // eslint-disable-next-line no-param-reassign
-    route._path = path;
-    // eslint-disable-next-line no-param-reassign
-    route.path = combinePaths($base.path, path);
+  function registerRoute(routeParams) {
+    const route = {
+      ...routeParams,
+      // Preserve the routes `path` prop, so using `useActiveRoute().path`
+      // will always work the same, regardless if there is a basepath or not
+      fullPath: combinePaths($base.path, routeParams.path),
+    };
 
     if (typeof window === "undefined") {
       // In SSR we should set the activeRoute immediately if it is a match.
@@ -79,21 +78,21 @@
 
   function unregisterRoute(route) {
     routes.update(prevRoutes =>
-      prevRoutes.filter(routeItem => routeItem !== route),
+      prevRoutes.filter(routeItem => routeItem.id !== route.id),
     );
   }
 
-  // This reactive statement will update all the Routes' path when
+  // This reactive statement will update all the Routes' fullPaths when
   // the basepath changes.
   $: {
-    routes.update(prevRoutes => {
-      prevRoutes.forEach(route => {
-        // eslint-disable-next-line no-param-reassign
-        route.path = combinePaths($base.path, route._path);
-      });
-      return prevRoutes;
-    });
+    routes.update(prevRoutes =>
+      prevRoutes.map(route => ({
+        ...route,
+        fullPath: combinePaths($base.path, route.path),
+      })),
+    );
   }
+
   // This reactive statement will be run when the Router is created
   // when there are no Routes and then again the following tick, so it
   // will not find an active Route in SSR and in the browser it will only

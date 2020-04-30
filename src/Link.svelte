@@ -44,7 +44,7 @@
       event.preventDefault();
       // Don't push another entry to the history stack when the user
       // clicks on a Link to the page they are currently on.
-      const shouldReplace = $location.pathname === href || replace;
+      const shouldReplace = isCurrent || replace;
       navigate(href, { state, replace: shouldReplace });
     }
   }

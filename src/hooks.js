@@ -52,7 +52,13 @@ export function useLocation() {
  * from a deeply nested component without prop-drilling.
  *
  * @returns {import("svelte/store").Readable<{
-    route: { path: string; uri: string; };
+    route: {
+      path: string;
+      fullPath: string;
+      name: string | null;
+      id: number;
+      default: boolean;
+    };
     params: {};
     uri: string;
   }>}
@@ -68,6 +74,9 @@ export function useLocation() {
     // {
     //   route: {
     //     path: "blog/:id/",
+    //     fullPath: "[basepath/]blog/:id/",
+    //     name: "route-name",
+    //     id: 123,
     //     default: false
     //   },
     //   params: {

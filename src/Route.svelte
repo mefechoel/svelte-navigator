@@ -8,9 +8,13 @@
   import { getContext, onDestroy } from "svelte";
   import { ROUTER } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
+  import { createId } from "./utils";
 
   export let path = "";
   export let component = null;
+  export let name = null;
+
+  const id = createId();
 
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
   const activeRoute = useActiveRoute();
@@ -22,11 +26,15 @@
     // If no path prop is given, this Route will act as the default Route
     // that is rendered if no other Route in the Router is a match.
     default: path === "",
+    id,
+    name,
   };
   let routeParams = {};
   let routeProps = {};
 
-  $: if ($activeRoute && $activeRoute.route === route) {
+  $: isActive = $activeRoute && $activeRoute.route.id === route.id;
+
+  $: if (isActive) {
     routeParams = $activeRoute.params;
   }
 
@@ -47,7 +55,7 @@
   }
 </script>
 
-{#if $activeRoute !== null && $activeRoute.route === route}
+{#if isActive}
   {#if component !== null}
     <svelte:component
       this={component}
