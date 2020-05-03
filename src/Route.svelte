@@ -8,13 +8,13 @@
   import { getContext, onDestroy } from "svelte";
   import { ROUTER } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
-  import { createId } from "./utils";
+  import { createLocalId } from "./utils";
 
   export let path = "";
   export let component = null;
-  export let name = null;
+  export let meta = {};
 
-  const id = createId();
+  const id = createLocalId();
 
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
   const activeRoute = useActiveRoute();
@@ -27,7 +27,7 @@
     // that is rendered if no other Route in the Router is a match.
     default: path === "",
     id,
-    name,
+    meta,
   };
   let routeParams = {};
   let routeProps = {};

@@ -23,7 +23,7 @@
   let hasActiveRoute = false; // Used in SSR to synchronously set that a Route is active.
 
   // If locationContext is not set, this is the topmost Router in the tree.
-  // If the `url` prop is given we force the location to it.
+  // If the `url` prop is given we force the location to it (SSR).
   const location =
     locationContext || writable(url ? { pathname: url } : history.location);
 

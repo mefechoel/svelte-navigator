@@ -377,14 +377,25 @@ function resolveLink(path, basepath, routerBaseUri) {
 }
 
 /**
- * Create a unique id
+ * Create a locally unique id
  *
- * @returns {number}
+ * @returns {number} An id
  */
-const createId = (() => {
+const createLocalId = (() => {
   let id = 0;
   return () => id++;
 })();
+
+/**
+ * Create a globally unique id
+ *
+ * @returns {string} An id
+ */
+function createGlobalId() {
+  return Math.random()
+    .toString(36)
+    .substring(2);
+}
 
 export {
   stripSlashes,
@@ -396,5 +407,6 @@ export {
   hostMatches,
   segmentize,
   resolveLink,
-  createId,
+  createLocalId,
+  createGlobalId,
 };

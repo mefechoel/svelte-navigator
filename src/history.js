@@ -4,6 +4,8 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
+import { createGlobalId } from "./utils";
+
 function getLocation(source) {
   return {
     ...source.location,
@@ -11,12 +13,6 @@ function getLocation(source) {
     state: source.history.state,
     key: (source.history.state && source.history.state.key) || "initial",
   };
-}
-
-function createKey() {
-  return Math.random()
-    .toString(36)
-    .substring(2);
 }
 
 function createHistory(source) {
@@ -55,10 +51,12 @@ function createHistory(source) {
      * stack, instead of pushing on a new one
      */
     navigate(to, { state, replace = false } = {}) {
+      let action = replace ? "REPLACE" : "PUSH";
       if (typeof to === "number") {
+        action = "POP";
         source.history.go(to);
       } else {
-        const keyedState = { ...state, key: createKey() };
+        const keyedState = { ...state, key: createGlobalId() };
         // try...catch iOS Safari limits to 100 pushState calls
         try {
           if (replace) {
@@ -72,32 +70,34 @@ function createHistory(source) {
       }
 
       location = getLocation(source);
-      listeners.forEach(listener => listener({ location, action: "PUSH" }));
+      listeners.forEach(listener => listener({ location, action }));
     },
   };
+}
+
+function createStackFrame(state, uri) {
+  const [pathname, queryParams = ""] = uri.split("?");
+  // Browsers add a "?" to the start of a search if there is any.
+  // Otherwise they return ""
+  const search = queryParams.length ? `?${queryParams}` : "";
+  return { pathname, search, state };
 }
 
 // Stores history entries in memory for testing or other platforms like Native
 function createMemorySource(initialPathname = "/") {
   let index = 0;
-  let stack = [{ pathname: initialPathname, search: "", state: null }];
-
-  const createStackFrame = (state, uri) => {
-    const [pathname, queryParams = ""] = uri.split("?");
-    // Browsers add a "?" to the start of a search if there is any.
-    // Otherwise they return ""
-    const search = queryParams.length ? `?${queryParams}` : "";
-    return { pathname, search, state };
-  };
+  let stack = [createStackFrame(null, initialPathname)];
 
   return {
+    // This is just for testing...
+    get entries() {
+      return stack;
+    },
     get location() {
       return stack[index];
     },
-    // eslint-disable-next-line no-unused-vars
-    addEventListener(name, fn) {},
-    // eslint-disable-next-line no-unused-vars
-    removeEventListener(name, fn) {},
+    addEventListener() {},
+    removeEventListener() {},
     history: {
       get state() {
         return stack[index].state;
@@ -134,7 +134,11 @@ const canUseDOM = Boolean(
     window.document &&
     window.document.createElement,
 );
-const globalHistory = createHistory(canUseDOM ? window : createMemorySource());
+// Use memory history in iframes (for example in Svelte REPL)
+const isEmbeddedPage = window.location.origin === "null";
+const globalHistory = createHistory(
+  isEmbeddedPage || canUseDOM ? window : createMemorySource(),
+);
 const { navigate } = globalHistory;
 
 export { globalHistory, navigate, createHistory, createMemorySource };
