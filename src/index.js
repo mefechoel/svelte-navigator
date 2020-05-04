@@ -15,4 +15,5 @@ export {
   useBase,
   useLinkResolve,
   useNavigate,
+  useMatch,
 } from "./hooks";
