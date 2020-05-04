@@ -1,8 +1,16 @@
 node_modules
+.nyc_output
+.vscode
+coverage
 example
+test
+cypress
+.babelrc
 .editorconfig
 .eslintignore
 .eslintrc
 .prettierignore
 .prettierrc.js
+cypress.json
+rollup.config.js
 yarn.lock

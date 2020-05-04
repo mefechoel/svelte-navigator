@@ -1,20 +1,13 @@
 {
-  "plugins": [
-    "svelte3",
-    "react"
-  ],
-  "extends": [
-    "airbnb"
-  ],
+  "plugins": ["svelte3", "react"],
+  "extends": ["airbnb"],
   "rules": {
     "quotes": ["error", "double"],
     "indent": "off",
-    "no-undef": "off",
     "no-underscore-dangle": "off",
     "arrow-parens": "off",
     "implicit-arrow-linebreak": "off",
     "operator-linebreak": "off",
-    "prefer-const": "off",
     "object-curly-newline": "off",
     "function-paren-newline": "off",
     "no-confusing-arrow": "off",
@@ -23,7 +16,8 @@
   },
   "env": {
     "es6": true,
-    "browser": true
+    "browser": true,
+    "jest": true
   },
   "parserOptions": {
     "ecmaVersion": 2019,
@@ -34,13 +28,28 @@
       "files": ["**/*.svelte"],
       "processor": "svelte3/svelte3",
       "rules": {
+        "quotes": "off",
         "import/first": "off",
         "import/no-duplicates": "off",
         "import/no-mutable-exports": "off",
         "import/extensions": "off",
         "import/no-unresolved": "off",
         "import/prefer-default-export": "off",
-        "no-multiple-empty-lines": "off"
+        "no-multiple-empty-lines": "off",
+        "no-undef": "off",
+        "prefer-const": "off"
+      }
+    },
+    {
+      "files": ["cypress/**/*"],
+      "plugins": ["cypress"],
+      "extends": ["plugin:cypress/recommended"],
+      "env": {
+        "cypress/globals": true
+      },
+      "rules": {
+        "spaced-comment": "off",
+        "import/no-extraneous-dependencies": "off"
       }
     }
   ]

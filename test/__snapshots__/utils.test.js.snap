@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pick pick /* 1`] = `
+Object {
+  "params": Object {
+    "*": "whatever/else",
+  },
+  "route": Object {
+    "fullPath": "/*",
+  },
+  "uri": "/",
+}
+`;
+
+exports[`pick pick return value 1`] = `
+Object {
+  "params": Object {
+    "five": "five",
+    "four": "four",
+    "one": "one",
+    "three": "three",
+    "two": "two",
+  },
+  "route": Object {
+    "fullPath": "/:one/:two/:three/:four/:five",
+    "meta": "Fiver",
+  },
+  "uri": "/one/two/three/four/five",
+}
+`;
+
+exports[`pick splat return value 1`] = `
+Object {
+  "params": Object {
+    "*": "some/deep/path",
+  },
+  "route": Object {
+    "fullPath": "/files/*",
+    "meta": "FilesDeep",
+  },
+  "uri": "/files",
+}
+`;
