@@ -197,7 +197,7 @@ function pick(routes, uri) {
         break;
       }
 
-      let dynamicMatch = paramRegex.exec(routeSegment);
+      const dynamicMatch = paramRegex.exec(routeSegment);
 
       if (dynamicMatch && !isRootUri) {
         const value = decodeURIComponent(uriSegment);
@@ -366,14 +366,16 @@ function hostMatches(anchor) {
  * resolveLink("/absolute", "/", "/currentBase") // -> "/absolute"
  * resolveLink("/absolute", "/base", "/currentBase") // -> "/base/absolute"
  */
-function resolveLink(path, basepath, routerBaseUri) {
+function resolveLink(path, basepath, routerBaseUri, absoluteBasepath) {
+  let resolvedLink;
   if (path === "/") {
-    return basepath;
+    resolvedLink = basepath;
+  } else if (startsWith(path, "/")) {
+    resolvedLink = resolve(stripSlashes(path), basepath);
+  } else {
+    resolvedLink = resolve(path, routerBaseUri);
   }
-  if (startsWith(path, "/")) {
-    return resolve(stripSlashes(path), basepath);
-  }
-  return resolve(path, routerBaseUri);
+  return resolvedLink === "/" ? absoluteBasepath : resolvedLink;
 }
 
 /**
