@@ -117,7 +117,7 @@ function createMemorySource(initialPathname = "/") {
         stack[index] = createStackFrame(state, uri);
       },
       go(to) {
-        let newIndex = index + to;
+        const newIndex = index + to;
         if (newIndex < 0 || newIndex > stack.length - 1) {
           return;
         }
