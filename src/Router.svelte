@@ -18,6 +18,8 @@
   const locationContext = getContext(LOCATION);
   const routerContext = getContext(ROUTER);
 
+  const isTopLevelRouter = !locationContext;
+
   const routes = writable([]);
   const activeRoute = writable(null);
   let hasActiveRoute = false; // Used in SSR to synchronously set that a Route is active.
@@ -31,9 +33,9 @@
   // will be the base for this Router's descendants.
   // If routerContext is not set, the path and resolved uri will both
   // have the value of the basepath prop.
-  const base = routerContext
-    ? routerContext.routerBase
-    : writable({ path: basepath, uri: basepath });
+  const base = isTopLevelRouter
+    ? writable({ path: basepath, uri: basepath })
+    : routerContext.routerBase;
 
   const routerBase = derived([base, activeRoute], ([_base, _activeRoute]) => {
     // If there is no activeRoute, the routerBase will be identical to the base.
@@ -102,7 +104,7 @@
     activeRoute.set(bestMatch);
   }
 
-  if (!locationContext) {
+  if (isTopLevelRouter) {
     // The topmost Router in the tree is responsible for updating
     // the location store and supplying it through context.
     onMount(() => {
@@ -122,7 +124,8 @@
     routerBase,
     registerRoute,
     unregisterRoute,
-    history,
+    history: isTopLevelRouter ? history : routerContext.history,
+    basepath: isTopLevelRouter ? basepath : routerContext.basepath,
   });
 </script>
 
