@@ -1,7 +1,7 @@
 import { getContext } from "svelte";
-import { get } from "svelte/store";
+import { get, derived } from "svelte/store";
 import { LOCATION, ROUTER } from "./contexts";
-import { resolveLink, match, resolve as resolvePath } from "./utils";
+import { resolveLink, match, normalizeLocation } from "./utils";
 
 /**
  * Access the current location via a readable store.
@@ -165,18 +165,16 @@ export function useBase() {
 export function useLinkResolve() {
   const base = useBase();
   const routerBase = useRouterBase();
-  const { basepath: absoluteBasepath } = getContext(ROUTER);
+  const { basepath: appBase } = getContext(ROUTER);
+  const { uri: basepath } = get(base);
+  const { uri } = get(routerBase);
   /**
    * Resolves the path relative to the current route and basepath.
    *
    * @param {string} path The path to navigate to
    * @returns {string} The resolved path
    */
-  const resolve = path => {
-    const { uri: basepath } = get(base);
-    const { uri } = get(routerBase);
-    return resolveLink(path, basepath, uri, absoluteBasepath);
-  };
+  const resolve = path => resolveLink(path, basepath, uri, appBase);
   return resolve;
 }
 
@@ -269,13 +267,18 @@ export function useNavigate() {
   return navigateRelative;
 }
 
-export function useMatch() {
+export function useMatch(path) {
   const location = useLocation();
-  const base = useBase();
+  const resolve = useLinkResolve();
+  const { basepath: appBase } = getContext(ROUTER);
+  const resolvedPath = resolve(path);
+  const { pathname: fullPath } = normalizeLocation(
+    { pathname: resolvedPath },
+    appBase,
+  );
 
-  return path => {
-    const { uri: basepath } = get(base);
-    const fullPath = resolvePath(path, basepath);
-    return match({ fullPath, path }, get(location).pathname);
-  };
+  return derived([location], ([loc]) => {
+    const { pathname } = loc;
+    return match({ fullPath }, pathname);
+  });
 }

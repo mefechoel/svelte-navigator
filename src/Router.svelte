@@ -9,32 +9,41 @@
   import { writable, derived } from "svelte/store";
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
-  import { pick, match, combinePaths } from "./utils";
+  import { pick, match, join, normalizePath, normalizeLocation } from "./utils";
 
   export let basepath = "/";
   export let url = null;
   export let history = globalHistory;
 
+  const normalizedBasepath = normalizePath(basepath);
+
   const locationContext = getContext(LOCATION);
   const routerContext = getContext(ROUTER);
 
   const isTopLevelRouter = !locationContext;
+  const isSSR = typeof window === "undefined";
 
   const routes = writable([]);
   const activeRoute = writable(null);
   let hasActiveRoute = false; // Used in SSR to synchronously set that a Route is active.
 
+  // If we're running an SSR we force the location to the `url` prop.
+  const getInitialLocation = () =>
+    normalizeLocation(
+      isSSR ? { pathname: url } : history.location,
+      normalizedBasepath,
+    );
   // If locationContext is not set, this is the topmost Router in the tree.
-  // If the `url` prop is given we force the location to it (SSR).
-  const location =
-    locationContext || writable(url ? { pathname: url } : history.location);
+  const location = isTopLevelRouter
+    ? writable(getInitialLocation())
+    : locationContext;
 
   // If routerContext is set, the routerBase of the parent Router
   // will be the base for this Router's descendants.
   // If routerContext is not set, the path and resolved uri will both
   // have the value of the basepath prop.
   const base = isTopLevelRouter
-    ? writable({ path: basepath, uri: basepath })
+    ? writable({ path: "/", uri: "/" })
     : routerContext.routerBase;
 
   const routerBase = derived([base, activeRoute], ([_base, _activeRoute]) => {
@@ -49,7 +58,7 @@
     const path = route.default
       ? _base.path
       : route.fullPath.replace(/\*.*$/, "");
-    return { path, uri };
+    return { path: normalizePath(path), uri };
   });
 
   function registerRoute(routeParams) {
@@ -57,10 +66,10 @@
       ...routeParams,
       // Preserve the routes `path` prop, so using `useActiveRoute().path`
       // will always work the same, regardless if there is a basepath or not
-      fullPath: combinePaths($base.path, routeParams.path),
+      fullPath: routeParams.default ? "" : join($base.path, routeParams.path),
     };
 
-    if (typeof window === "undefined") {
+    if (isSSR) {
       // In SSR we should set the activeRoute immediately if it is a match.
       // If there are more Routes being registered after a match is found,
       // we just skip them.
@@ -90,7 +99,7 @@
     routes.update(prevRoutes =>
       prevRoutes.map(route => ({
         ...route,
-        fullPath: combinePaths($base.path, route.path),
+        fullPath: join($base.path, route.path),
       })),
     );
   }
@@ -109,7 +118,11 @@
     // the location store and supplying it through context.
     onMount(() => {
       const unlisten = history.listen(changedHistory => {
-        location.set(changedHistory.location);
+        const normalizedLocation = normalizeLocation(
+          changedHistory.location,
+          normalizedBasepath,
+        );
+        location.set(normalizedLocation);
       });
 
       return unlisten;
@@ -125,7 +138,7 @@
     registerRoute,
     unregisterRoute,
     history: isTopLevelRouter ? history : routerContext.history,
-    basepath: isTopLevelRouter ? basepath : routerContext.basepath,
+    basepath: isTopLevelRouter ? normalizedBasepath : routerContext.basepath,
   });
 </script>
 

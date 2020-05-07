@@ -27,7 +27,7 @@ export function startsWith(string, search) {
  * @param {string} segment
  * @return {boolean}
  */
-function isRootSegment(segment) {
+export function isRootSegment(segment) {
   return segment === "";
 }
 
@@ -36,7 +36,7 @@ function isRootSegment(segment) {
  * @param {string} segment
  * @return {boolean}
  */
-function isDynamic(segment) {
+export function isDynamic(segment) {
   return paramRegex.test(segment);
 }
 
@@ -45,22 +45,8 @@ function isDynamic(segment) {
  * @param {string} segment
  * @return {boolean}
  */
-function isSplat(segment) {
+export function isSplat(segment) {
   return segment[0] === "*";
-}
-
-/**
- * Split up the URI into segments delimited by `/`
- * @param {string} uri
- * @return {string[]}
- */
-function segmentize(uri) {
-  return (
-    uri
-      // Strip starting/ending `/`
-      .replace(/(^\/+|\/+$)/g, "")
-      .split("/")
-  );
 }
 
 /**
@@ -68,8 +54,17 @@ function segmentize(uri) {
  * @param {string} str
  * @return {string}
  */
-function stripSlashes(str) {
+export function stripSlashes(str) {
   return str.replace(/(^\/+|\/+$)/g, "");
+}
+
+/**
+ * Split up the URI into segments delimited by `/`
+ * @param {string} uri
+ * @return {string[]}
+ */
+export function segmentize(uri) {
+  return stripSlashes(uri).split("/");
 }
 
 /**
@@ -78,7 +73,7 @@ function stripSlashes(str) {
  * @param {number} index
  * @return {object}
  */
-function rankRoute(route, index) {
+export function rankRoute(route, index) {
   const score = route.default
     ? 0
     : segmentize(route.fullPath).reduce((acc, segment) => {
@@ -106,7 +101,7 @@ function rankRoute(route, index) {
  * @param {object[]} routes
  * @return {object[]}
  */
-function rankRoutes(routes) {
+export function rankRoutes(routes) {
   return (
     routes
       .map(rankRoute)
@@ -145,7 +140,7 @@ function rankRoutes(routes) {
  * @param {string} uri
  * @return {?object}
  */
-function pick(routes, uri) {
+export function pick(routes, uri) {
   let bestMatch;
   let defaultMatch;
 
@@ -230,7 +225,7 @@ function pick(routes, uri) {
  * @param {string} uri
  * @return {?object}
  */
-function match(route, uri) {
+export function match(route, uri) {
   return pick([route], uri);
 }
 
@@ -240,7 +235,7 @@ function match(route, uri) {
  * @param {string} [query]
  * @return {string}
  */
-function addQuery(pathname, query) {
+export function addQuery(pathname, query) {
   return pathname + (query ? `?${query}` : "");
 }
 
@@ -272,7 +267,7 @@ function addQuery(pathname, query) {
  * @param {string} base
  * @return {string}
  */
-function resolve(to, base) {
+export function resolve(to, base) {
   // /foo/bar, /baz/qux => /foo/bar
   if (startsWith(to, "/")) {
     return to;
@@ -318,17 +313,77 @@ function resolve(to, base) {
  * @param {string} basepath
  * @param {string} path
  */
-function combinePaths(basepath, path) {
+export function combinePaths(basepath, path) {
   const barePath =
     path === "/" ? basepath : `${stripSlashes(basepath)}/${stripSlashes(path)}`;
   return `${stripSlashes(barePath)}/`;
 }
 
 /**
+ * Normalizes a basepath
+ *
+ * @param {string} path
+ * @returns {string}
+ *
+ * @example
+ * normalizePath("base/path/") // -> "/base/path"
+ */
+export function normalizePath(path) {
+  return `/${stripSlashes(path)}`;
+}
+
+/**
+ * Joins and normalizes multiple path fragments
+ *
+ * @param  {...string} pathFragments
+ * @returns {string}
+ */
+export function join(...pathFragments) {
+  const joinFragment = fragment =>
+    segmentize(fragment)
+      .filter(Boolean)
+      .join("/");
+  const joinedSegments = pathFragments.map(joinFragment).join("/");
+  return normalizePath(joinedSegments);
+}
+
+/**
+ * Normalizes a location for consumption by `Route` children and the `Router`.
+ * It removes the apps basepath from the pathnam
+ * and sets default values for `search` and `hash` properties.
+ *
+ * @param {Object} location The current global location supplied by the history component
+ * @param {string} basepath The applications basepath (i.e. when serving from a subdirectory)
+ *
+ * @returns The normalized location
+ */
+export function normalizeLocation(location, basepath) {
+  const { pathname, hash = "", search = "", state, key } = location;
+  const baseSegments = segmentize(basepath).filter(Boolean);
+  const pathSegments = segmentize(pathname).filter(Boolean);
+  while (baseSegments.length) {
+    if (baseSegments[0] !== pathSegments[0]) {
+      throw new Error(
+        `<Router> Invalid state: All locations must begin with the basepath "${basepath}", found "${pathname}"`,
+      );
+    }
+    baseSegments.shift();
+    pathSegments.shift();
+  }
+  return {
+    pathname: join(...pathSegments),
+    hash,
+    search,
+    state,
+    key,
+  };
+}
+
+/**
  * Decides whether a given `event` should result in a navigation or not.
  * @param {object} event
  */
-function shouldNavigate(event) {
+export function shouldNavigate(event) {
   return (
     !event.defaultPrevented &&
     event.button === 0 &&
@@ -343,7 +398,7 @@ function shouldNavigate(event) {
  * @param {Element} anchor The `<a />` element
  * @returns {boolean}
  */
-function hostMatches(anchor) {
+export function hostMatches(anchor) {
   const { host } = window.location;
   return (
     anchor.host === host ||
@@ -358,7 +413,7 @@ function hostMatches(anchor) {
  *
  * @param {string} path The given path, that will be resolved against a router base
  * @param {string} basepath The basepath of the router (i.e. from calling `useBase`)
- * @param {string} routerBaseUri The current router base (i.e. from calling `useRouterBase`)
+ * @param {string} routerBase The current router base (i.e. from calling `useRouterBase`)
  * @returns {string} The resolved path
  *
  * @example
@@ -366,16 +421,16 @@ function hostMatches(anchor) {
  * resolveLink("/absolute", "/", "/currentBase") // -> "/absolute"
  * resolveLink("/absolute", "/base", "/currentBase") // -> "/base/absolute"
  */
-function resolveLink(path, basepath, routerBaseUri, absoluteBasepath) {
+export function resolveLink(path, basepath, routerBase, appBase) {
   let resolvedLink;
   if (path === "/") {
     resolvedLink = basepath;
   } else if (startsWith(path, "/")) {
     resolvedLink = resolve(stripSlashes(path), basepath);
   } else {
-    resolvedLink = resolve(path, routerBaseUri);
+    resolvedLink = resolve(path, routerBase);
   }
-  return resolvedLink === "/" ? absoluteBasepath : resolvedLink;
+  return join(appBase, resolvedLink);
 }
 
 /**
@@ -383,7 +438,7 @@ function resolveLink(path, basepath, routerBaseUri, absoluteBasepath) {
  *
  * @returns {number} An id
  */
-const createLocalId = (() => {
+export const createLocalId = (() => {
   let id = 0;
   return () => id++;
 })();
@@ -393,22 +448,8 @@ const createLocalId = (() => {
  *
  * @returns {string} An id
  */
-function createGlobalId() {
+export function createGlobalId() {
   return Math.random()
     .toString(36)
     .substring(2);
 }
-
-export {
-  stripSlashes,
-  pick,
-  match,
-  resolve,
-  combinePaths,
-  shouldNavigate,
-  hostMatches,
-  segmentize,
-  resolveLink,
-  createLocalId,
-  createGlobalId,
-};

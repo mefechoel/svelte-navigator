@@ -10,8 +10,23 @@
       SVELTE REL
     </Link>
     <Link data-testid="link-memory-blog-home" to="/">BLOG HOME</Link>
-    <Link data-testid="link-memory-blog-app-past-home" to="../../">
-      APP HOME
+    <Link data-testid="link-memory-blog-app-home-l1" to="../">
+      APP HOME ../
+    </Link>
+    <Link data-testid="link-memory-blog-app-home-l2" to="../../">
+      APP HOME ../../
+    </Link>
+    <Link data-testid="link-memory-blog-app-home-l3" to="../../../">
+      APP HOME ../../../
+    </Link>
+    <Link data-testid="link-memory-blog-somewhere-l1" to="../somewhere">
+      SOMEWHERE ../
+    </Link>
+    <Link data-testid="link-memory-blog-somewhere-l2" to="../../somewhere">
+      SOMEWHERE ../../
+    </Link>
+    <Link data-testid="link-memory-blog-somewhere-l3" to="../../../somewhere">
+      SOMEWHERE ../../../
     </Link>
   </nav>
   <article>

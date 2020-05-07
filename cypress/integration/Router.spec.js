@@ -430,35 +430,62 @@ describe("Router", () => {
     it("works", () => {
       getByTestId("route-memory-b-home").should("be.visible");
       getByTestId("route-memory-b-about").should("not.be.visible");
-      pathnameMatches("/base");
+      pathnameMatches("/");
 
       getByTestId("link-memory-b-about").click();
       getByTestId("route-memory-b-about").should("be.visible");
-      pathnameMatches("/base/about");
+      pathnameMatches("/about");
 
       getByTestId("link-memory-b-home-replace").click();
       getByTestId("route-memory-b-home").should("be.visible");
-      pathnameMatches("/base");
+      pathnameMatches("/");
 
       getByTestId("link-memory-b-nowhere").click();
       getByTestId("route-memory-b-default").should("be.visible");
-      pathnameMatches("/base/nowhere");
+      pathnameMatches("/nowhere");
 
       getByTestId("link-memory-b-home").click();
       getByTestId("route-memory-b-home").should("be.visible");
-      pathnameMatches("/base");
+      pathnameMatches("/");
 
       getByTestId("link-memory-b-blog").click();
       getByTestId("route-memory-blog-home").should("be.visible");
-      pathnameMatches("/base/blog");
+      pathnameMatches("/blog");
 
       getByTestId("link-memory-blog-svelte-rel").click();
       getByTestId("route-memory-blog-svelte").should("be.visible");
-      pathnameMatches("/base/blog/svelte");
+      pathnameMatches("/blog/svelte");
 
-      getByTestId("link-memory-blog-app-past-home").click();
+      getByTestId("link-memory-blog-app-home-l1").click();
       getByTestId("route-memory-b-home").should("be.visible");
-      pathnameMatches("/base");
+      pathnameMatches("/");
+
+      getByTestId("link-memory-b-blog").click();
+      getByTestId("link-memory-blog-svelte-rel").click();
+      getByTestId("link-memory-blog-app-home-l2").click();
+      getByTestId("route-memory-b-home").should("be.visible");
+      pathnameMatches("/");
+
+      getByTestId("link-memory-b-blog").click();
+      getByTestId("link-memory-blog-svelte-rel").click();
+      getByTestId("link-memory-blog-app-home-l3").click();
+      getByTestId("route-memory-b-home").should("be.visible");
+      pathnameMatches("/");
+
+      getByTestId("link-memory-b-blog").click();
+      getByTestId("link-memory-blog-svelte-rel").click();
+      getByTestId("link-memory-blog-somewhere-l1").click();
+      pathnameMatches("/somewhere");
+
+      getByTestId("link-memory-b-blog").click();
+      getByTestId("link-memory-blog-svelte-rel").click();
+      getByTestId("link-memory-blog-somewhere-l2").click();
+      pathnameMatches("/somewhere");
+
+      getByTestId("link-memory-b-blog").click();
+      getByTestId("link-memory-blog-svelte-rel").click();
+      getByTestId("link-memory-blog-somewhere-l3").click();
+      pathnameMatches("/somewhere");
     });
   });
 });

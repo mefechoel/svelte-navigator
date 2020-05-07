@@ -14,7 +14,7 @@
   import MemoryBlog from "./MemoryBlog.svelte";
 
   const memoryHistoryA = createHistory(createMemorySource());
-  const memoryHistoryB = createHistory(createMemorySource("/base"));
+  const memoryHistoryB = createHistory(createMemorySource("/base/path"));
 
   function appChange(state) {
     window.appState = state;
@@ -147,7 +147,7 @@
 <br />
 <br />
 
-<Router history={memoryHistoryB} basepath="/base" name="memB">
+<Router history={memoryHistoryB} basepath="/base/path" name="memB">
   <LocationChange onChange={memoryBChange} />
   <nav>
     <Link data-testid="link-memory-b-home" to="/">MEMORY HOME</Link>
