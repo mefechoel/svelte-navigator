@@ -6,12 +6,6 @@ import { resolveLink, match, normalizeLocation } from "./utils";
 /**
  * Access the current location via a readable store.
  * @returns {import("svelte/store").Readable<{
-    href: string;
-    origin: string;
-    protocol: string;
-    host: string;
-    hostname: string;
-    port: string;
     pathname: string;
     search: string;
     hash: string;
@@ -155,7 +149,7 @@ export function useBase() {
 
     const resolve = useLinkResolve();
     // `resolvedLink` will be resolved relative to its parent Route
-    // and the Router `basepath`
+    // and the Routers `basepath`
     const resolvedLink = resolve("relativePath");
   </script>
 
