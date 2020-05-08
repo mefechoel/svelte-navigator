@@ -1,3 +1,26 @@
+# 2.0.0
+
+## Features:
+
+- Add `useMatch` hook
+- Add `meta` prop to `Route`
+
+## Fixes:
+
+- Fix incorrect resolving of links after component initialization, when using `useLinkResolve`
+
+## Breaking:
+
+- Remove `name` prop from `Route`. Use `meta` prop instead
+- Remove the apps basepath from the location, so the location always looks the same, no matter where the app is served from
+
+## Other:
+
+- Add tests
+- Add module, umd and unpkg builds
+- Add warnings for common usage mistakes
+- Always dispatch action from history when updating location
+
 # 1.1.0
 
 - Add `name` prop to `Route`, to identify a specific `Route` for example, when using the `useActiveRoute` hook

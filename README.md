@@ -1,4 +1,12 @@
+[npm]: https://img.shields.io/npm/v/svelte-navigator.svg?style=flat-square
+[npm-url]: https://npmjs.com/package/svelte-navigator
+
 # Svelte Navigator
+
+[![npm package][npm]][npm-url]
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/svelte-navigator?style=flat-square)
+![NPM](https://img.shields.io/npm/l/svelte-navigator?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/mefechoel/svelte-navigator?style=flat-square)
 
 > Simple, declarative routing for single page apps built with Svelte.
 
@@ -13,7 +21,6 @@ This started as a fork of [svelte-routing](https://github.com/EmilTholin/svelte-
 - React-esque hooks api for accessing parts of the Router context
 - Nestable Routers for seamless merging of many smaller apps
 - HTML5 history mode by default (Memory mode as fallback, or for testing)
-- Configurable history mode ([allows for custom history implementation][example-custom-hash-history])
 
 ## Table of Contents
 
@@ -30,6 +37,7 @@ This started as a fork of [svelte-routing](https://github.com/EmilTholin/svelte-
     - [useLocation](#uselocation)
     - [useActiveRoute](#useactiveroute)
     - [useLinkResolve](#uselinkresolve)
+    - [useMatch](#usematch)
     - [useBase](#usebase)
   - [Programmatic Navigation](#programmatic-navigation)
     - [navigate](#navigate)
@@ -91,6 +99,13 @@ Basic Setup for a client-side SPA:
 </Router>
 ```
 
+Svelte Navigator uses the HTML5 History API by default. For it to work properly, you need to setup your server correctly.
+If you're using sirv, as is common with a lot of Svelte projects, you need to pass it the `--single` option.
+
+You can read more about the History API here:
+- [MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/History)
+- [Deep dive into client side routing](https://krasimirtsonev.com/blog/article/deep-dive-into-client-side-routing-navigo-pushstate-hash)
+
 ## API
 
 - [Components](#components)
@@ -102,6 +117,7 @@ Basic Setup for a client-side SPA:
   - [useLocation](#uselocation)
   - [useActiveRoute](#useactiveroute)
   - [useLinkResolve](#uselinkresolve)
+  - [useMatch](#usematch)
   - [useBase](#usebase)
 - [Programmatic Navigation](#programmatic-navigation)
   - [navigate](#navigate)
@@ -250,10 +266,14 @@ The Route `component` will also receive the current `location`, as well as the `
 <Route component="{Home}">
 ```
 
-You can also provide a `name` prop to a `Route`, that you can use to identify the `Route` for example, when using `useActiveRoute`.
+You can also provide a `meta` prop to a `Route`, that you can use to identify the `Route` for example, when using `useActiveRoute`.
 
 ```html
-<Route name="blog-post" path="blog/:id" component="{BlogPost}" />
+<Route
+  meta="{{ name: 'blog-post' }}"
+  path="blog/:id"
+  component="{BlogPost}"
+/>
 
 <!-- SomeComponent.svelte -->
 <script>
@@ -261,7 +281,7 @@ You can also provide a `name` prop to a `Route`, that you can use to identify th
 
   const activeRoute = useActiveRoute();
 
-  $: if ($activeRoute.name === "blog-post") {
+  $: if ($activeRoute && $activeRoute.meta.name === "blog-post") {
     const { id } = $activeRoute.params;
     // Do something with the id...
   }
@@ -272,9 +292,9 @@ You can also provide a `name` prop to a `Route`, that you can use to identify th
 
 |  Property   | Required | Default Value | Description                                                                                                                                                              |
 | :---------: | :------: | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   `path`    |          | `''`          | The path for when this component should be rendered. If no `path` is given the `Route` will act as the default that matches if no other `Route` in the `Router` matches. |
-| `component` |          | `null`        | The component constructor that will be used for rendering when the `Route` matches. If `component` is not set, the children of `Route` will be rendered instead.         |
-| `name` |          | `null`        | A name you can give the `Route`, to later identify it.         |
+|   `path`    |          |      `''`     | The path for when this component should be rendered. If no `path` is given the `Route` will act as the default that matches if no other `Route` in the `Router` matches. |
+| `component` |          |    `null`    | The component constructor that will be used for rendering when the `Route` matches. If `component` is not set, the children of `Route` will be rendered instead.         |
+| `meta` |          |    `{}`    | An arbitrary object you can pass the `Route`, to later access it (for example using `useActiveRoute`).         |
 
 ### Hooks
 
@@ -399,12 +419,6 @@ Access the current location via a readable store and react to changes in locatio
   $: console.log($location);
   /*
     {
-      href: "http://localhost:5000/blog?id=123#comments",
-      origin: "http://localhost:5000",
-      protocol: "http:",
-      host: "localhost:5000",
-      hostname: "localhost",
-      port: "5000",
       pathname: "/blog",
       search: "?id=123",
       hash: "#comments",
@@ -459,6 +473,23 @@ You can use it to manually resolve links, when using the `link` or `links` actio
 </script>
 
 <a href={resolvedLink} use:link>Relative link</a>
+```
+
+#### `useMatch`
+
+Use Svelte Navigators matching without needing to use a `Route`.
+Returns a readable store with the potential match, that changes, when the location changes.
+
+```html
+<script>
+  import { useMatch } from "svelte-navigator";
+
+  const relativeMatch = useMatch("relative/path/:to/*somewhere");
+  const absoluteMatch = useMatch("/absolute/path/:to/*somewhere");
+
+  $: console.log($relativeMatch.params.to);
+  $: console.log($absoluteMatch.params.somewhere);
+</script>
 ```
 
 #### `useBase`
