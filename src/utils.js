@@ -439,10 +439,10 @@ export function createGlobalId() {
     .substring(2);
 }
 
-export function findClosest(tagName, el) {
-  while (el && el.tagName !== tagName) {
+export function findClosest(tagName, element) {
+  while (element && element.tagName !== tagName) {
     // eslint-disable-next-line no-param-reassign
-    el = el.parentNode;
+    element = element.parentNode;
   }
-  return el;
+  return element;
 }

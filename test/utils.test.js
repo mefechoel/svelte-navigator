@@ -1,9 +1,17 @@
-import { pick, match, resolve, combinePaths, resolveLink } from "../src/utils";
+import {
+  pick,
+  match,
+  resolve,
+  combinePaths,
+  resolveLink,
+  normalizeLocation,
+  findClosest,
+} from "../src/utils";
 import { testRoutes } from "./testRoutes";
 
 describe("pick", () => {
   it("picks root over dynamic", () => {
-    let routes = [
+    const routes = [
       { meta: "Root", fullPath: "/" },
       { meta: "Dynamic", fullPath: ":foo" },
     ];
@@ -153,38 +161,155 @@ describe("combinePaths", () => {
 
 describe("resolveLink", () => {
   it("relative", () => {
-    expect(resolveLink("relative", "/", "/currentBase")).toBe(
+    expect(resolveLink("relative", "/", "/currentBase", "/")).toBe(
       "/currentBase/relative",
+    );
+    expect(resolveLink("relative", "/", "/currentBase", "/appBase")).toBe(
+      "/appBase/currentBase/relative",
+    );
+  });
+
+  it("relative, base", () => {
+    expect(resolveLink("relative", "/base", "/currentBase", "/")).toBe(
+      "/currentBase/relative",
+    );
+    expect(resolveLink("relative", "/base", "/currentBase", "/appBase")).toBe(
+      "/appBase/currentBase/relative",
     );
   });
 
   it("relative, no slashes", () => {
-    expect(resolveLink("relative", "", "currentBase")).toBe(
+    expect(resolveLink("relative", "", "currentBase", "/")).toBe(
       "/currentBase/relative",
+    );
+    expect(resolveLink("relative", "", "currentBase", "/appBase")).toBe(
+      "/appBase/currentBase/relative",
     );
   });
 
   it("absolute", () => {
-    expect(resolveLink("/absolute", "/", "/currentBase")).toBe("/absolute");
+    expect(resolveLink("/absolute", "/", "/currentBase", "/")).toBe(
+      "/absolute",
+    );
+    expect(resolveLink("/absolute", "/", "/currentBase", "/appBase")).toBe(
+      "/appBase/absolute",
+    );
   });
 
   it("absolute, no slashes", () => {
-    expect(resolveLink("/absolute", "/", "currentBase")).toBe("/absolute");
+    expect(resolveLink("/absolute", "/", "currentBase", "/")).toBe("/absolute");
+    expect(resolveLink("/absolute", "/", "currentBase", "/appBase")).toBe(
+      "/appBase/absolute",
+    );
   });
 
   it("absolute with base", () => {
-    expect(resolveLink("/absolute", "/base", "/currentBase")).toBe(
+    expect(resolveLink("/absolute", "/base", "/currentBase", "/")).toBe(
       "/base/absolute",
+    );
+    expect(resolveLink("/absolute", "/base", "/currentBase", "/appBase")).toBe(
+      "/appBase/base/absolute",
     );
   });
 
   it("absolute with base ..", () => {
-    expect(resolveLink("../relative", "/base", "/currentBase")).toBe(
+    expect(resolveLink("../relative", "/base", "/currentBase", "/")).toBe(
       "/relative",
+    );
+    expect(
+      resolveLink("../relative", "/base", "/currentBase", "/appBase"),
+    ).toBe("/appBase/relative");
+  });
+
+  it("relative ..", () => {
+    expect(resolveLink("../relative", "/", "/currentBase", "/")).toBe(
+      "/relative",
+    );
+    expect(resolveLink("../relative", "/", "/currentBase", "/appBase")).toBe(
+      "/appBase/relative",
     );
   });
 
-  it("absolute ..", () => {
-    expect(resolveLink("../relative", "/", "/currentBase")).toBe("/relative");
+  it("relative ../.. past root", () => {
+    expect(resolveLink("../../relative", "/", "/currentBase", "/")).toBe(
+      "/relative",
+    );
+    expect(resolveLink("../../relative", "/", "/currentBase", "/appBase")).toBe(
+      "/appBase/relative",
+    );
+  });
+
+  it("relative .. in scope", () => {
+    expect(resolveLink("../relative", "/", "/current/base", "/")).toBe(
+      "/current/relative",
+    );
+    expect(resolveLink("../relative", "/", "/current/base", "/appBase")).toBe(
+      "/appBase/current/relative",
+    );
+  });
+
+  it("/ -> basepath", () => {
+    expect(resolveLink("/", "/base", "/currentBase", "/")).toBe("/base");
+    expect(resolveLink("/", "/base", "/currentBase", "/appBase")).toBe(
+      "/appBase/base",
+    );
+  });
+});
+
+describe("normalizeLocation", () => {
+  it("removes base", () => {
+    const location = normalizeLocation(
+      { pathname: "/base/path/test-path" },
+      "/base/path",
+    );
+    expect(location).toEqual(
+      expect.objectContaining({ pathname: "/test-path" }),
+    );
+  });
+
+  it("works when base == /", () => {
+    const location = normalizeLocation({ pathname: "/test-path" }, "/");
+    expect(location).toEqual(
+      expect.objectContaining({ pathname: "/test-path" }),
+    );
+  });
+
+  it("works when base == ''", () => {
+    const location = normalizeLocation({ pathname: "/test-path" }, "");
+    expect(location).toEqual(
+      expect.objectContaining({ pathname: "/test-path" }),
+    );
+  });
+
+  it("adds empty search and hash", () => {
+    const location = normalizeLocation(
+      { pathname: "/base/path/test-path" },
+      "/base/path",
+    );
+    expect(location).toEqual(expect.objectContaining({ search: "", hash: "" }));
+  });
+
+  it("throws when base paths don't match", () => {
+    const getLocation = () =>
+      normalizeLocation({ pathname: "/base/test-path" }, "/base/path");
+    expect(getLocation).toThrow();
+  });
+});
+
+describe("findClosest", () => {
+  const testElem = {
+    tagName: "A",
+    parentNode: {
+      tagName: "B",
+      parentNode: {
+        tagName: "C",
+        name: "Elem C",
+      },
+    },
+  };
+
+  it("works", () => {
+    const closest = findClosest("C", testElem);
+    expect(closest.name).toBe("Elem C");
   });
 });
