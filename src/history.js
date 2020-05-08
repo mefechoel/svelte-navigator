@@ -11,7 +11,7 @@ function getLocation(source) {
     ...source.location,
     pathname: encodeURI(decodeURI(source.location.pathname)),
     state: source.history.state,
-    key: (source.history.state && source.history.state.key) || "initial",
+    _key: (source.history.state && source.history.state.key) || "initial",
   };
 }
 
@@ -56,7 +56,7 @@ function createHistory(source) {
         action = "POP";
         source.history.go(to);
       } else {
-        const keyedState = { ...state, key: createGlobalId() };
+        const keyedState = { ...state, _key: createGlobalId() };
         // try...catch iOS Safari limits to 100 pushState calls
         try {
           if (replace) {
