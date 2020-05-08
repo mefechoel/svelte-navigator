@@ -4,6 +4,7 @@
   import Link from "../../../src/Link.svelte";
   import LinkResolve from "./LinkResolve.svelte";
   import Navigate from "./Navigate.svelte";
+  import Match from "./Match.svelte";
   import BlogDefault from "./BlogDefault.svelte";
 </script>
 
@@ -37,6 +38,10 @@
     <Route path="navigate">
       <Navigate />
       <div data-testid="route-blog-navigate">NAVIGATE</div>
+    </Route>
+    <Route path="match/*">
+      <Match />
+      <div data-testid="route-blog-match">MATCH</div>
     </Route>
     <Route path="article/:id" let:params>
       <div data-testid="route-blog-id">ARTICLE_ID:{params.id}</div>

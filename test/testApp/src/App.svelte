@@ -68,6 +68,16 @@
       ABOUT REPLACE STATE
     </Link>
     <Link data-testid="link-blog" to="blog">BLOG</Link>
+    <Link data-testid="link-blog-match-empty" to="blog/match">MATCH EMPTY</Link>
+    <Link data-testid="link-blog-match-to" to="blog/match/some-path">
+      MATCH SOME PATH
+    </Link>
+    <Link
+      data-testid="link-blog-match-to-splat"
+      to="blog/match/some-path/some-splat"
+    >
+      MATCH SOME PATH AND SPLAT
+    </Link>
 
     <div use:links>
       <a href="/about">

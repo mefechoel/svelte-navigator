@@ -338,6 +338,28 @@ describe("Router", () => {
         });
       });
     });
+
+    describe("useMatch", () => {
+      const assertMatch = (field, expected) =>
+        cy
+          .window()
+          .then(({ useMatch }) => useMatch[field] && useMatch[field].params)
+          .should("deep.equal", expected);
+
+      it("works", () => {
+        getByTestId("link-blog-match-empty").click();
+        assertMatch("relMatch", null);
+        assertMatch("absMatch", null);
+
+        getByTestId("link-blog-match-to").click();
+        assertMatch("relMatch", { to: "some-path", somewhere: "" });
+        assertMatch("absMatch", { to: "some-path", somewhere: "" });
+
+        getByTestId("link-blog-match-to-splat").click();
+        assertMatch("relMatch", { to: "some-path", somewhere: "some-splat" });
+        assertMatch("absMatch", { to: "some-path", somewhere: "some-splat" });
+      });
+    });
   });
 
   describe("actions", () => {
