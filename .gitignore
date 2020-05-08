@@ -6,4 +6,7 @@ test/testApp/public/build
 .vscode
 dist
 coverage
+coverage-jest
+coverage-cypress
+reports
 .nyc_output

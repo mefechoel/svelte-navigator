@@ -2,6 +2,9 @@ node_modules
 .nyc_output
 .vscode
 coverage
+coverage-jest
+coverage-cypress
+reports
 example
 test
 cypress
@@ -12,5 +15,6 @@ cypress
 .prettierignore
 .prettierrc.js
 cypress.json
+jest.config.js
 rollup.config.js
 yarn.lock

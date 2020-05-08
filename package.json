@@ -33,14 +33,24 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "test": "jest test --coverage",
+    "test:unit": "jest test",
     "test:watch": "jest test --watch",
+    "test:integ": "yarn cy:run",
     "cy:open": "cypress open",
     "cy:build": "rollup -c test/testApp/rollup.config.js",
     "cy:serve": "sirv test/testApp/public --single --port 7070",
     "cy:start": "yarn cy:build && yarn cy:serve",
-    "cy:run": "cypress run",
-    "cy": "yarn start-server-and-test cy:start http://localhost:7070 cy:run"
+    "cy:run": "cypress run --headless",
+    "test": "yarn test:unit && yarn test:integ",
+    "pretest": "rimraf .nyc_output && rimraf reports",
+    "posttest": "yarn report:combined",
+    "mkdir:reports": "mkdir reports || true",
+    "precopy:reports": "yarn mkdir:reports",
+    "copy:reports": "cp coverage-cypress/coverage-final.json reports/from-cypress.json && cp coverage-jest/coverage-final.json reports/from-jest.json",
+    "precombine:reports": "yarn copy:reports && mkdir .nyc_output || true",
+    "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
+    "prereport:combined": "yarn combine:reports",
+    "report:combined": "nyc report --reporter lcov --reporter text --report-dir coverage"
   },
   "peerDependencies": {
     "svelte": "3.x"
@@ -55,6 +65,7 @@
     "@rollup/plugin-node-resolve": "^7.1.3",
     "@testing-library/jest-dom": "^5.5.0",
     "@testing-library/svelte": "^3.0.0",
+    "@types/jest": "^25.2.1",
     "babel-jest": "^25.5.1",
     "babel-plugin-istanbul": "^6.0.0",
     "cypress": "^4.5.0",
@@ -67,9 +78,11 @@
     "eslint-plugin-react": "^7.18.0",
     "eslint-plugin-svelte3": "^2.7.3",
     "jest": "^25.5.4",
+    "mkdirp": "^1.0.4",
     "nyc": "^15.0.1",
     "prettier": "^1.19.1",
     "prettier-plugin-svelte": "^0.7.0",
+    "rimraf": "^3.0.2",
     "rollup": "^2.7.6",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-svelte": "^5.2.1",
@@ -79,23 +92,16 @@
     "svelte": "^3.20.1",
     "svelte-jester": "^1.0.5"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      "^.+\\.svelte$": "svelte-jester"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.m?jsx?$",
-    "moduleFileExtensions": [
-      "js",
-      "mjs",
-      "svelte"
-    ],
-    "setupFilesAfterEnv": [
-      "@testing-library/jest-dom/extend-expect"
-    ],
-    "moduleDirectories": [
-      "node_modules",
-      "src"
+  "nyc": {
+    "report-dir": "coverage-cypress",
+    "extension": [
+      ".js",
+      ".cjs",
+      ".mjs",
+      ".ts",
+      ".tsx",
+      ".jsx",
+      ".svelte"
     ]
   }
 }
