@@ -4,6 +4,8 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
+import { fail, ROUTER_ID } from "./warning";
+
 const paramRegex = /^:(.+)/;
 
 const SEGMENT_POINTS = 4;
@@ -358,13 +360,14 @@ export function join(...pathFragments) {
  * @returns The normalized location
  */
 export function normalizeLocation(location, basepath) {
-  const { pathname, hash = "", search = "", state, key } = location;
+  const { pathname, hash = "", search = "", state } = location;
   const baseSegments = segmentize(basepath).filter(Boolean);
   const pathSegments = segmentize(pathname).filter(Boolean);
   while (baseSegments.length) {
     if (baseSegments[0] !== pathSegments[0]) {
-      throw new Error(
-        `<Router> Invalid state: All locations must begin with the basepath "${basepath}", found "${pathname}"`,
+      fail(
+        ROUTER_ID,
+        `Invalid state: All locations must begin with the basepath "${basepath}", found "${pathname}"`,
       );
     }
     baseSegments.shift();
@@ -375,7 +378,6 @@ export function normalizeLocation(location, basepath) {
     hash,
     search,
     state,
-    key,
   };
 }
 
@@ -388,23 +390,6 @@ export function shouldNavigate(event) {
     !event.defaultPrevented &&
     event.button === 0 &&
     !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
-  );
-}
-
-/**
- * Checks if a clicked link triggers a navigation to a route from the same application.
- * Returns `false` if link leads to a different website.
- *
- * @param {Element} anchor The `<a />` element
- * @returns {boolean}
- */
-export function hostMatches(anchor) {
-  const { host } = window.location;
-  return (
-    anchor.host === host ||
-    // svelte seems to kill anchor.host value in ie11, so fall back to checking href
-    startsWith(anchor.href, `https://${host}`) ||
-    startsWith(anchor.href, `http://${host}`)
   );
 }
 
@@ -452,4 +437,12 @@ export function createGlobalId() {
   return Math.random()
     .toString(36)
     .substring(2);
+}
+
+export function findClosest(tagName, el) {
+  while (el && el.tagName !== tagName) {
+    // eslint-disable-next-line no-param-reassign
+    el = el.parentNode;
+  }
+  return el;
 }

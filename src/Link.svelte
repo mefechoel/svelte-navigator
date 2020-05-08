@@ -8,6 +8,7 @@
   import { createEventDispatcher } from "svelte";
   import { useLocation, useLinkResolve, useHistory } from "./hooks";
   import { startsWith, shouldNavigate } from "./utils";
+  import { warn, LINK_ID } from "./warning";
 
   export let to;
   export let replace = false;
@@ -24,6 +25,16 @@
   $: isCurrent = href === $location.pathname;
   $: ariaCurrent = isCurrent ? "page" : undefined;
   $: props = (() => {
+    // eslint-disable-next-line no-shadow
+    const { to, replace, state, getProps: _getProps, ...restProps } = $$props;
+    const restPropKeys = Object.keys(restProps);
+    if (restPropKeys.length && getProps) {
+      const propList = restPropKeys.join('", "');
+      warn(
+        LINK_ID,
+        `Props "${propList}" are ignored, because you provided a "getProps" function.`,
+      );
+    }
     if (typeof getProps === "function") {
       return getProps({
         location: $location,
@@ -32,8 +43,6 @@
         isCurrent,
       });
     }
-    // eslint-disable-next-line no-shadow
-    const { to, replace, state, getProps: g, ...restProps } = $$props;
     return restProps;
   })();
 
