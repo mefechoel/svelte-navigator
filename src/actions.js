@@ -5,7 +5,24 @@
  */
 
 import { navigate as defaultNavigate } from "./history";
-import { shouldNavigate, hostMatches } from "./utils";
+import { shouldNavigate, findClosest } from "./utils";
+
+const createAction = getAnchor => (node, navigate = defaultNavigate) => {
+  const handleClick = event => {
+    const anchor = getAnchor(event);
+    if (anchor && anchor.target === "" && shouldNavigate(event)) {
+      event.preventDefault();
+      const to = anchor.pathname + anchor.search + anchor.hash;
+      navigate(to, { replace: anchor.hasAttribute("replace") });
+    }
+  };
+  node.addEventListener("click", handleClick);
+  return {
+    destroy() {
+      node.removeEventListener("click", handleClick);
+    },
+  };
+};
 
 /**
  * A link action that can be added to <a href=""> tags rather
@@ -16,26 +33,7 @@ import { shouldNavigate, hostMatches } from "./utils";
  * <a href="/post/{postId}" use:link>{post.title}</a>
  * ```
  */
-function link(node, navigate = defaultNavigate) {
-  function onClick(event) {
-    const anchor = event.currentTarget;
-
-    if (anchor.target === "" && hostMatches(anchor) && shouldNavigate(event)) {
-      event.preventDefault();
-      navigate(anchor.pathname + anchor.search, {
-        replace: anchor.hasAttribute("replace"),
-      });
-    }
-  }
-
-  node.addEventListener("click", onClick);
-
-  return {
-    destroy() {
-      node.removeEventListener("click", onClick);
-    },
-  };
-}
+export const link = createAction(event => event.currentTarget);
 
 /**
  * An action to be added at a root element of your application to
@@ -46,7 +44,7 @@ function link(node, navigate = defaultNavigate) {
  * <div use:links>
  *   <Router>
  *     <Route path="/" component={Home} />
- *     <Route path="/p/:projectId/:docId?" component={ProjectScreen} />
+ *     <Route path="/p/:projectId/:docId" component={ProjectScreen} />
  *     {#each projects as project}
  *       <a href="/p/{project.id}">{project.title}</a>
  *     {/each}
@@ -54,39 +52,10 @@ function link(node, navigate = defaultNavigate) {
  * </div>
  * ```
  */
-function links(node, navigate = defaultNavigate) {
-  function findClosest(tagName, el) {
-    while (el && el.tagName !== tagName) {
-      // eslint-disable-next-line no-param-reassign
-      el = el.parentNode;
-    }
-    return el;
+export const links = createAction(event => {
+  const anchor = findClosest("A", event.target);
+  if (!anchor.hasAttribute("noroute")) {
+    return anchor;
   }
-
-  function onClick(event) {
-    const anchor = findClosest("A", event.target);
-
-    if (
-      anchor &&
-      anchor.target === "" &&
-      hostMatches(anchor) &&
-      shouldNavigate(event) &&
-      !anchor.hasAttribute("noroute")
-    ) {
-      event.preventDefault();
-      navigate(anchor.pathname + anchor.search, {
-        replace: anchor.hasAttribute("replace"),
-      });
-    }
-  }
-
-  node.addEventListener("click", onClick);
-
-  return {
-    destroy() {
-      node.removeEventListener("click", onClick);
-    },
-  };
-}
-
-export { link, links };
+  return null;
+});
