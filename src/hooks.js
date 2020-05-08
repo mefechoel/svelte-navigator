@@ -41,11 +41,7 @@ export function useLocation() {
 }
 
 /**
- * Access the Route currenty matched by the Router from anywhere inside the Router context.
- * You can for example access Route params from outside the rendered Route or
- * from a deeply nested component without prop-drilling.
- *
- * @returns {import("svelte/store").Readable<{
+ * @typedef {{
     route: {
       path: string;
       fullPath: string;
@@ -55,7 +51,19 @@ export function useLocation() {
     };
     params: {};
     uri: string;
-  }>}
+  }} RouteMatch
+ */
+
+/**
+ * @typedef {import("svelte/store").Readable<RouteMatch|null>} RouteMatchStore
+ */
+
+/**
+ * Access the Route currenty matched by the Router from anywhere inside the Router context.
+ * You can for example access Route params from outside the rendered Route or
+ * from a deeply nested component without prop-drilling.
+ *
+ * @returns {RouteMatchStore}
  *
  * @example
   ```html
@@ -261,6 +269,32 @@ export function useNavigate() {
   return navigateRelative;
 }
 
+/**
+ * Use Svelte Navigators matching without needing to use a Route.
+ * Returns a readable store with the potential match,
+ * that changes, when the location changes.
+ *
+ * The provided path will be resolved relatively,
+ * as you're used to with all paths in Svelte Navigator
+ *
+ * @param {string} path The path, to match against.
+ * It works just like a Route path
+ * @returns {RouteMatchStore} The matched route.
+ * Returns `null`, when nothing could be matched
+ *
+ * @example
+  ```html
+  <script>
+    import { useMatch } from "svelte-navigator";
+
+    const relativeMatch = useMatch("relative/path/:to/*somewhere");
+    const absoluteMatch = useMatch("/absolute/path/:to/*somewhere");
+
+    $: console.log($relativeMatch.params.to);
+    $: console.log($absoluteMatch.params.somewhere);
+  </script>
+  ```
+ */
 export function useMatch(path) {
   const location = useLocation();
   const resolve = useLinkResolve();
@@ -270,9 +304,5 @@ export function useMatch(path) {
     { pathname: resolvedPath },
     appBase,
   );
-
-  return derived([location], ([loc]) => {
-    const { pathname } = loc;
-    return match({ fullPath }, pathname);
-  });
+  return derived(location, loc => match({ fullPath }, loc.pathname));
 }
