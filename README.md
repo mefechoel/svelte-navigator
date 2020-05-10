@@ -49,13 +49,28 @@ This started as a fork of [svelte-routing](https://github.com/EmilTholin/svelte-
 
 ## Getting started
 
-Look at the [example folder][example-folder-url] for a few example project setups.
+[example-folder-url]: https://github.com/mefechoel/svelte-navigator/tree/master/example
+[example-basic-client-side]: https://github.com/mefechoel/svelte-navigator/tree/master/example/basic-client-side
+[example-custom-hash-history]: https://github.com/mefechoel/svelte-navigator/tree/master/example/custom-hash-history
+[example-private-routes]: https://github.com/mefechoel/svelte-navigator/tree/master/example/private-routes
+[example-lazy-loading]: https://github.com/mefechoel/svelte-navigator/tree/master/example/lazy-loading
+[example-ssr]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr
+[example-url-bar]: https://github.com/mefechoel/svelte-navigator/tree/master/example/url-bar
 
-- [Simple basic usage in a client side rendered app][example-basic-client-side]
-- [Private Routes for authenticated users only][example-private-routes]
-- [Using Routes to lazy load views][[example-lazy-loading]]
-- [SSR][example-ssr]
-- [Using hash based navigation with a custom history][example-custom-hash-history]
+[repl-basic-client-side]: https://svelte.dev/repl/451fd183e0d3403cb7800101f7d799fb
+[repl-custom-hash-history]: https://svelte.dev/repl/195011a49a714e22b1a335037e124458
+[repl-private-routes]: https://svelte.dev/repl/c81d8f3dff584065a82b2d3ea7cd4aee
+[repl-lazy-loading]: https://svelte.dev/repl/09abb8c287f745169f66f62d51f766d5
+[repl-url-bar]: https://svelte.dev/repl/dc82bb89447647edb0d7ed8cbe7999ae
+
+Look at the [example folder][example-folder-url] for a few example project setups, or checkout the examples in the Svelte REPL:
+
+- Simple basic usage in a client side rendered app ([examples][example-basic-client-side], [REPL][repl-basic-client-side])
+- Private Routes for authenticated users only ([examples][example-private-routes], [REPL][repl-private-routes])
+- Using Routes to lazy load views ([examples][example-lazy-loading], [REPL][repl-lazy-loading])
+- Reacting to changes in location using `useLocation` ([examples][example-url-bar], [REPL][repl-url-bar])
+- SSR ([examples][example-ssr])
+- Using hash based navigation with a custom history ([examples][example-custom-hash-history], [REPL][repl-custom-hash-history])
 
 
 ## Installation
@@ -700,10 +715,4 @@ In the browser we wait until all child `Route` components have registered with t
 We therefore resort to picking the first matching `Route` that is registered on the server, so it is of utmost importance that you `sort your Route components from the most specific to the least specific if you are using SSR`.
 
 [npm-url]: https://npmjs.com/package/svelte-navigator
-[example-folder-url]: https://github.com/mefechoel/svelte-navigator/tree/master/example
-[example-basic-client-side]: https://github.com/mefechoel/svelte-navigator/tree/master/example/basic-client-side
-[example-custom-hash-history]: https://github.com/mefechoel/svelte-navigator/tree/master/example/custom-hash-history
-[example-private-routes]: https://github.com/mefechoel/svelte-navigator/tree/master/example/private-routes
-[example-lazy-loading]: https://github.com/mefechoel/svelte-navigator/tree/master/example/lazy-loading
-[example-ssr]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr
 [example-folder-navlink]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
