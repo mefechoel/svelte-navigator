@@ -9,7 +9,14 @@
   import { writable, derived } from "svelte/store";
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
-  import { pick, match, join, normalizePath, normalizeLocation } from "./utils";
+  import {
+    pick,
+    match,
+    join,
+    normalizePath,
+    normalizeLocation,
+    isSSR,
+  } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
 
   export let basepath = "/";
@@ -25,7 +32,6 @@
   const routerContext = getContext(ROUTER);
 
   const isTopLevelRouter = !locationContext;
-  const isSSR = typeof window === "undefined";
 
   const routes = writable([]);
   const activeRoute = writable(null);

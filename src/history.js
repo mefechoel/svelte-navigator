@@ -4,7 +4,7 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
-import { createGlobalId } from "./utils";
+import { createGlobalId, isSSR } from "./utils";
 
 function getLocation(source) {
   return {
@@ -129,10 +129,10 @@ function createMemorySource(initialPathname = "/") {
 
 // Global history uses window.history as the source if available,
 // otherwise a memory history
-const canUseDOM = Boolean(
-  typeof window !== "undefined" &&
-    window.document &&
-    window.document.createElement,
+const canUseDOM = !!(
+  !isSSR &&
+  window.document &&
+  window.document.createElement
 );
 // Use memory history in iframes (for example in Svelte REPL)
 const isEmbeddedPage = window.location.origin === "null";

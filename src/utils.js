@@ -120,6 +120,8 @@ export function rankRoutes(routes) {
   );
 }
 
+export const isUndefined = value => typeof value === "undefined";
+
 /**
  * Ranks and picks the best route to match. Each segment gets the highest
  * amount of points, then the type of segment gets an additional amount of
@@ -173,7 +175,7 @@ export function pick(routes, uri) {
       const routeSegment = routeSegments[index];
       const uriSegment = uriSegments[index];
 
-      if (typeof routeSegment !== "undefined" && isSplat(routeSegment)) {
+      if (!isUndefined(routeSegment) && isSplat(routeSegment)) {
         // Hit a splat, just grab the rest, and return a match
         // uri:   /files/documents/work
         // route: /files/* or /files/*splatname
@@ -186,7 +188,7 @@ export function pick(routes, uri) {
         break;
       }
 
-      if (typeof uriSegment === "undefined") {
+      if (isUndefined(uriSegment)) {
         // URI is shorter than the route, no match
         // uri:   /users
         // route: /users/:userId
@@ -446,3 +448,5 @@ export function findClosest(tagName, element) {
   }
   return element;
 }
+
+export const isSSR = isUndefined(window);

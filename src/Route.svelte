@@ -8,7 +8,7 @@
   import { getContext, onDestroy } from "svelte";
   import { ROUTER } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
-  import { createLocalId } from "./utils";
+  import { createLocalId, isSSR } from "./utils";
 
   export let path = "";
   export let component = null;
@@ -48,7 +48,7 @@
 
   // There is no need to unregister Routes in SSR since it will all be
   // thrown away anyway.
-  if (typeof window !== "undefined") {
+  if (!isSSR) {
     onDestroy(() => {
       unregisterRoute(route);
     });
