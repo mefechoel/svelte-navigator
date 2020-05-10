@@ -1,3 +1,13 @@
+# 2.0.1
+
+## Fixes:
+
+- Fix automatic usage of memory history in Svelte REPL
+
+## Other:
+
+- Add Lazy Loading example
+
 # 2.0.0
 
 ## Features:
