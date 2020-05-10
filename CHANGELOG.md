@@ -1,3 +1,9 @@
+# 2.0.3
+
+## Other:
+
+- Mark package as side effect free
+
 # 2.0.2
 
 ## Other:
