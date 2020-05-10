@@ -8,7 +8,7 @@
 ![NPM](https://img.shields.io/npm/l/svelte-navigator?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/mefechoel/svelte-navigator?style=flat-square)
 
-> Simple, declarative routing for single page apps built with Svelte.
+> Simple, declarative routing for Svelte.
 
 This started as a fork of [svelte-routing](https://github.com/EmilTholin/svelte-routing), with added configuration options and access to parts of the Routers context through React-esque hooks.
 

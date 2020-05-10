@@ -1,6 +1,7 @@
 node_modules
 .nyc_output
 .vscode
+.github
 coverage
 coverage-jest
 coverage-cypress
@@ -18,3 +19,5 @@ cypress.json
 jest.config.js
 rollup.config.js
 yarn.lock
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md

@@ -1,3 +1,10 @@
+# 2.0.2
+
+## Other:
+
+- Add URL Bar example
+- Add REPL Links to all examples
+
 # 2.0.1
 
 ## Fixes:
