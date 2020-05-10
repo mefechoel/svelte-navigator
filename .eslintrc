@@ -37,7 +37,8 @@
         "import/prefer-default-export": "off",
         "no-multiple-empty-lines": "off",
         "no-undef": "off",
-        "prefer-const": "off"
+        "prefer-const": "off",
+        "import/no-extraneous-dependencies": "off"
       }
     },
     {

@@ -53,6 +53,7 @@ Look at the [example folder][example-folder-url] for a few example project setup
 
 - [Simple basic usage in a client side rendered app][example-basic-client-side]
 - [Private Routes for authenticated users only][example-private-routes]
+- [Using Routes to lazy load views][[example-lazy-loading]]
 - [SSR][example-ssr]
 - [Using hash based navigation with a custom history][example-custom-hash-history]
 
@@ -703,5 +704,6 @@ We therefore resort to picking the first matching `Route` that is registered on 
 [example-basic-client-side]: https://github.com/mefechoel/svelte-navigator/tree/master/example/basic-client-side
 [example-custom-hash-history]: https://github.com/mefechoel/svelte-navigator/tree/master/example/custom-hash-history
 [example-private-routes]: https://github.com/mefechoel/svelte-navigator/tree/master/example/private-routes
+[example-lazy-loading]: https://github.com/mefechoel/svelte-navigator/tree/master/example/lazy-loading
 [example-ssr]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr
 [example-folder-navlink]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
