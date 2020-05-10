@@ -31,6 +31,7 @@
     "declarative routing",
     "hooks"
   ],
+  "sideEffects": false,
   "scripts": {
     "build": "rollup -c",
     "test:unit": "jest test",
