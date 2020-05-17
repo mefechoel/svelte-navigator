@@ -1,5 +1,6 @@
 [npm]: https://img.shields.io/npm/v/svelte-navigator.svg?style=flat-square
 [npm-url]: https://npmjs.com/package/svelte-navigator
+[example-folder-navlink]: https://github.com/mefechoeml/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
 
 # Svelte Navigator
 
@@ -714,5 +715,6 @@ In the browser we wait until all child `Route` components have registered with t
 
 We therefore resort to picking the first matching `Route` that is registered on the server, so it is of utmost importance that you `sort your Route components from the most specific to the least specific if you are using SSR`.
 
-[npm-url]: https://npmjs.com/package/svelte-navigator
-[example-folder-navlink]: https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
+## License
+
+MIT
