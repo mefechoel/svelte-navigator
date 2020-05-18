@@ -9,6 +9,8 @@
   import { ROUTER, ROUTE } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
   import { createLocalId, isSSR } from "./utils";
+  import { stripSplat, join } from "./paths";
+  import { warn, ROUTE_ID } from "./warning";
 
   export let path = "";
   export let component = null;
@@ -17,6 +19,8 @@
   const id = createLocalId();
 
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
+  const parentCtx = getContext(ROUTE);
+  const parentBase = (parentCtx && parentCtx.base) || "";
   const activeRoute = useActiveRoute();
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,6 +30,7 @@
     // If no path prop is given, this Route will act as the default Route
     // that is rendered if no other Route in the Router is a match.
     default: path === "",
+    base: join(parentBase, stripSplat(path)),
     id,
     meta,
   };
@@ -40,7 +45,10 @@
 
   $: {
     // eslint-disable-next-line no-shadow
-    const { path, component, ...rest } = $$props;
+    const { path: newPath, component, ...rest } = $$props;
+    if (path && newPath && path !== newPath) {
+      warn(ROUTE_ID, 'You cannot change a routes "path" prop. It is ignored.');
+    }
     props = rest;
   }
 

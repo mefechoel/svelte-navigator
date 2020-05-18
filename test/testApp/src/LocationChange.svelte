@@ -8,7 +8,6 @@
   const {
     activeRoute,
     base,
-    routerBase,
     registerRoute,
     unregisterRoute,
     history,
@@ -17,8 +16,7 @@
   $: onChange({
     location: $location,
     activeRoute: $activeRoute,
-    base: $base,
-    routerBase: $routerBase,
+    base,
     registerRoute,
     unregisterRoute,
     history,

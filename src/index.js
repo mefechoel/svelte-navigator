@@ -17,7 +17,6 @@ export { link, links } from "./actions";
 export {
   useActiveRoute,
   useLocation,
-  useBase,
   useLinkResolve,
   useNavigate,
   useMatch,

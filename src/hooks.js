@@ -1,6 +1,6 @@
 import { getContext } from "svelte";
-import { get, derived } from "svelte/store";
-import { LOCATION, ROUTER } from "./contexts";
+import { derived } from "svelte/store";
+import { LOCATION, ROUTER, ROUTE } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 
 /**
@@ -94,53 +94,9 @@ export function useActiveRoute() {
   return { subscribe: activeRoute.subscribe };
 }
 
-export function useRouterBase() {
-  const { routerBase } = getContext(ROUTER);
-  return routerBase;
-}
-
 export function useHistory() {
   const { history } = getContext(ROUTER);
   return history;
-}
-
-/**
- * Access the parent `Router`s base.
- *
- * @returns {import("svelte/store").Readable<{ path: string; uri: string; }>}
- *
- * @example
-  ```html
-  <!-- Inside top-level Router -->
-  <script>
-    import { useBase } from "svelte-navigator";
-
-    const base = useBase();
-
-    $: console.log($base);
-    // {
-    //   path: "/base",
-    //   uri: "/base"
-    // }
-  </script>
-
-  <!-- Inside nested Router -->
-  <script>
-    import { useBase } from "svelte-navigator";
-
-    const base = useBase();
-
-    $: console.log($base);
-    // {
-    //   path: "base/blog/",
-    //   uri: "/base/blog"
-    // }
-  </script>
-  ```
- */
-export function useBase() {
-  const { base } = getContext(ROUTER);
-  return base;
 }
 
 /**
@@ -165,18 +121,16 @@ export function useBase() {
   ```
  */
 export function useLinkResolve() {
-  const base = useBase();
-  const routerBase = useRouterBase();
-  const { basepath: appBase } = getContext(ROUTER);
-  const { uri: basepath } = get(base);
-  const { uri } = get(routerBase);
+  const routeCtx = getContext(ROUTE);
+  const routeBase = (routeCtx && routeCtx.base) || "/";
+  const { basepath: appBase, base } = getContext(ROUTER);
   /**
    * Resolves the path relative to the current route and basepath.
    *
    * @param {string} path The path to navigate to
    * @returns {string} The resolved path
    */
-  const resolve = path => resolveLink(path, basepath, uri, appBase);
+  const resolve = path => resolveLink(path, base, routeBase, appBase);
   return resolve;
 }
 
