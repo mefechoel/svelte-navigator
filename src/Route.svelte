@@ -1,3 +1,9 @@
+<script context="module">
+  import { createCounter } from "./utils";
+
+  const createId = createCounter();
+</script>
+
 <script>
   /*
    * Adapted from https://github.com/EmilTholin/svelte-routing
@@ -5,11 +11,10 @@
    * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
    */
 
-  import { getContext, setContext, onDestroy, tick } from "svelte";
+  import { getContext, setContext, onDestroy } from "svelte";
   import { ROUTER, ROUTE } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
-  import { createLocalId, isSSR } from "./utils";
-  import { focusElement, queryHeading } from "./dom";
+  import { isSSR } from "./utils";
   import { stripSplat, join } from "./paths";
   import { warn, ROUTE_ID } from "./warning";
 
@@ -17,7 +22,7 @@
   export let component = null;
   export let meta = {};
 
-  const id = createLocalId();
+  const id = createId();
 
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
   const parentCtx = getContext(ROUTE);
@@ -60,15 +65,6 @@
   if (!isSSR) {
     onDestroy(() => {
       unregisterRoute(route);
-    });
-  }
-
-  $: if (isActive) {
-    tick().then(() => {
-      const focusHeading = queryHeading(id);
-      if (focusHeading) {
-        focusElement(focusHeading);
-      }
     });
   }
 

@@ -1,9 +1,13 @@
-export function focusElement(elem) {
-  // See: https://developer.paciellogroup.com/blog/2014/08/using-the-tabindex-attribute/
-  // See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElem/focus#Browser_compatibility
-  // See: https://github.com/whatwg/html/issues/834
+import { warn, ROUTER_ID } from "./warning";
+
+/*
+ * `focus` Adapted from https://github.com/oaf-project/oaf-side-effects/blob/master/src/index.ts
+ *
+ * https://github.com/oaf-project/oaf-side-effects/blob/master/LICENSE
+ */
+export function focus(elem) {
+  if (!elem) return false;
   try {
-    // Set tabindex="-1" if necessary.
     if (!elem.hasAttribute("tabindex")) {
       elem.setAttribute("tabindex", "-1");
       // We remove tabindex after blur to avoid weird browser behavior
@@ -14,13 +18,21 @@ export function focusElement(elem) {
       };
       elem.addEventListener("blur", blurListener);
     }
-
     elem.focus();
     return document.activeElement === elem;
   } catch (e) {
     // Apparently trying to focus a disabled element in IE can throw.
     // See https://stackoverflow.com/a/1600194/2476884
     return false;
+  }
+}
+
+export function resetFocus() {
+  if (document.activeElement) {
+    try {
+      document.activeElement.blur();
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
   }
 }
 
@@ -50,4 +62,22 @@ export function queryHeading(id) {
     current = current.nextElementSibling;
   }
   return null;
+}
+
+export function handleFocus(focusCandidate) {
+  const focusHeading = queryHeading(focusCandidate.id);
+  if (!focusHeading) {
+    warn(
+      ROUTER_ID,
+      `Could not find a heading to focus in <Route path="${focusCandidate.path}" />. ` +
+        "You should always render a header for accessibility reasons. " +
+        // eslint-disable-next-line quotes
+        'If you don\'t want this Router to manage focus, pass "primary={false}" to it',
+    );
+  }
+  const headingFocused = focus(focusHeading);
+  if (headingFocused) return;
+  const documentFocused = focus(document.documentElement);
+  if (documentFocused) return;
+  resetFocus();
 }

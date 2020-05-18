@@ -1,3 +1,10 @@
+<script context="module">
+  // eslint-disable-next-line import/order
+  import { createCounter } from "./utils";
+
+  const createId = createCounter();
+</script>
+
 <script>
   /*
    * Adapted from https://github.com/EmilTholin/svelte-routing
@@ -13,11 +20,18 @@
   import { pick, match, normalizeLocation } from "./routes";
   import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
-  import { focusQueue, clearFocusQueue } from "./focusQueue";
+  import {
+    focusCandidate,
+    pushFocusCandidate,
+    clearFocusCandidate,
+    initialNavigation,
+  } from "./focusCandidate";
+  import { handleFocus } from "./dom";
 
   export let basepath = "/";
   export let url = null;
   export let history = globalHistory;
+  export let primary = true;
 
   // Remember the initial `basepath`, so we can fire a warning
   // when the user changes it later
@@ -29,6 +43,9 @@
   const routeContext = getContext(ROUTE);
 
   const isTopLevelRouter = !locationContext;
+  const routerId = createId();
+
+  const manageFocus = primary && !(routerContext && !routerContext.manageFocus);
 
   const routes = writable([]);
   const activeRoute = writable(null);
@@ -100,14 +117,24 @@
     // Manage focus
     if (isTopLevelRouter) {
       tick().then(() => {
-        clearFocusQueue();
+        if (!focusCandidate) return;
+        if (!initialNavigation) {
+          handleFocus(focusCandidate);
+        }
+        clearFocusCandidate();
       });
     }
   }
 
-  // Queue matched route, so top level router can decide which route to focus
-  $: if ($activeRoute) {
-    focusQueue.push({ level, id: $activeRoute.route.id });
+  // Queue matched Route, so top level Router can decide which Route to focus.
+  // Non primary Routers should just be ignored
+  $: if (manageFocus && $activeRoute) {
+    pushFocusCandidate({
+      level,
+      routerId,
+      id: $activeRoute.route.id,
+      path: $activeRoute.route.path,
+    });
   }
 
   if (isTopLevelRouter) {
@@ -133,6 +160,7 @@
     base,
     registerRoute,
     unregisterRoute,
+    manageFocus,
     history: isTopLevelRouter ? history : routerContext.history,
     basepath: isTopLevelRouter ? normalizedBasepath : routerContext.basepath,
     level,

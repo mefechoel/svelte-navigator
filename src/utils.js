@@ -18,15 +18,14 @@ export function shouldNavigate(event) {
   );
 }
 
-/**
- * Create a locally unique id
- *
- * @returns {number} An id
- */
-export const createLocalId = (() => {
-  let id = 0;
-  return () => id++;
-})();
+export function createCounter() {
+  let i = 0;
+  /**
+   * Returns an id and increments the internal state
+   * @returns {number}
+   */
+  return () => i++;
+}
 
 /**
  * Create a globally unique id
