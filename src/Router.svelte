@@ -5,7 +5,7 @@
    * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
    */
 
-  import { getContext, setContext, onMount } from "svelte";
+  import { getContext, setContext, onMount, tick } from "svelte";
   import { writable, derived } from "svelte/store";
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
@@ -18,6 +18,7 @@
     isSSR,
   } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
+  import { focusQueue, clearFocusQueue } from "./focusQueue";
 
   export let basepath = "/";
   export let url = null;
@@ -38,7 +39,12 @@
   // Used in SSR to synchronously set that a Route is active.
   let hasActiveRoute = false;
 
-  // If we're running an SSR we force the location to the `url` prop.
+  // Nesting level of router.
+  // We will need this to identify sibling routers, when moving
+  // focus on navigation, so we can focus the first possible router
+  const level = isTopLevelRouter ? 0 : routerContext.level + 1;
+
+  // If we're running an SSR we force the location to the `url` prop
   const getInitialLocation = () =>
     normalizeLocation(
       isSSR ? { pathname: url } : history.location,
@@ -127,6 +133,18 @@
   $: {
     const bestMatch = pick($routes, $location.pathname);
     activeRoute.set(bestMatch);
+
+    // Manage focus
+    if (isTopLevelRouter) {
+      tick().then(() => {
+        clearFocusQueue();
+      });
+    }
+  }
+
+  // Queue matched route, so top level router can decide which route to focus
+  $: if ($activeRoute) {
+    focusQueue.push({ level, id: bestMatch.route.id });
   }
 
   if (isTopLevelRouter) {
@@ -155,6 +173,7 @@
     unregisterRoute,
     history: isTopLevelRouter ? history : routerContext.history,
     basepath: isTopLevelRouter ? normalizedBasepath : routerContext.basepath,
+    level,
   });
 </script>
 
