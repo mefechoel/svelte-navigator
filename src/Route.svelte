@@ -5,11 +5,13 @@
    * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
    */
 
-  import { getContext, onDestroy, tick } from "svelte";
-  import { ROUTER } from "./contexts";
+  import { getContext, setContext, onDestroy, tick } from "svelte";
+  import { ROUTER, ROUTE } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
   import { createLocalId, isSSR } from "./utils";
   import { focusElement, queryHeading } from "./dom";
+  import { stripSplat, join } from "./paths";
+  import { warn, ROUTE_ID } from "./warning";
 
   export let path = "";
   export let component = null;
@@ -18,6 +20,8 @@
   const id = createLocalId();
 
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
+  const parentCtx = getContext(ROUTE);
+  const parentBase = (parentCtx && parentCtx.base) || "";
   const activeRoute = useActiveRoute();
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,22 +31,26 @@
     // If no path prop is given, this Route will act as the default Route
     // that is rendered if no other Route in the Router is a match.
     default: path === "",
+    base: join(parentBase, stripSplat(path)),
     id,
     meta,
   };
-  let routeParams = {};
-  let routeProps = {};
+  let params = {};
+  let props = {};
 
   $: isActive = $activeRoute && $activeRoute.route.id === route.id;
 
   $: if (isActive) {
-    routeParams = $activeRoute.params;
+    params = $activeRoute.params;
   }
 
   $: {
     // eslint-disable-next-line no-shadow
-    const { path, component, ...rest } = $$props;
-    routeProps = rest;
+    const { path: newPath, component, ...rest } = $$props;
+    if (path && newPath && path !== newPath) {
+      warn(ROUTE_ID, 'You cannot change a routes "path" prop. It is ignored.');
+    }
+    props = rest;
   }
 
   registerRoute(route);
@@ -63,6 +71,8 @@
       }
     });
   }
+
+  setContext(ROUTE, route);
 </script>
 
 <div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
@@ -72,11 +82,11 @@
       this={component}
       location={$location}
       {navigate}
-      {...routeParams}
-      {...routeProps}
+      {...params}
+      {...props}
     />
   {:else}
-    <slot params={routeParams} location={$location} {navigate} />
+    <slot {params} location={$location} {navigate} />
   {/if}
 {/if}
 <div style="display:none;" aria-hidden="true" data-svnav-route-end={id} />

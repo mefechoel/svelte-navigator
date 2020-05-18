@@ -6,17 +6,12 @@
    */
 
   import { getContext, setContext, onMount, tick } from "svelte";
-  import { writable, derived } from "svelte/store";
-  import { LOCATION, ROUTER } from "./contexts";
+  import { writable } from "svelte/store";
+  import { LOCATION, ROUTER, ROUTE } from "./contexts";
   import { globalHistory } from "./history";
-  import {
-    pick,
-    match,
-    join,
-    normalizePath,
-    normalizeLocation,
-    isSSR,
-  } from "./utils";
+  import { join, normalizePath } from "./paths";
+  import { pick, match, normalizeLocation } from "./routes";
+  import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import { focusQueue, clearFocusQueue } from "./focusQueue";
 
@@ -31,6 +26,7 @@
 
   const locationContext = getContext(LOCATION);
   const routerContext = getContext(ROUTER);
+  const routeContext = getContext(ROUTE);
 
   const isTopLevelRouter = !locationContext;
 
@@ -54,37 +50,15 @@
     ? writable(getInitialLocation())
     : locationContext;
 
-  // If routerContext is set, the routerBase of the parent Router
-  // will be the base for this Router's descendants
-  const base = isTopLevelRouter
-    ? writable({ path: "/", uri: "/" })
-    : routerContext.routerBase;
-
-  const routerBase = derived([base, activeRoute], ([_base, _activeRoute]) => {
-    // If there is no activeRoute, the routerBase will be identical to the base
-    if (!_activeRoute) {
-      return _base;
-    }
-
-    const { route, uri } = _activeRoute;
-    // Remove the potential /* or /*splatname from
-    // the end of the child Routes path
-    const path = route.default
-      ? _base.path
-      : route.fullPath.replace(/\*.*$/, "");
-    return { path: normalizePath(path), uri };
-  });
-
-  function createFullPath(route, routerBasepath) {
-    return route.default ? "" : join(routerBasepath, route.path);
-  }
+  // If the Router is a decendant of a Route, use its base
+  const base = routeContext ? routeContext.base : "/";
 
   function registerRoute(routeParams) {
     const route = {
       ...routeParams,
       // Preserve the routes `path` prop, so using `useActiveRoute().path`
       // will always work the same, regardless if there is a basepath or not
-      fullPath: createFullPath(routeParams, $base.path),
+      fullPath: routeParams.default ? "" : join(base, routeParams.path),
     };
 
     if (isSSR) {
@@ -115,17 +89,6 @@
     warn(ROUTER_ID, 'You cannot change the "basepath" prop. It is ignored.');
   }
 
-  // This reactive statement will update all the Routes' fullPaths when
-  // the basepath changes.
-  $: {
-    routes.update(prevRoutes =>
-      prevRoutes.map(route => ({
-        ...route,
-        fullPath: createFullPath(route, $base.path),
-      })),
-    );
-  }
-
   // This reactive statement will be run when the Router is created
   // when there are no Routes and then again the following tick, so it
   // will not find an active Route in SSR and in the browser it will only
@@ -144,7 +107,7 @@
 
   // Queue matched route, so top level router can decide which route to focus
   $: if ($activeRoute) {
-    focusQueue.push({ level, id: bestMatch.route.id });
+    focusQueue.push({ level, id: $activeRoute.route.id });
   }
 
   if (isTopLevelRouter) {
@@ -168,7 +131,6 @@
   setContext(ROUTER, {
     activeRoute,
     base,
-    routerBase,
     registerRoute,
     unregisterRoute,
     history: isTopLevelRouter ? history : routerContext.history,
