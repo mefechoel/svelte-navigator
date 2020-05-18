@@ -5,10 +5,11 @@
    * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
    */
 
-  import { getContext, onDestroy } from "svelte";
+  import { getContext, onDestroy, tick } from "svelte";
   import { ROUTER } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
   import { createLocalId, isSSR } from "./utils";
+  import { focusElement, queryHeading } from "./dom";
 
   export let path = "";
   export let component = null;
@@ -53,8 +54,18 @@
       unregisterRoute(route);
     });
   }
+
+  $: if (isActive) {
+    tick().then(() => {
+      const focusHeading = queryHeading(id);
+      if (focusHeading) {
+        focusElement(focusHeading);
+      }
+    });
+  }
 </script>
 
+<div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
 {#if isActive}
   {#if component !== null}
     <svelte:component
@@ -68,3 +79,4 @@
     <slot params={routeParams} location={$location} {navigate} />
   {/if}
 {/if}
+<div style="display:none;" aria-hidden="true" data-svnav-route-end={id} />
