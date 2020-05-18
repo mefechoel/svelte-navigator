@@ -9,14 +9,9 @@
   import { writable, derived } from "svelte/store";
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
-  import {
-    pick,
-    match,
-    join,
-    normalizePath,
-    normalizeLocation,
-    isSSR,
-  } from "./utils";
+  import { join, normalizePath, stripSplat } from "./paths";
+  import { pick, match, normalizeLocation } from "./routes";
+  import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
 
   export let basepath = "/";
@@ -63,9 +58,7 @@
     const { route, uri } = _activeRoute;
     // Remove the potential /* or /*splatname from
     // the end of the child Routes path
-    const path = route.default
-      ? _base.path
-      : route.fullPath.replace(/\*.*$/, "");
+    const path = route.default ? _base.path : stripSplat(route.fullPath);
     return { path: normalizePath(path), uri };
   });
 

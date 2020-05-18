@@ -1,7 +1,7 @@
 import { getContext } from "svelte";
 import { get, derived } from "svelte/store";
 import { LOCATION, ROUTER } from "./contexts";
-import { resolveLink, match, normalizeLocation } from "./utils";
+import { resolveLink, match, normalizeLocation } from "./routes";
 
 /**
  * Access the current location via a readable store.

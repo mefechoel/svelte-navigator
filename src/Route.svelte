@@ -5,8 +5,8 @@
    * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
    */
 
-  import { getContext, onDestroy } from "svelte";
-  import { ROUTER } from "./contexts";
+  import { getContext, onDestroy, setContext } from "svelte";
+  import { ROUTER, ROUTE } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
   import { createLocalId, isSSR } from "./utils";
 
@@ -29,19 +29,19 @@
     id,
     meta,
   };
-  let routeParams = {};
-  let routeProps = {};
+  let params = {};
+  let props = {};
 
   $: isActive = $activeRoute && $activeRoute.route.id === route.id;
 
   $: if (isActive) {
-    routeParams = $activeRoute.params;
+    params = $activeRoute.params;
   }
 
   $: {
     // eslint-disable-next-line no-shadow
     const { path, component, ...rest } = $$props;
-    routeProps = rest;
+    props = rest;
   }
 
   registerRoute(route);
@@ -53,6 +53,8 @@
       unregisterRoute(route);
     });
   }
+
+  setContext(ROUTE, route);
 </script>
 
 {#if isActive}
@@ -61,10 +63,10 @@
       this={component}
       location={$location}
       {navigate}
-      {...routeParams}
-      {...routeProps}
+      {...params}
+      {...props}
     />
   {:else}
-    <slot params={routeParams} location={$location} {navigate} />
+    <slot {params} location={$location} {navigate} />
   {/if}
 {/if}

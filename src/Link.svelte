@@ -7,7 +7,8 @@
 
   import { createEventDispatcher } from "svelte";
   import { useLocation, useLinkResolve, useHistory } from "./hooks";
-  import { startsWith, shouldNavigate } from "./utils";
+  import { shouldNavigate } from "./utils";
+  import { startsWith } from "./paths";
   import { warn, LINK_ID } from "./warning";
 
   export let to;
