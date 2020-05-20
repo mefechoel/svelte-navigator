@@ -64,12 +64,12 @@ export function queryHeading(id) {
   return null;
 }
 
-export function handleFocus(focusCandidate) {
-  const focusHeading = queryHeading(focusCandidate.id);
+export function handleFocus({ id, path }) {
+  const focusHeading = queryHeading(id);
   if (!focusHeading) {
     warn(
       ROUTER_ID,
-      `Could not find a heading to focus in <Route path="${focusCandidate.path}" />. ` +
+      `Could not find a heading to focus in <Route path="${path}" />. ` +
         "You should always render a header for accessibility reasons. " +
         // eslint-disable-next-line quotes
         'If you don\'t want this Router to manage focus, pass "primary={false}" to it',

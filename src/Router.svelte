@@ -117,7 +117,7 @@
       tick().then(() => {
         if (!focusCandidate) return;
         if (!initialNavigation) {
-          handleFocus(focusCandidate);
+          handleFocus(focusCandidate.route);
         }
         clearFocusCandidate();
       });
@@ -127,12 +127,7 @@
   // Queue matched Route, so top level Router can decide which Route to focus.
   // Non primary Routers should just be ignored
   $: if (manageFocus && $activeRoute) {
-    pushFocusCandidate({
-      level,
-      routerId,
-      id: $activeRoute.route.id,
-      path: $activeRoute.route.path,
-    });
+    pushFocusCandidate({ level, routerId, route: $activeRoute.route });
   }
 
   if (isTopLevelRouter) {
