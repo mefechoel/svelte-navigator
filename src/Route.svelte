@@ -22,7 +22,6 @@
   const parentBase = deriveRouteBase("");
   const activeRoute = useActiveRoute();
   const location = useLocation();
-  const navigate = useNavigate();
 
   // eslint-disable-next-line no-shadow
   const createRoute = (path, meta, parentBase) => ({
@@ -68,6 +67,10 @@
   }
 
   setContext(ROUTE, route);
+
+  // We need to call useNavigate after the route is set,
+  // so we can use the routes path for link resolution
+  const navigate = useNavigate();
 </script>
 
 {#if isActive}
