@@ -6,11 +6,11 @@
    */
 
   import { getContext, onDestroy, setContext } from "svelte";
+  import { writable } from "svelte/store";
   import { ROUTER, ROUTE } from "./contexts";
   import { useActiveRoute, useLocation, useNavigate } from "./hooks";
-  import { createLocalId, isSSR } from "./utils";
+  import { createLocalId, isSSR, deriveRouteBase } from "./utils";
   import { stripSplat, join } from "./paths";
-  import { warn, ROUTE_ID } from "./warning";
 
   export let path = "";
   export let component = null;
@@ -19,13 +19,13 @@
   const id = createLocalId();
 
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
-  const parentCtx = getContext(ROUTE);
-  const parentBase = (parentCtx && parentCtx.base) || "";
+  const parentBase = deriveRouteBase("");
   const activeRoute = useActiveRoute();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const route = {
+  // eslint-disable-next-line no-shadow
+  const createRoute = (path, meta, parentBase) => ({
     path,
     // If no path prop is given, this Route will act as the default Route
     // that is rendered if no other Route in the Router is a match.
@@ -33,11 +33,21 @@
     base: join(parentBase, stripSplat(path)),
     id,
     meta,
-  };
+  });
+
+  const route = writable(createRoute(path, meta, $parentBase));
+
+  $: {
+    const updatedRoute = createRoute(path, meta, $parentBase);
+    route.set(updatedRoute);
+    unregisterRoute(id);
+    registerRoute(updatedRoute);
+  }
+
   let params = {};
   let props = {};
 
-  $: isActive = $activeRoute && $activeRoute.route.id === route.id;
+  $: isActive = $activeRoute && $activeRoute.route.id === id;
 
   $: if (isActive) {
     params = $activeRoute.params;
@@ -45,20 +55,15 @@
 
   $: {
     // eslint-disable-next-line no-shadow
-    const { path: newPath, component, ...rest } = $$props;
-    if (path && newPath && path !== newPath) {
-      warn(ROUTE_ID, 'You cannot change a routes "path" prop. It is ignored.');
-    }
+    const { path, component, meta, ...rest } = $$props;
     props = rest;
   }
-
-  registerRoute(route);
 
   // There is no need to unregister Routes in SSR since it will all be
   // thrown away anyway.
   if (!isSSR) {
     onDestroy(() => {
-      unregisterRoute(route);
+      unregisterRoute(id);
     });
   }
 
