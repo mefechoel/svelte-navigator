@@ -1,1 +1,2 @@
-/public/**/*.js
+**/public/**/*.js
+**/dist

@@ -1,5 +1,5 @@
 import { getContext } from "svelte";
-import { derived } from "svelte/store";
+import { derived, get } from "svelte/store";
 import { LOCATION, ROUTER, ROUTE } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 
@@ -121,9 +121,10 @@ export function useHistory() {
   ```
  */
 export function useLinkResolve() {
-  const routeCtx = getContext(ROUTE);
-  const routeBase = (routeCtx && routeCtx.base) || "/";
-  const { basepath: appBase, base } = getContext(ROUTER);
+  const routeStore = getContext(ROUTE);
+  const routeBase = routeStore ? get(routeStore).base : "/";
+  const { basepath: appBase, base: baseStore } = getContext(ROUTER);
+  const base = get(baseStore);
   /**
    * Resolves the path relative to the current route and basepath.
    *

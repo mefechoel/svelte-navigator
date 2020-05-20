@@ -14,11 +14,11 @@
 
   import { getContext, setContext, onMount, tick } from "svelte";
   import { writable } from "svelte/store";
-  import { LOCATION, ROUTER, ROUTE } from "./contexts";
+  import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
   import { join, normalizePath } from "./paths";
   import { pick, match, normalizeLocation } from "./routes";
-  import { isSSR } from "./utils";
+  import { isSSR, deriveRouteBase } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import {
     focusCandidate,
@@ -40,7 +40,8 @@
 
   const locationContext = getContext(LOCATION);
   const routerContext = getContext(ROUTER);
-  const routeContext = getContext(ROUTE);
+  // If the Router is a decendant of a Route, use its base
+  const base = deriveRouteBase("/");
 
   const isTopLevelRouter = !locationContext;
   const routerId = createId();
@@ -67,15 +68,12 @@
     ? writable(getInitialLocation())
     : locationContext;
 
-  // If the Router is a decendant of a Route, use its base
-  const base = routeContext ? routeContext.base : "/";
-
   function registerRoute(routeParams) {
     const route = {
       ...routeParams,
       // Preserve the routes `path` prop, so using `useActiveRoute().path`
       // will always work the same, regardless if there is a basepath or not
-      fullPath: routeParams.default ? "" : join(base, routeParams.path),
+      fullPath: routeParams.default ? "" : join($base, routeParams.path),
     };
 
     if (isSSR) {
@@ -96,9 +94,9 @@
     }
   }
 
-  function unregisterRoute(route) {
+  function unregisterRoute(routeId) {
     routes.update(prevRoutes =>
-      prevRoutes.filter(routeItem => routeItem.id !== route.id),
+      prevRoutes.filter(routeItem => routeItem.id !== routeId),
     );
   }
 
