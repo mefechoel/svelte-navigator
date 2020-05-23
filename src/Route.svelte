@@ -28,6 +28,7 @@
   export let path = "";
   export let component = null;
   export let meta = {};
+  export let primary = true;
 
   const id = createId();
 
@@ -49,6 +50,7 @@
       default: path === "",
       fullPath: isDefault ? "" : rawBase,
       base: stripSplat(rawBase),
+      primary,
     };
   };
 
@@ -71,7 +73,7 @@
 
   $: {
     // eslint-disable-next-line no-shadow
-    const { path, component, meta, ...rest } = $$props;
+    const { path, component, meta, primary, ...rest } = $$props;
     props = rest;
   }
 
@@ -91,7 +93,7 @@
 </script>
 
 <div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
-<Router>
+<Router {primary}>
   {#if isActive}
     {#if component !== null}
       <svelte:component

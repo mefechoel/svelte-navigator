@@ -125,7 +125,7 @@
 
   // Queue matched Route, so top level Router can decide which Route to focus.
   // Non primary Routers should just be ignored
-  $: if (manageFocus && $activeRoute) {
+  $: if (manageFocus && $activeRoute && $activeRoute.route.primary) {
     pushFocusCandidate({ level, routerId, route: $activeRoute.route });
   }
 
