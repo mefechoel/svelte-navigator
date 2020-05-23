@@ -138,7 +138,7 @@ describe("Router", () => {
         assertPath("/svelte");
       });
 
-      it("absolute and relative link work the same in nested root", () => {
+      it("absolute and relative link work in nested root", () => {
         getByTestId("link-blog-svelte-rel").click();
         getByTestId("route-blog-svelte").should("be.visible");
         assertPath("/blog/svelte");
@@ -150,8 +150,9 @@ describe("Router", () => {
         assertPath("/blog");
 
         getByTestId("link-blog-svelte-abs").click();
-        getByTestId("route-blog-svelte").should("be.visible");
-        assertPath("/blog/svelte");
+        getByTestId("route-blog-svelte").should("not.be.visible");
+        getByTestId("route-default").should("be.visible");
+        assertPath("/svelte");
       });
 
       it("breaks out of router scope using ../", () => {
@@ -281,14 +282,15 @@ describe("Router", () => {
         cy.window().then(win =>
           objectMatches(
             {
-              absHome: "/blog",
-              absSomething: "/blog/something",
+              absHome: "/",
+              absSomething: "/something",
               relSomething: "/blog/resolve/something",
               relBackSomething: "/blog/something",
               relAppSomething: "/something",
               relPastAppSomething: "/something",
               blogRoot: "/blog",
               appRoot: "/",
+              appPastRoot: "/",
             },
             win.resolveMap,
           ),

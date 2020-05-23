@@ -131,98 +131,65 @@ describe("resolve", () => {
 
 describe("resolveLink", () => {
   it("relative", () => {
-    expect(resolveLink("relative", "/", "/currentBase", "/")).toBe(
+    expect(resolveLink("relative", "/currentBase", "/")).toBe(
       "/currentBase/relative",
     );
-    expect(resolveLink("relative", "/", "/currentBase", "/appBase")).toBe(
-      "/appBase/currentBase/relative",
-    );
-  });
-
-  it("relative, base", () => {
-    expect(resolveLink("relative", "/base", "/currentBase", "/")).toBe(
-      "/currentBase/relative",
-    );
-    expect(resolveLink("relative", "/base", "/currentBase", "/appBase")).toBe(
+    expect(resolveLink("relative", "/currentBase", "/appBase")).toBe(
       "/appBase/currentBase/relative",
     );
   });
 
   it("relative, no slashes", () => {
-    expect(resolveLink("relative", "", "currentBase", "/")).toBe(
+    expect(resolveLink("relative", "currentBase", "/")).toBe(
       "/currentBase/relative",
     );
-    expect(resolveLink("relative", "", "currentBase", "/appBase")).toBe(
+    expect(resolveLink("relative", "currentBase", "/appBase")).toBe(
       "/appBase/currentBase/relative",
     );
   });
 
   it("absolute", () => {
-    expect(resolveLink("/absolute", "/", "/currentBase", "/")).toBe(
-      "/absolute",
-    );
-    expect(resolveLink("/absolute", "/", "/currentBase", "/appBase")).toBe(
+    expect(resolveLink("/absolute", "/currentBase", "/")).toBe("/absolute");
+    expect(resolveLink("/absolute", "/currentBase", "/appBase")).toBe(
       "/appBase/absolute",
     );
   });
 
   it("absolute, no slashes", () => {
-    expect(resolveLink("/absolute", "/", "currentBase", "/")).toBe("/absolute");
-    expect(resolveLink("/absolute", "/", "currentBase", "/appBase")).toBe(
+    expect(resolveLink("/absolute", "currentBase", "/")).toBe("/absolute");
+    expect(resolveLink("/absolute", "currentBase", "/appBase")).toBe(
       "/appBase/absolute",
     );
   });
 
-  it("absolute with base", () => {
-    expect(resolveLink("/absolute", "/base", "/currentBase", "/")).toBe(
-      "/base/absolute",
-    );
-    expect(resolveLink("/absolute", "/base", "/currentBase", "/appBase")).toBe(
-      "/appBase/base/absolute",
-    );
-  });
-
-  it("absolute with base ..", () => {
-    expect(resolveLink("../relative", "/base", "/currentBase", "/")).toBe(
-      "/relative",
-    );
-    expect(
-      resolveLink("../relative", "/base", "/currentBase", "/appBase"),
-    ).toBe("/appBase/relative");
-  });
-
   it("relative ..", () => {
-    expect(resolveLink("../relative", "/", "/currentBase", "/")).toBe(
-      "/relative",
-    );
-    expect(resolveLink("../relative", "/", "/currentBase", "/appBase")).toBe(
+    expect(resolveLink("../relative", "/currentBase", "/")).toBe("/relative");
+    expect(resolveLink("../relative", "/currentBase", "/appBase")).toBe(
       "/appBase/relative",
     );
   });
 
   it("relative ../.. past root", () => {
-    expect(resolveLink("../../relative", "/", "/currentBase", "/")).toBe(
+    expect(resolveLink("../../relative", "/currentBase", "/")).toBe(
       "/relative",
     );
-    expect(resolveLink("../../relative", "/", "/currentBase", "/appBase")).toBe(
+    expect(resolveLink("../../relative", "/currentBase", "/appBase")).toBe(
       "/appBase/relative",
     );
   });
 
   it("relative .. in scope", () => {
-    expect(resolveLink("../relative", "/", "/current/base", "/")).toBe(
+    expect(resolveLink("../relative", "/current/base", "/")).toBe(
       "/current/relative",
     );
-    expect(resolveLink("../relative", "/", "/current/base", "/appBase")).toBe(
+    expect(resolveLink("../relative", "/current/base", "/appBase")).toBe(
       "/appBase/current/relative",
     );
   });
 
   it("/ -> basepath", () => {
-    expect(resolveLink("/", "/base", "/currentBase", "/")).toBe("/base");
-    expect(resolveLink("/", "/base", "/currentBase", "/appBase")).toBe(
-      "/appBase/base",
-    );
+    expect(resolveLink("/", "/currentBase", "/")).toBe("/");
+    expect(resolveLink("/", "/currentBase", "/appBase")).toBe("/appBase");
   });
 });
 

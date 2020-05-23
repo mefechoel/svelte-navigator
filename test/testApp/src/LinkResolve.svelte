@@ -12,5 +12,6 @@
     relPastAppSomething: resolve("../../../something"),
     blogRoot: resolve(".."),
     appRoot: resolve("../.."),
+    appPastRoot: resolve("../../.."),
   };
 </script>

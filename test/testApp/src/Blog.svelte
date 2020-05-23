@@ -12,7 +12,7 @@
   <nav>
     <Link data-testid="link-blog-svelte-rel" to="svelte">SVELTE REL</Link>
     <Link data-testid="link-blog-svelte-abs" to="/svelte">SVELTE ABS</Link>
-    <Link data-testid="link-blog-home" to="/">BLOG HOME</Link>
+    <Link data-testid="link-blog-home" to=".">BLOG HOME</Link>
     <Link data-testid="link-blog-app-home" to="../">APP HOME</Link>
     <Link data-testid="link-blog-id" to="article/123">ID: 123</Link>
     <Link data-testid="link-blog-splat" to="other/123">SPLAT</Link>

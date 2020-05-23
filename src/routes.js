@@ -7,7 +7,6 @@ import {
   isSplat,
   isRootSegment,
   isDynamic,
-  stripSlashes,
 } from "./paths";
 import { ROUTER_ID, fail } from "./warning";
 import { isUndefined } from "./utils";
@@ -282,26 +281,19 @@ export function normalizeLocation(location, basepath) {
 }
 
 /**
- * Resolves a link relative to the router basepath and the uri of the current router.
+ * Resolves a link relative to the parent Route and the Routers basepath.
  *
- * @param {string} path The given path, that will be resolved against a router base
- * @param {string} basepath The basepath of the router (i.e. from calling `useBase`)
- * @param {string} routerBase The current router base (i.e. from calling `useRouterBase`)
+ * @param {string} path The given path, that will be resolved
+ * @param {string} routeBase The current Routes base path
+ * @param {string} appBase The basepath of the app. Used, when serving from a subdirectory
  * @returns {string} The resolved path
  *
  * @example
- * resolveLink("relative", "/", "/currentBase") // -> "/currentBase/relative"
- * resolveLink("/absolute", "/", "/currentBase") // -> "/absolute"
- * resolveLink("/absolute", "/base", "/currentBase") // -> "/base/absolute"
+ * resolveLink("relative", "/routeBase", "/") // -> "/routeBase/relative"
+ * resolveLink("/absolute", "/routeBase", "/") // -> "/absolute"
+ * resolveLink("relative", "/routeBase", "/base") // -> "/base/routeBase/relative"
+ * resolveLink("/absolute", "/routeBase", "/base") // -> "/base/absolute"
  */
-export function resolveLink(path, basepath, routerBase, appBase) {
-  let resolvedLink;
-  if (path === "/") {
-    resolvedLink = basepath;
-  } else if (startsWith(path, "/")) {
-    resolvedLink = resolve(stripSlashes(path), basepath);
-  } else {
-    resolvedLink = resolve(path, routerBase);
-  }
-  return join(appBase, resolvedLink);
+export function resolveLink(path, routeBase, appBase) {
+  return join(appBase, resolve(path, routeBase));
 }

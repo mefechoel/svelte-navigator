@@ -1,5 +1,5 @@
 import { getContext } from "svelte";
-import { derived, get } from "svelte/store";
+import { derived, get, writable } from "svelte/store";
 import { LOCATION, ROUTER, ROUTE } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 
@@ -99,8 +99,13 @@ export function useHistory() {
   return history;
 }
 
+export function useRouteBase() {
+  const route = getContext(ROUTE);
+  return route ? derived(route, _route => _route.base) : writable("/");
+}
+
 /**
- * Resolve a given link relative to the current `Route` and the `Router` `basepath`.
+ * Resolve a given link relative to the current `Route` and the `Router`s `basepath`.
  * It is used under the hood in `Link` and `useNavigate`.
  * You can use it to manually resolve links, when using the `link` or `links` actions.
  *
@@ -121,17 +126,15 @@ export function useHistory() {
   ```
  */
 export function useLinkResolve() {
-  const routeStore = getContext(ROUTE);
-  const routeBase = routeStore ? get(routeStore).base : "/";
-  const { basepath: appBase, base: baseStore } = getContext(ROUTER);
-  const base = get(baseStore);
+  const routeBase = useRouteBase();
+  const { basepath: appBase } = getContext(ROUTER);
   /**
    * Resolves the path relative to the current route and basepath.
    *
    * @param {string} path The path to navigate to
    * @returns {string} The resolved path
    */
-  const resolve = path => resolveLink(path, base, routeBase, appBase);
+  const resolve = path => resolveLink(path, get(routeBase), appBase);
   return resolve;
 }
 

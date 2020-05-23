@@ -4,10 +4,6 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
-import { getContext } from "svelte";
-import { derived, writable } from "svelte/store";
-import { ROUTE } from "./contexts";
-
 export const isUndefined = value => typeof value === "undefined";
 
 /**
@@ -51,11 +47,3 @@ export function findClosest(tagName, element) {
 }
 
 export const isSSR = isUndefined(window);
-
-export const deriveDefault = (store, mapper, defaultValue) =>
-  store ? derived(store, mapper) : writable(defaultValue);
-
-export const deriveRouteBase = defaultValue => {
-  const route = getContext(ROUTE);
-  return deriveDefault(route, _route => _route.base, defaultValue);
-};

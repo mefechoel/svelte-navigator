@@ -16,9 +16,9 @@
   import { writable } from "svelte/store";
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
-  import { join, normalizePath } from "./paths";
+  import { normalizePath } from "./paths";
   import { pick, match, normalizeLocation } from "./routes";
-  import { isSSR, deriveRouteBase } from "./utils";
+  import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import {
     focusCandidate,
@@ -40,8 +40,6 @@
 
   const locationContext = getContext(LOCATION);
   const routerContext = getContext(ROUTER);
-  // If the Router is a decendant of a Route, use its base
-  const base = deriveRouteBase("/");
 
   const isTopLevelRouter = !locationContext;
   const routerId = createId();
@@ -68,14 +66,11 @@
     ? writable(getInitialLocation())
     : locationContext;
 
-  function registerRoute(routeParams) {
-    const route = {
-      ...routeParams,
-      // Preserve the routes `path` prop, so using `useActiveRoute().path`
-      // will always work the same, regardless if there is a basepath or not
-      fullPath: routeParams.default ? "" : join($base, routeParams.path),
-    };
+  function filterRoutes(routeList, routeId) {
+    return routeList.filter(routeItem => routeItem.id !== routeId);
+  }
 
+  function registerRoute(route) {
     if (isSSR) {
       // In SSR we should set the activeRoute immediately if it is a match.
       // If there are more Routes being registered after a match is found,
@@ -90,14 +85,18 @@
         hasActiveRoute = true;
       }
     } else {
-      routes.update(prevRoutes => [...prevRoutes, route]);
+      routes.update(prevRoutes => {
+        // Remove an old version of the updated route,
+        // before pushing the new version
+        const nextRoutes = filterRoutes(prevRoutes, route.id);
+        nextRoutes.push(route);
+        return nextRoutes;
+      });
     }
   }
 
   function unregisterRoute(routeId) {
-    routes.update(prevRoutes =>
-      prevRoutes.filter(routeItem => routeItem.id !== routeId),
-    );
+    routes.update(prevRoutes => filterRoutes(prevRoutes, routeId));
   }
 
   $: if (basepath !== initialBasepath) {
@@ -150,7 +149,6 @@
 
   setContext(ROUTER, {
     activeRoute,
-    base,
     registerRoute,
     unregisterRoute,
     manageFocus,

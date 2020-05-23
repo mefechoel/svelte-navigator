@@ -15,8 +15,13 @@
   import { getContext, onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
   import { ROUTER, ROUTE } from "./contexts";
-  import { useActiveRoute, useLocation, useNavigate } from "./hooks";
-  import { isSSR, deriveRouteBase } from "./utils";
+  import {
+    useActiveRoute,
+    useLocation,
+    useNavigate,
+    useRouteBase,
+  } from "./hooks";
+  import { isSSR } from "./utils";
   import { stripSplat, join } from "./paths";
 
   export let path = "";
@@ -26,27 +31,31 @@
   const id = createId();
 
   const { registerRoute, unregisterRoute } = getContext(ROUTER);
-  const parentBase = deriveRouteBase("");
+  const parentBase = useRouteBase();
   const activeRoute = useActiveRoute();
   const location = useLocation();
 
   // eslint-disable-next-line no-shadow
-  const createRoute = (path, meta, parentBase) => ({
-    path,
-    // If no path prop is given, this Route will act as the default Route
-    // that is rendered if no other Route in the Router is a match.
-    default: path === "",
-    base: join(parentBase, stripSplat(path)),
-    id,
-    meta,
-  });
+  const createRoute = (path, meta, parentBase) => {
+    const isDefault = path === "";
+    const rawBase = join(parentBase, path);
+    return {
+      id,
+      path,
+      meta,
+      // If no path prop is given, this Route will act as the default Route
+      // that is rendered if no other Route in the Router is a match.
+      default: path === "",
+      fullPath: isDefault ? "" : rawBase,
+      base: stripSplat(rawBase),
+    };
+  };
 
   const route = writable(createRoute(path, meta, $parentBase));
 
   $: {
     const updatedRoute = createRoute(path, meta, $parentBase);
     route.set(updatedRoute);
-    unregisterRoute(id);
     registerRoute(updatedRoute);
   }
 
