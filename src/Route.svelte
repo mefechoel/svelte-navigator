@@ -14,6 +14,7 @@
 
   import { getContext, onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
+  import Router from "./Router.svelte";
   import { ROUTER, ROUTE } from "./contexts";
   import {
     useActiveRoute,
@@ -90,17 +91,19 @@
 </script>
 
 <div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
-{#if isActive}
-  {#if component !== null}
-    <svelte:component
-      this={component}
-      location={$location}
-      {navigate}
-      {...params}
-      {...props}
-    />
-  {:else}
-    <slot {params} location={$location} {navigate} />
+<Router>
+  {#if isActive}
+    {#if component !== null}
+      <svelte:component
+        this={component}
+        location={$location}
+        {navigate}
+        {...params}
+        {...props}
+      />
+    {:else}
+      <slot {params} location={$location} {navigate} />
+    {/if}
   {/if}
-{/if}
+</Router>
 <div style="display:none;" aria-hidden="true" data-svnav-route-end={id} />
