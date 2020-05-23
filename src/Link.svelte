@@ -9,7 +9,6 @@
   import { useLocation, useLinkResolve, useHistory } from "./hooks";
   import { shouldNavigate } from "./utils";
   import { startsWith } from "./paths";
-  import { warn, LINK_ID } from "./warning";
 
   export let to;
   export let replace = false;
@@ -27,22 +26,15 @@
   $: ariaCurrent = isCurrent ? "page" : undefined;
   $: props = (() => {
     // eslint-disable-next-line no-shadow
-    const { to, replace, state, getProps: _getProps, ...restProps } = $$props;
-    const restPropKeys = Object.keys(restProps);
-    if (restPropKeys.length && getProps) {
-      const propList = restPropKeys.join('", "');
-      warn(
-        LINK_ID,
-        `Props "${propList}" are ignored, because you provided a "getProps" function.`,
-      );
-    }
+    let { to, replace, state, getProps: _getProps, ...restProps } = $$props;
     if (typeof getProps === "function") {
-      return getProps({
+      const dynamicProps = getProps({
         location: $location,
         href,
         isPartiallyCurrent,
         isCurrent,
       });
+      restProps = { ...restProps, ...dynamicProps };
     }
     return restProps;
   })();
