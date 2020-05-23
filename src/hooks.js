@@ -2,6 +2,7 @@ import { getContext } from "svelte";
 import { derived, get, writable } from "svelte/store";
 import { LOCATION, ROUTER, ROUTE } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
+import { fail } from "./warning";
 
 /**
  * Access the current location via a readable store.
@@ -263,4 +264,20 @@ export function useMatch(path) {
     appBase,
   );
   return derived(location, loc => match({ fullPath }, loc.pathname));
+}
+
+/**
+ * Check if a Link or Route have been created outside of a Router
+ * @param {number} componentId
+ * @param {*} props
+ */
+export function usePreflightCheck(componentId, props) {
+  const routerCtx = getContext(ROUTER);
+  if (!routerCtx) {
+    fail(
+      componentId,
+      label => `You cannot use a ${label} outside of a Router.`,
+      props,
+    );
+  }
 }

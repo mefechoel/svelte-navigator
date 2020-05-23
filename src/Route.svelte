@@ -21,14 +21,18 @@
     useLocation,
     useNavigate,
     useRouteBase,
+    usePreflightCheck,
   } from "./hooks";
   import { isSSR } from "./utils";
   import { stripSplat, join } from "./paths";
+  import { ROUTE_ID } from "./warning";
 
   export let path = "";
   export let component = null;
   export let meta = {};
   export let primary = true;
+
+  usePreflightCheck(ROUTE_ID, $$props);
 
   const id = createId();
 

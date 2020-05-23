@@ -6,14 +6,22 @@
    */
 
   import { createEventDispatcher } from "svelte";
-  import { useLocation, useLinkResolve, useHistory } from "./hooks";
-  import { shouldNavigate } from "./utils";
+  import {
+    useLocation,
+    useLinkResolve,
+    useHistory,
+    usePreflightCheck,
+  } from "./hooks";
+  import { shouldNavigate, isFunction } from "./utils";
   import { startsWith } from "./paths";
+  import { LINK_ID } from "./warning";
 
   export let to;
   export let replace = false;
   export let state = {};
   export let getProps = null;
+
+  usePreflightCheck(LINK_ID, $$props);
 
   const location = useLocation();
   const dispatch = createEventDispatcher();
@@ -27,7 +35,7 @@
   $: props = (() => {
     // eslint-disable-next-line no-shadow
     let { to, replace, state, getProps: _getProps, ...restProps } = $$props;
-    if (typeof getProps === "function") {
+    if (isFunction(getProps)) {
       const dynamicProps = getProps({
         location: $location,
         href,

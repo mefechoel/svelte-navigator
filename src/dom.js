@@ -1,4 +1,4 @@
-import { warn, ROUTER_ID } from "./warning";
+import { warn, ROUTER_ID, ROUTE_ID } from "./warning";
 
 /*
  * `focus` Adapted from https://github.com/oaf-project/oaf-side-effects/blob/master/src/index.ts
@@ -67,14 +67,15 @@ export function queryHeading(id) {
 export function handleFocus(route) {
   const focusHeading = queryHeading(route.id);
   if (!focusHeading) {
-    const routeAttr = route.default ? "default" : `path="${route.path}"`;
     warn(
       ROUTER_ID,
-      `Could not find a heading to focus in <Route ${routeAttr} />. ` +
+      "Could not find a heading to focus. " +
         "You should always render a header for accessibility reasons. " +
         "If you don't want this Route or Router to manage focus, " +
         // eslint-disable-next-line quotes
-        'pass "primary={false}" to it',
+        'pass "primary={false}" to it.',
+      route,
+      ROUTE_ID,
     );
   }
   const headingFocused = focus(focusHeading);

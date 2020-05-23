@@ -6,6 +6,8 @@
 
 export const isUndefined = value => typeof value === "undefined";
 
+export const isFunction = value => typeof value === "function";
+
 /**
  * Decides whether a given `event` should result in a navigation or not.
  * @param {object} event
