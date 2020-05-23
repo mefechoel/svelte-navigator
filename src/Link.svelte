@@ -8,7 +8,7 @@
   import { createEventDispatcher } from "svelte";
   import {
     useLocation,
-    useLinkResolve,
+    useResolve,
     useHistory,
     usePreflightCheck,
   } from "./hooks";
@@ -25,10 +25,10 @@
 
   const location = useLocation();
   const dispatch = createEventDispatcher();
-  const resolveLink = useLinkResolve();
+  const resolve = useResolve();
   const { navigate } = useHistory();
 
-  $: href = resolveLink(to);
+  $: href = resolve(to);
   $: isPartiallyCurrent = startsWith($location.pathname, href);
   $: isCurrent = href === $location.pathname;
   $: ariaCurrent = isCurrent ? "page" : undefined;

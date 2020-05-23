@@ -17,7 +17,7 @@ export { link, links } from "./actions";
 export {
   useActiveRoute,
   useLocation,
-  useLinkResolve,
+  useResolve,
   useNavigate,
   useMatch,
 } from "./hooks";

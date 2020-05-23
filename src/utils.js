@@ -8,6 +8,8 @@ export const isUndefined = value => typeof value === "undefined";
 
 export const isFunction = value => typeof value === "function";
 
+export const isNumber = value => typeof value === "number";
+
 /**
  * Decides whether a given `event` should result in a navigation or not.
  * @param {object} event

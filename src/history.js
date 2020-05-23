@@ -4,7 +4,7 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
-import { createGlobalId, isSSR } from "./utils";
+import { createGlobalId, isSSR, isNumber } from "./utils";
 
 function getLocation(source) {
   return {
@@ -52,7 +52,7 @@ function createHistory(source) {
      */
     navigate(to, { state, replace = false } = {}) {
       let action = replace ? "REPLACE" : "PUSH";
-      if (typeof to === "number") {
+      if (isNumber(to)) {
         action = "POP";
         source.history.go(to);
       } else {

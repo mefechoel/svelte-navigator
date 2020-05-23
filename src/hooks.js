@@ -2,6 +2,7 @@ import { getContext } from "svelte";
 import { derived, get, writable } from "svelte/store";
 import { LOCATION, ROUTER, ROUTE } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
+import { isNumber } from "./utils";
 import { fail } from "./warning";
 
 /**
@@ -115,9 +116,9 @@ export function useRouteBase() {
  * @example
   ```html
   <script>
-    import { link, useLinkResolve } from "svelte-navigator";
+    import { link, useResolve } from "svelte-navigator";
 
-    const resolve = useLinkResolve();
+    const resolve = useResolve();
     // `resolvedLink` will be resolved relative to its parent Route
     // and the Routers `basepath`
     const resolvedLink = resolve("relativePath");
@@ -126,7 +127,7 @@ export function useRouteBase() {
   <a href={resolvedLink} use:link>Relative link</a>
   ```
  */
-export function useLinkResolve() {
+export function useResolve() {
   const routeBase = useRouteBase();
   const { basepath: appBase } = getContext(ROUTER);
   /**
@@ -205,7 +206,7 @@ export function useLinkResolve() {
   ```
  */
 export function useNavigate() {
-  const resolve = useLinkResolve();
+  const resolve = useResolve();
   const { navigate } = useHistory();
   /**
    * Navigate to a new route.
@@ -222,7 +223,7 @@ export function useNavigate() {
   const navigateRelative = (to, { state, replace = false } = {}) => {
     // If to is a number, we navigate to the target stack entry via `history.go`.
     // Otherwise resolve the link
-    const target = typeof to === "number" ? to : resolve(to);
+    const target = isNumber(to) ? to : resolve(to);
     return navigate(target, { state, replace });
   };
   return navigateRelative;
@@ -256,7 +257,7 @@ export function useNavigate() {
  */
 export function useMatch(path) {
   const location = useLocation();
-  const resolve = useLinkResolve();
+  const resolve = useResolve();
   const { basepath: appBase } = getContext(ROUTER);
   const resolvedPath = resolve(path);
   const { pathname: fullPath } = normalizeLocation(
