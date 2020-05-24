@@ -7,6 +7,8 @@ import {
   isSplat,
   isRootSegment,
   isDynamic,
+  stripSplat,
+  normalizePath,
 } from "./paths";
 import { ROUTER_ID, fail } from "./warning";
 import { isUndefined } from "./utils";
@@ -102,18 +104,17 @@ export function pick(routes, uri) {
   for (let i = 0, l = ranked.length; i < l; i++) {
     const { route } = ranked[i];
     let missed = false;
+    const params = {};
+
+    // eslint-disable-next-line no-shadow
+    const createMatch = uri => ({ ...route, params, uri });
 
     if (route.default) {
-      defaultMatch = {
-        route,
-        params: {},
-        uri,
-      };
+      defaultMatch = createMatch(uri);
       continue;
     }
 
     const routeSegments = segmentize(route.fullPath);
-    const params = {};
     const max = Math.max(uriSegments.length, routeSegments.length);
     let index = 0;
 
@@ -157,11 +158,7 @@ export function pick(routes, uri) {
     }
 
     if (!missed) {
-      bestMatch = {
-        route,
-        params,
-        uri: `/${uriSegments.slice(0, index).join("/")}`,
-      };
+      bestMatch = createMatch(join(...uriSegments.slice(0, index)));
       break;
     }
   }
@@ -260,8 +257,8 @@ export function resolve(to, base) {
  */
 export function normalizeLocation(location, basepath) {
   const { pathname, hash = "", search = "", state } = location;
-  const baseSegments = segmentize(basepath).filter(Boolean);
-  const pathSegments = segmentize(pathname).filter(Boolean);
+  const baseSegments = segmentize(basepath, true);
+  const pathSegments = segmentize(pathname, true);
   while (baseSegments.length) {
     if (baseSegments[0] !== pathSegments[0]) {
       fail(
@@ -296,4 +293,18 @@ export function normalizeLocation(location, basepath) {
  */
 export function resolveLink(path, routeBase, appBase) {
   return join(appBase, resolve(path, routeBase));
+}
+
+/**
+ * Get the uri for a Route, by matching it against the current location.
+ *
+ * @param {string} routePath The Routes resolved path
+ * @param {string} pathname The current locations pathname
+ */
+export function extractBaseUri(routePath, pathname) {
+  const fullPath = normalizePath(stripSplat(routePath));
+  const baseSegments = segmentize(fullPath, true);
+  const pathSegments = segmentize(pathname, true).slice(0, baseSegments.length);
+  const routeMatch = match({ fullPath }, join(...pathSegments));
+  return routeMatch && routeMatch.uri;
 }

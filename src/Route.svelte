@@ -17,14 +17,14 @@
   import Router from "./Router.svelte";
   import { ROUTER, ROUTE } from "./contexts";
   import {
-    useActiveRoute,
     useLocation,
     useNavigate,
     useRouteBase,
     usePreflightCheck,
   } from "./hooks";
   import { isSSR } from "./utils";
-  import { stripSplat, join } from "./paths";
+  import { extractBaseUri } from "./routes";
+  import { join } from "./paths";
   import { ROUTE_ID } from "./warning";
 
   export let path = "";
@@ -36,13 +36,12 @@
 
   const id = createId();
 
-  const { registerRoute, unregisterRoute } = getContext(ROUTER);
+  const { registerRoute, unregisterRoute, activeRoute } = getContext(ROUTER);
   const parentBase = useRouteBase();
-  const activeRoute = useActiveRoute();
   const location = useLocation();
 
   // eslint-disable-next-line no-shadow
-  const createRoute = (path, meta, parentBase) => {
+  function createRoute(path, meta, parentBase, loc) {
     const isDefault = path === "";
     const rawBase = join(parentBase, path);
     return {
@@ -50,18 +49,21 @@
       path,
       meta,
       // If no path prop is given, this Route will act as the default Route
-      // that is rendered if no other Route in the Router is a match.
-      default: path === "",
+      // that is rendered if no other Route in the Router is a match
+      default: isDefault,
       fullPath: isDefault ? "" : rawBase,
-      base: stripSplat(rawBase),
+      base: isDefault ? parentBase : extractBaseUri(rawBase, loc.pathname),
       primary,
     };
-  };
+  }
 
-  const route = writable(createRoute(path, meta, $parentBase));
+  const route = writable(createRoute(path, meta, $parentBase, $location));
 
   $: {
-    const updatedRoute = createRoute(path, meta, $parentBase);
+    // We need to pass in `$location` here, so the route updates its base
+    // when location changes.
+    // This will prevent parameters in bases
+    const updatedRoute = createRoute(path, meta, $parentBase, $location);
     route.set(updatedRoute);
     registerRoute(updatedRoute);
   }
@@ -69,7 +71,7 @@
   let params = {};
   let props = {};
 
-  $: isActive = $activeRoute && $activeRoute.route.id === id;
+  $: isActive = $activeRoute && $activeRoute.id === id;
 
   $: if (isActive) {
     params = $activeRoute.params;
@@ -82,11 +84,9 @@
   }
 
   // There is no need to unregister Routes in SSR since it will all be
-  // thrown away anyway.
+  // thrown away anyway
   if (!isSSR) {
-    onDestroy(() => {
-      unregisterRoute(id);
-    });
+    onDestroy(() => unregisterRoute(id));
   }
 
   setContext(ROUTE, route);

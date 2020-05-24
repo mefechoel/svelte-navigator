@@ -23,12 +23,6 @@ import { fail } from "./warning";
 
     $: console.log($location);
     // {
-    //   href: "http://localhost:5000/blog?id=123#comments",
-    //   origin: "http://localhost:5000",
-    //   protocol: "http:",
-    //   host: "localhost:5000",
-    //   hostname: "localhost",
-    //   port: "5000",
     //   pathname: "/blog",
     //   search: "?id=123",
     //   hash: "#comments",
@@ -44,13 +38,13 @@ export function useLocation() {
 
 /**
  * @typedef {{
-    route: {
-      path: string;
-      fullPath: string;
-      name: string | null;
-      id: number;
-      default: boolean;
-    };
+    path: string;
+    fullPath: string;
+    base: string;
+    id: number;
+    default: boolean;
+    primary: boolean;
+    meta: any;
     params: {};
     uri: string;
   }} RouteMatch
@@ -76,17 +70,20 @@ export function useLocation() {
 
     $: console.log($activeRoute);
     // {
-    //   route: {
-    //     path: "blog/:id/",
-    //     fullPath: "[basepath/]blog/:id/",
-    //     name: "route-name",
-    //     id: 123,
-    //     default: false
+    //   path: "blog/:id/*rest",
+    //   fullPath: "/basepath/blog/:id/*rest",
+    //   base: "/basepath/blog/:id",
+    //   id: 123,
+    //   default: false,
+    //   primary: true,
+    //   meta: {
+    //     name: "route-name"
     //   },
     //   params: {
-    //     id: "123"
+    //     id: "123",
+    //     rest: "somewhere"
     //   },
-    //   uri: "/blog/123"
+    //   uri: "/blog/123/somewhere"
     // }
   </script>
   ```
@@ -133,7 +130,7 @@ export function useResolve() {
   /**
    * Resolves the path relative to the current route and basepath.
    *
-   * @param {string} path The path to navigate to
+   * @param {string} path The path to resolve
    * @returns {string} The resolved path
    */
   const resolve = path => resolveLink(path, get(routeBase), appBase);
@@ -264,7 +261,7 @@ export function useMatch(path) {
     { pathname: resolvedPath },
     appBase,
   );
-  return derived(location, loc => match({ fullPath }, loc.pathname));
+  return derived(location, loc => match({ fullPath, path }, loc.pathname));
 }
 
 /**

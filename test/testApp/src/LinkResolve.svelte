@@ -1,7 +1,7 @@
 <script>
-  import { useLinkResolve } from "../../../src";
+  import { useResolve } from "../../../src";
 
-  const resolve = useLinkResolve();
+  const resolve = useResolve();
 
   window.resolveMap = {
     absHome: resolve("/"),

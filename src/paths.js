@@ -60,8 +60,9 @@ export function stripSlashes(str) {
  * @param {string} uri
  * @return {string[]}
  */
-export function segmentize(uri) {
-  return stripSlashes(uri).split("/");
+export function segmentize(uri, filterFalsy = false) {
+  const segments = stripSlashes(uri).split("/");
+  return filterFalsy ? segments.filter(Boolean) : segments;
 }
 
 /**
@@ -101,14 +102,11 @@ export function normalizePath(path) {
 /**
  * Joins and normalizes multiple path fragments
  *
- * @param  {...string} pathFragments
+ * @param {...string} pathFragments
  * @returns {string}
  */
 export function join(...pathFragments) {
-  const joinFragment = fragment =>
-    segmentize(fragment)
-      .filter(Boolean)
-      .join("/");
+  const joinFragment = fragment => segmentize(fragment, true).join("/");
   const joinedSegments = pathFragments.map(joinFragment).join("/");
   return normalizePath(joinedSegments);
 }

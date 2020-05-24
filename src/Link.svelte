@@ -28,7 +28,10 @@
   const resolve = useResolve();
   const { navigate } = useHistory();
 
-  $: href = resolve(to);
+  // We need to pass location here to force re-resolution of the link,
+  // when the pathname changes. Otherwise we could end up with stale path params,
+  // when for example an :id changes in the parent Routes path
+  $: href = resolve(to, $location);
   $: isPartiallyCurrent = startsWith($location.pathname, href);
   $: isCurrent = href === $location.pathname;
   $: ariaCurrent = isCurrent ? "page" : undefined;
