@@ -1,6 +1,6 @@
 import { getContext } from "svelte";
 import { derived, get, writable } from "svelte/store";
-import { LOCATION, ROUTER, ROUTE } from "./contexts";
+import { LOCATION, ROUTER, ROUTE, ROUTE_PARAMS } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 import { isNumber } from "./utils";
 import { fail } from "./warning";
@@ -40,13 +40,8 @@ export function useLocation() {
  * @typedef {{
     path: string;
     fullPath: string;
-    base: string;
-    id: number;
-    default: boolean;
-    primary: boolean;
-    meta: any;
-    params: {};
     uri: string;
+    params: {};
   }} RouteMatch
  */
 
@@ -55,49 +50,16 @@ export function useLocation() {
  */
 
 /**
- * Access the Route currenty matched by the Router from anywhere inside the Router context.
- * You can for example access Route params from outside the rendered Route or
- * from a deeply nested component without prop-drilling.
- *
- * @returns {RouteMatchStore}
- *
- * @example
-  ```html
-  <script>
-    import { useActiveRoute } from "svelte-navigator";
-
-    const activeRoute = useActiveRoute();
-
-    $: console.log($activeRoute);
-    // {
-    //   path: "blog/:id/*rest",
-    //   fullPath: "/basepath/blog/:id/*rest",
-    //   base: "/basepath/blog/:id",
-    //   id: 123,
-    //   default: false,
-    //   primary: true,
-    //   meta: {
-    //     name: "route-name"
-    //   },
-    //   params: {
-    //     id: "123",
-    //     rest: "somewhere"
-    //   },
-    //   uri: "/blog/123/somewhere"
-    // }
-  </script>
-  ```
+ * Access the history of top level Router.
  */
-export function useActiveRoute() {
-  const { activeRoute } = getContext(ROUTER);
-  return { subscribe: activeRoute.subscribe };
-}
-
 export function useHistory() {
   const { history } = getContext(ROUTER);
   return history;
 }
 
+/**
+ * Access the base of the parent Route.
+ */
 export function useRouteBase() {
   const route = getContext(ROUTE);
   return route ? derived(route, _route => _route.base) : writable("/");
@@ -262,6 +224,34 @@ export function useMatch(path) {
     appBase,
   );
   return derived(location, loc => match({ fullPath, path }, loc.pathname));
+}
+
+/**
+ * Access the parent Routes matched params and wildcards
+ * @returns {import("svelte/store").Readable<{
+     [param: string]: any;
+   }>} A readable store containing the matched parameters and wildcards
+ *
+ * @example
+  ```html
+  <!--
+    Somewhere inside <Route path="user/:id/*splat" />
+    with a current url of "/myApp/user/123/pauls-profile"
+  -->
+  <script>
+    import { useParams } from "svelte-navigator";
+
+    const params = useParams();
+
+    $: console.log($params); // -> { id: "123", splat: "pauls-profile" }
+  </script>
+
+  <h3>Welcome user {$params.id}! bleep bloop...</h3>
+  ```
+ */
+export function useParams() {
+  const { subscribe } = getContext(ROUTE_PARAMS);
+  return { subscribe };
 }
 
 /**

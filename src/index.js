@@ -15,9 +15,9 @@ export {
 } from "./history";
 export { link, links } from "./actions";
 export {
-  useActiveRoute,
   useLocation,
   useResolve,
   useNavigate,
   useMatch,
+  useParams,
 } from "./hooks";

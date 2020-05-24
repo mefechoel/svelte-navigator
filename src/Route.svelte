@@ -15,7 +15,7 @@
   import { getContext, onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
   import Router from "./Router.svelte";
-  import { ROUTER, ROUTE } from "./contexts";
+  import { ROUTER, ROUTE, ROUTE_PARAMS } from "./contexts";
   import {
     useLocation,
     useNavigate,
@@ -58,6 +58,7 @@
   }
 
   const route = writable(createRoute(path, meta, $parentBase, $location));
+  const params = writable({});
 
   $: {
     // We need to pass in `$location` here, so the route updates its base
@@ -68,13 +69,12 @@
     registerRoute(updatedRoute);
   }
 
-  let params = {};
   let props = {};
 
   $: isActive = $activeRoute && $activeRoute.id === id;
 
   $: if (isActive) {
-    params = $activeRoute.params;
+    params.set($activeRoute.params);
   }
 
   $: {
@@ -90,6 +90,7 @@
   }
 
   setContext(ROUTE, route);
+  setContext(ROUTE_PARAMS, params);
 
   // We need to call useNavigate after the route is set,
   // so we can use the routes path for link resolution
@@ -104,11 +105,11 @@
         this={component}
         location={$location}
         {navigate}
-        {...params}
+        {...$params}
         {...props}
       />
     {:else}
-      <slot {params} location={$location} {navigate} />
+      <slot params={$params} location={$location} {navigate} />
     {/if}
   {/if}
 </Router>
