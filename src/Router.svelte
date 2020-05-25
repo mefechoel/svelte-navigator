@@ -132,12 +132,12 @@
           }
           if (a11yConfig.announcements) {
             const { path, fullPath, meta, params, uri } = focusCandidate.route;
-            announcementText = a11yConfig.createAnnouncement({
-              path,
-              fullPath,
-              meta,
-              params,
-              uri,
+            const announcementMessage = a11yConfig.createAnnouncement(
+              { path, fullPath, meta, params, uri },
+              $location,
+            );
+            Promise.resolve(announcementMessage).then(message => {
+              announcementText = message;
             });
           }
         }
