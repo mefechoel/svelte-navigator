@@ -1,6 +1,32 @@
 import { get } from "svelte/store";
 import { warn, ROUTER_ID, ROUTE_ID } from "./warning";
 
+// We need to keep the focus candidate in a separate file, so svelte does
+// not update, when we mutate it.
+// Also, we need a single global reference, because taking focus needs to
+// work globally, even if we have multiple top level routers
+// eslint-disable-next-line import/no-mutable-exports
+export let focusCandidate = null;
+
+// eslint-disable-next-line import/no-mutable-exports
+export let initialNavigation = true;
+
+export function pushFocusCandidate(item) {
+  if (
+    !focusCandidate ||
+    item.level > focusCandidate.level ||
+    (item.level === focusCandidate.level &&
+      item.routerId < focusCandidate.routerId)
+  ) {
+    focusCandidate = item;
+  }
+}
+
+export function clearFocusCandidate() {
+  focusCandidate = null;
+  initialNavigation = false;
+}
+
 /*
  * `focus` Adapted from https://github.com/oaf-project/oaf-side-effects/blob/master/src/index.ts
  *
@@ -87,3 +113,19 @@ export function handleFocus(route) {
     resetFocus();
   });
 }
+
+export function announceNavigation(message, announcementElement) {
+  // eslint-disable-next-line no-param-reassign
+  announcementElement.textContent = message;
+}
+
+export const visuallyHiddenStyle = `
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+`;

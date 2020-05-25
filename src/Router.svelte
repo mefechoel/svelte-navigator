@@ -21,17 +21,21 @@
   import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import {
+    handleFocus,
+    announceNavigation,
     focusCandidate,
     pushFocusCandidate,
     clearFocusCandidate,
     initialNavigation,
-  } from "./focusCandidate";
-  import { handleFocus } from "./dom";
+    visuallyHiddenStyle,
+  } from "./a11y";
 
   export let basepath = "/";
   export let url = null;
   export let history = globalHistory;
   export let primary = true;
+
+  const createAnnouncement = route => `Navigated to ${route.uri}`;
 
   // Remember the initial `basepath`, so we can fire a warning
   // when the user changes it later
@@ -45,6 +49,7 @@
   const routerId = createId();
 
   const manageFocus = primary && !(routerContext && !routerContext.manageFocus);
+  let announcement;
 
   const routes = writable([]);
   const activeRoute = writable(null);
@@ -117,6 +122,10 @@
         if (!focusCandidate) return;
         if (!initialNavigation) {
           handleFocus(focusCandidate.route);
+          announceNavigation(
+            createAnnouncement(focusCandidate.route),
+            announcement,
+          );
         }
         clearFocusCandidate();
       });
@@ -159,3 +168,13 @@
 </script>
 
 <slot />
+
+{#if isTopLevelRouter && manageFocus}
+  <div
+    role="status"
+    aria-atomic="true"
+    aria-live="polite"
+    style={visuallyHiddenStyle}
+    bind:this={announcement}
+  />
+{/if}
