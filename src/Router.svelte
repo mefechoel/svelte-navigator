@@ -22,7 +22,6 @@
   import { warn, ROUTER_ID } from "./warning";
   import {
     handleFocus,
-    announceNavigation,
     focusCandidate,
     pushFocusCandidate,
     clearFocusCandidate,
@@ -34,8 +33,14 @@
   export let url = null;
   export let history = globalHistory;
   export let primary = true;
+  export let a11y = {};
 
-  const createAnnouncement = route => `Navigated to ${route.uri}`;
+  const a11yConfig = {
+    createAnnouncement: route => `Navigated to ${route.uri}`,
+    announcements: true,
+    manageFocus: true,
+    ...a11y,
+  };
 
   // Remember the initial `basepath`, so we can fire a warning
   // when the user changes it later
@@ -49,7 +54,8 @@
   const routerId = createId();
 
   const manageFocus = primary && !(routerContext && !routerContext.manageFocus);
-  let announcement;
+  let announcementRegion;
+  let announcementText = "";
 
   const routes = writable([]);
   const activeRoute = writable(null);
@@ -116,16 +122,24 @@
     const bestMatch = pick($routes, $location.pathname);
     activeRoute.set(bestMatch);
 
-    // Manage focus
+    // Manage focus and announce navigation to screen reader users
     if (isTopLevelRouter) {
       tick().then(() => {
         if (!focusCandidate) return;
         if (!initialNavigation) {
-          handleFocus(focusCandidate.route);
-          announceNavigation(
-            createAnnouncement(focusCandidate.route),
-            announcement,
-          );
+          if (a11yConfig.manageFocus) {
+            handleFocus(focusCandidate.route);
+          }
+          if (a11yConfig.announcements) {
+            const { path, fullPath, meta, params, uri } = focusCandidate.route;
+            announcementText = a11yConfig.createAnnouncement({
+              path,
+              fullPath,
+              meta,
+              params,
+              uri,
+            });
+          }
         }
         clearFocusCandidate();
       });
@@ -169,12 +183,14 @@
 
 <slot />
 
-{#if isTopLevelRouter && manageFocus}
+{#if isTopLevelRouter && manageFocus && a11yConfig.announcements}
   <div
     role="status"
     aria-atomic="true"
     aria-live="polite"
     style={visuallyHiddenStyle}
-    bind:this={announcement}
-  />
+    bind:this={announcementRegion}
+  >
+    {announcementText}
+  </div>
 {/if}
