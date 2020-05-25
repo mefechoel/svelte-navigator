@@ -1,7 +1,7 @@
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import svelte from "rollup-plugin-svelte";
-import babel from "rollup-plugin-babel";
+import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
@@ -9,7 +9,10 @@ const babelConfig = {
   babelrc: false,
   extensions: [".js", ".mjs", ".html", ".svelte"],
   include: ["src/**", "node_modules/svelte/**"],
-  plugins: ["@babel/plugin-proposal-object-rest-spread"],
+  plugins: [
+    "@babel/plugin-proposal-object-rest-spread",
+    ["@babel/plugin-transform-template-literals", { loose: true }],
+  ],
   presets: [
     [
       "@babel/preset-env",
