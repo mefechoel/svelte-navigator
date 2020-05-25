@@ -6,54 +6,43 @@ export const paramRegex = /^:(.+)/;
  * @param {string} search
  * @return {boolean}
  */
-export function startsWith(string, search) {
-  return string.substr(0, search.length) === search;
-}
+export const startsWith = (string, search) =>
+  string.substr(0, search.length) === search;
 
 /**
  * Check if `segment` is a root segment
  * @param {string} segment
  * @return {boolean}
  */
-export function isRootSegment(segment) {
-  return segment === "";
-}
+export const isRootSegment = segment => segment === "";
 
 /**
  * Check if `segment` is a dynamic segment
  * @param {string} segment
  * @return {boolean}
  */
-export function isDynamic(segment) {
-  return paramRegex.test(segment);
-}
+export const isDynamic = segment => paramRegex.test(segment);
 
 /**
  * Check if `segment` is a splat
  * @param {string} segment
  * @return {boolean}
  */
-export function isSplat(segment) {
-  return segment[0] === "*";
-}
+export const isSplat = segment => segment[0] === "*";
 
 /**
  * Strip potention splat and splatname of the end of a path
  * @param {string} str
  * @return {string}
  */
-export function stripSplat(str) {
-  return str.replace(/\*.*$/, "");
-}
+export const stripSplat = str => str.replace(/\*.*$/, "");
 
 /**
  * Strip `str` of potential start and end `/`
  * @param {string} str
  * @return {string}
  */
-export function stripSlashes(str) {
-  return str.replace(/(^\/+|\/+$)/g, "");
-}
+export const stripSlashes = str => str.replace(/(^\/+|\/+$)/g, "");
 
 /**
  * Split up the URI into segments delimited by `/`
@@ -71,9 +60,8 @@ export function segmentize(uri, filterFalsy = false) {
  * @param {string} [query]
  * @return {string}
  */
-export function addQuery(pathname, query) {
-  return pathname + (query ? `?${query}` : "");
-}
+export const addQuery = (pathname, query) =>
+  pathname + (query ? `?${query}` : "");
 
 /**
  * Combines the `basepath` and the `path` into one path.
@@ -95,9 +83,7 @@ export function combinePaths(basepath, path) {
  * @example
  * normalizePath("base/path/") // -> "/base/path"
  */
-export function normalizePath(path) {
-  return `/${stripSlashes(path)}`;
-}
+export const normalizePath = path => `/${stripSlashes(path)}`;
 
 /**
  * Joins and normalizes multiple path fragments
