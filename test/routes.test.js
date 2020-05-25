@@ -13,32 +13,24 @@ describe("pick", () => {
       { meta: "Root", fullPath: "/" },
       { meta: "Dynamic", fullPath: ":foo" },
     ];
-    expect(pick(routes, "/").route.meta).toBe("Root");
+    expect(pick(routes, "/").meta).toBe("Root");
   });
 
   it("a bunch of scenarios", () => {
-    expect(pick(testRoutes, "/").route.meta).toBe("Root");
-    expect(pick(testRoutes, "/groups/main/users/me").route.meta).toBe(
-      "MainGroupMe",
-    );
-    expect(pick(testRoutes, "/groups/123/users/456").route.meta).toBe(
-      "GroupUser",
-    );
-    expect(pick(testRoutes, "/one/two/three/four/five").route.meta).toBe(
-      "Fiver",
-    );
-    expect(pick(testRoutes, "/groups/main/users").route.meta).toBe(
-      "MainGroupUsers",
-    );
-    expect(pick(testRoutes, "/groups/123/users").route.meta).toBe("GroupUsers");
-    expect(pick(testRoutes, "/groups/main").route.meta).toBe("MainGroup");
-    expect(pick(testRoutes, "/groups/123").route.meta).toBe("Group");
-    expect(pick(testRoutes, "/groups").route.meta).toBe("Groups");
-    expect(pick(testRoutes, "/files/some/long/path").route.meta).toBe(
-      "FilesDeep",
-    );
-    expect(pick(testRoutes, "/files").route.meta).toBe("Files");
-    expect(pick(testRoutes, "/no/where").route.meta).toBe("Default");
+    const assertPick = (path, expectedName) =>
+      expect(pick(testRoutes, path).meta).toBe(expectedName);
+    assertPick("/", "Root");
+    assertPick("/groups/main/users/me", "MainGroupMe");
+    assertPick("/groups/123/users/456", "GroupUser");
+    assertPick("/one/two/three/four/five", "Fiver");
+    assertPick("/groups/main/users", "MainGroupUsers");
+    assertPick("/groups/123/users", "GroupUsers");
+    assertPick("/groups/main", "MainGroup");
+    assertPick("/groups/123", "Group");
+    assertPick("/groups", "Groups");
+    assertPick("/files/some/long/path", "FilesDeep");
+    assertPick("/files", "Files");
+    assertPick("/no/where", "Default");
   });
 
   it("pick /*", () => {
@@ -66,7 +58,7 @@ describe("pick", () => {
 describe("match", () => {
   it("creates correct route data", () => {
     const matchedRoute = match({ fullPath: "/foo", meta: "Foo" }, "/foo");
-    expect(matchedRoute.route.meta).toBe("Foo");
+    expect(matchedRoute.meta).toBe("Foo");
     expect(matchedRoute.params).toEqual({});
     expect(matchedRoute.uri).toBe("/foo");
   });

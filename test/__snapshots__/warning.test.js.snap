@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createMessage creates basic message 1`] = `"<Router> test-msg"`;
+
+exports[`createMessage creates message with props (link) 1`] = `
+"<Link> test-msg
+
+Occurred in: <Link to=\\"test-path\\" />"
+`;
+
+exports[`createMessage creates message with props (route default) 1`] = `
+"<Route> test-msg
+
+Occurred in: <Route default />"
+`;
+
+exports[`createMessage creates message with props (route path) 1`] = `
+"<Route> test-msg
+
+Occurred in: <Route path=\\"test-path\\" />"
+`;
+
+exports[`createMessage creates message with props and message fn (route path) 1`] = `
+"<Route> test-msg Route
+
+Occurred in: <Route path=\\"test-path\\" />"
+`;

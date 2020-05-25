@@ -2,11 +2,9 @@
 
 exports[`pick pick /* 1`] = `
 Object {
+  "fullPath": "/*",
   "params": Object {
     "*": "whatever/else",
-  },
-  "route": Object {
-    "fullPath": "/*",
   },
   "uri": "/",
 }
@@ -14,6 +12,8 @@ Object {
 
 exports[`pick pick return value 1`] = `
 Object {
+  "fullPath": "/:one/:two/:three/:four/:five",
+  "meta": "Fiver",
   "params": Object {
     "five": "five",
     "four": "four",
@@ -21,22 +21,16 @@ Object {
     "three": "three",
     "two": "two",
   },
-  "route": Object {
-    "fullPath": "/:one/:two/:three/:four/:five",
-    "meta": "Fiver",
-  },
   "uri": "/one/two/three/four/five",
 }
 `;
 
 exports[`pick splat return value 1`] = `
 Object {
+  "fullPath": "/files/*",
+  "meta": "FilesDeep",
   "params": Object {
     "*": "some/deep/path",
-  },
-  "route": Object {
-    "fullPath": "/files/*",
-    "meta": "FilesDeep",
   },
   "uri": "/files",
 }

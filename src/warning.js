@@ -22,7 +22,7 @@ export function createIdentificator(labelId, props) {
   return `<${labels[labelId]} ${attr || ""} />`;
 }
 
-function createMessage(labelId, message, props, originId) {
+export function createMessage(labelId, message, props, originId) {
   const origin = props && createIdentificator(originId || labelId, props);
   const originMsg = origin ? `\n\nOccurred in: ${origin}` : "";
   const label = labels[labelId];
@@ -30,7 +30,7 @@ function createMessage(labelId, message, props, originId) {
   return `<${label}> ${msg}${originMsg}`;
 }
 
-const createMessageHandler = handler => (...args) =>
+export const createMessageHandler = handler => (...args) =>
   handler(createMessage(...args));
 
 export const fail = createMessageHandler(message => {
