@@ -15,7 +15,7 @@
   import { getContext, onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
   import Router from "./Router.svelte";
-  import { ROUTER, ROUTE, ROUTE_PARAMS } from "./contexts";
+  import { ROUTER, ROUTE, ROUTE_PARAMS, FOCUS_ELEM } from "./contexts";
   import {
     useLocation,
     useNavigate,
@@ -39,6 +39,7 @@
   const { registerRoute, unregisterRoute, activeRoute } = getContext(ROUTER);
   const parentBase = useRouteBase();
   const location = useLocation();
+  const focusElement = writable(null);
 
   // eslint-disable-next-line no-shadow
   function createRoute(path, meta, parentBase, loc) {
@@ -54,6 +55,7 @@
       fullPath: isDefault ? "" : rawBase,
       base: isDefault ? parentBase : extractBaseUri(rawBase, loc.pathname),
       primary,
+      focusElement,
     };
   }
 
@@ -91,6 +93,7 @@
 
   setContext(ROUTE, route);
   setContext(ROUTE_PARAMS, params);
+  setContext(FOCUS_ELEM, focusElement);
 
   // We need to call useNavigate after the route is set,
   // so we can use the routes path for link resolution

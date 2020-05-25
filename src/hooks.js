@@ -1,6 +1,6 @@
 import { getContext } from "svelte";
 import { derived, get, writable } from "svelte/store";
-import { LOCATION, ROUTER, ROUTE, ROUTE_PARAMS } from "./contexts";
+import { LOCATION, ROUTER, ROUTE, ROUTE_PARAMS, FOCUS_ELEM } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 import { isNumber } from "./utils";
 import { fail } from "./warning";
@@ -252,6 +252,89 @@ export function useMatch(path) {
 export function useParams() {
   const { subscribe } = getContext(ROUTE_PARAMS);
   return { subscribe };
+}
+
+/**
+ * Provide a custom element to focus, when the parent route is visited.
+ * It returns the `registerFocus` function you can call manually with an
+ * Element or use as a Svelte action via the `use` directive.
+ *
+ * @example
+  ```html
+  <!-- Using `registerFocus` as a Svelte action: -->
+  <!-- Somewhere inside a Route -->
+  <script>
+    import { useFocus } from "svelte-navigator";
+
+    const registerFocus = useFocus();
+  </script>
+
+  <h1>Don't worry about me...</h1>
+  <p use:registerFocus>Here, look at me!</p>
+  ```
+  * @example
+  ```html
+  <!-- Calling `registerFocus` manually: -->
+  <!-- Somewhere inside a Route -->
+  <script>
+    import { onMount } from "svelte";
+    import { useFocus } from "svelte-navigator";
+
+    const registerFocus = useFocus();
+
+    let focusElement;
+
+    onMount(() => registerFocus(focusElement))
+  </script>
+
+  <h1>Don't worry about me...</h1>
+  <p bind:this={focusElement}>Here, look at me!</p>
+  ```
+  * @example
+  ```html
+  <!-- Using `registerFocus` asyncronously: -->
+  <!-- Somewhere inside a Route -->
+  <script>
+    import { onMount } from "svelte";
+    import { useFocus } from "svelte-navigator";
+
+    const registerFocus = useFocus();
+
+    const lazyImport = import("./MyComponent.svelte").then(module => module.default);
+  </script>
+
+  {#await lazyImport then MyComponent}
+    <MyComponent {registerFocus} />
+  {/await}
+
+  <!-- MyComponent.svelte -->
+  <script>
+    export let registerFocus;
+  </script>
+
+  <h1 use:registerFocus>Hi there!</h1>
+  ```
+ */
+export function useFocus() {
+  const location = useLocation();
+  const focusElement = getContext(FOCUS_ELEM);
+  let resolve;
+  const lazyElement = new Promise(_resolve => {
+    resolve = _resolve;
+  });
+  focusElement.set(lazyElement);
+  return node => {
+    resolve(node);
+    const unsubscribe = location.subscribe(() => {
+      focusElement.set(node);
+    });
+    return {
+      destroy() {
+        focusElement.set(null);
+        unsubscribe();
+      },
+    };
+  };
 }
 
 /**

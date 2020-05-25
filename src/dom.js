@@ -1,3 +1,4 @@
+import { get } from "svelte/store";
 import { warn, ROUTER_ID, ROUTE_ID } from "./warning";
 
 /*
@@ -65,22 +66,24 @@ export function queryHeading(id) {
 }
 
 export function handleFocus(route) {
-  const focusHeading = queryHeading(route.id);
-  if (!focusHeading) {
-    warn(
-      ROUTER_ID,
-      "Could not find a heading to focus. " +
-        "You should always render a header for accessibility reasons. " +
-        "If you don't want this Route or Router to manage focus, " +
-        // eslint-disable-next-line quotes
-        'pass "primary={false}" to it.',
-      route,
-      ROUTE_ID,
-    );
-  }
-  const headingFocused = focus(focusHeading);
-  if (headingFocused) return;
-  const documentFocused = focus(document.documentElement);
-  if (documentFocused) return;
-  resetFocus();
+  Promise.resolve(get(route.focusElement)).then(elem => {
+    const focusElement = elem || queryHeading(route.id);
+    if (!focusElement) {
+      warn(
+        ROUTER_ID,
+        "Could not find a heading to focus. " +
+          "You should always render a header for accessibility reasons. " +
+          "If you don't want this Route or Router to manage focus, " +
+          // eslint-disable-next-line quotes
+          'pass "primary={false}" to it.',
+        route,
+        ROUTE_ID,
+      );
+    }
+    const headingFocused = focus(focusElement);
+    if (headingFocused) return;
+    const documentFocused = focus(document.documentElement);
+    if (documentFocused) return;
+    resetFocus();
+  });
 }
