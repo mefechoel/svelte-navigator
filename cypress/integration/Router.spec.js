@@ -115,7 +115,7 @@ describe("Router", () => {
       });
     });
 
-    describe("Nested", () => {
+    describe("Nested Router", () => {
       beforeEach(() => {
         getByTestId("link-blog").click();
       });
@@ -182,6 +182,35 @@ describe("Router", () => {
         cy.visit("/blog/whereami/idontknow");
         getByTestId("route-blog-default").should("be.visible");
         assertPath("/blog/whereami/idontknow");
+      });
+    });
+
+    describe("Nested Route", () => {
+      it("renders nested index page '/'", () => {
+        getByTestId("link-dashboard-mark").click();
+        assertPath("/dashboard/mark");
+        cy.contains("Hello mark!");
+      });
+
+      it("renders nested page with parameter", () => {
+        getByTestId("link-dashboard-mark").click();
+        getByTestId("link-dashboard-article-987").click();
+        assertPath("/dashboard/mark/article/987");
+        cy.contains("Article 987");
+      });
+
+      it("re-resolves links when parameters change", () => {
+        getByTestId("link-dashboard-mark").click();
+        assertPath("/dashboard/mark");
+
+        getByTestId("link-dashboard-article-987").click();
+        assertPath("/dashboard/mark/article/987");
+
+        getByTestId("link-dashboard-paul").click();
+        assertPath("/dashboard/paul");
+
+        getByTestId("link-dashboard-article-987").click();
+        assertPath("/dashboard/paul/article/987");
       });
     });
   });
@@ -261,11 +290,22 @@ describe("Router", () => {
       getByTestId("link-props").should("have.attr", "data-has-attr");
     });
 
-    it("does not spread props to <a />, when has getProps prop", () => {
+    it("merges spread props and getProps in <a />", () => {
+      getByTestId("link-get-props").should("have.attr", "data-spread-attr");
+      getByTestId("link-get-props").should("have.attr", "data-has-attr");
+    });
+
+    it("discards duplicates in spread props, keeping getProps", () => {
       getByTestId("link-get-props").should(
-        "not.have.attr",
-        "data-does-not-have-attr",
+        "have.attr",
+        "data-duplicate-attr",
+        "getProps",
       );
+    });
+
+    it("merges spread props and getProps in <a />", () => {
+      getByTestId("link-get-props").should("have.attr", "data-spread-attr");
+      getByTestId("link-get-props").should("have.attr", "data-has-attr");
     });
 
     it("spreads getProps to <a />, when has getProps prop", () => {
@@ -510,6 +550,43 @@ describe("Router", () => {
       getByTestId("link-memory-blog-svelte-rel").click();
       getByTestId("link-memory-blog-somewhere-l3").click();
       pathnameMatches("/somewhere");
+    });
+  });
+
+  describe("A11y", () => {
+    const assertFocusElement = testId =>
+      cy
+        .window()
+        .then(win => win.document.activeElement)
+        .should("have.attr", "data-testid", testId);
+
+    it("focuses appropriate heading on navigation", () => {
+      getByTestId("a11y-link-b").click();
+      assertFocusElement("a11y-route-b");
+    });
+
+    it("focuses appropriate nested heading navigation to inner route", () => {
+      getByTestId("a11y-link-c").click();
+      assertFocusElement("a11y-route-c");
+    });
+
+    it("focuses custom focus element (useFocus, sync)", () => {
+      getByTestId("a11y-link-d").click();
+      assertFocusElement("a11y-route-d-focus");
+    });
+
+    it("focuses custom focus element (useFocus, async)", () => {
+      getByTestId("a11y-link-e").click();
+      getByTestId("a11y-route-e-focus");
+      assertFocusElement("a11y-route-e-focus");
+    });
+
+    it("announces navigation to screen reader users", () => {
+      getByTestId("a11y-link-b").click();
+      // eslint-disable-next-line quotes
+      cy.get('[role="status"]')
+        .invoke("text")
+        .should("equal", "Navigated to /b");
     });
   });
 });
