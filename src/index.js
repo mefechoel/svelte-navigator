@@ -17,6 +17,7 @@ export { link, links } from "./actions";
 export {
   useLocation,
   useResolve,
+  useResolvable,
   useNavigate,
   useMatch,
   useParams,

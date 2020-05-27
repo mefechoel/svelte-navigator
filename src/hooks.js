@@ -100,6 +100,34 @@ export function useResolve() {
 }
 
 /**
+ * Resolve a given link relative to the current `Route` and the `Router`s `basepath`.
+ * It is used under the hood in `Link` and `useNavigate`.
+ * You can use it to manually resolve links, when using the `link` or `links` actions.
+ *
+ * @returns {import("svelte/store").Readable<string>}
+ *
+ * @example
+  ```html
+  <script>
+    import { link, useResolvable } from "svelte-navigator";
+
+    // `resolvedLink` will be resolved relative to its parent Route
+    // and the Routers `basepath`.
+    const resolvedLink = useResolvable("relativePath");
+  </script>
+
+  <a href={$resolvedLink} use:link>Relative link</a>
+  ```
+ */
+export function useResolvable(path) {
+  const routeBase = useRouteBase();
+  const { basepath: appBase } = getContext(ROUTER);
+  return derived(routeBase, _routeBase =>
+    resolveLink(path, _routeBase, appBase),
+  );
+}
+
+/**
  * A hook, that returns a context-aware version of `navigate`.
  * It will automatically resolve the given link relative to the current Route.
  * It will also resolve a link against the `basepath` of the Router.
