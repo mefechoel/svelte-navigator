@@ -1,3 +1,24 @@
+# 3.0.0
+
+## Features:
+
+- `Router` now automatically manages focus in your app
+  - It focuses an appropriate heading, when changing `Route`s
+  - It makes an announcement to screen reader users when changing `Route`s
+  - You can customize which element should be focused after the `Route` transition via the `useFocus` hook
+  - You can customize the screen reader announcement via the `a11y.createAnnouncement` prop
+- `Route`s can now be nested
+- The `useParams` hook allows access to url params, matched by the parent `Route`
+- The `useResolvable` hook allows to subscribe to a resolved path
+
+## Breaking:
+
+- Link props and getProps return value will be merged, with getProps taking precedent
+- Path resolution now does not treat the base of a nested Router as an absolute base any more
+- The `useActiveRoute` has been removed. You should use `useMatch` or `useParams` instead
+- The `useBase` hook has been removed
+- The `useLinkResolve` hook has been renamed to `useResolve`
+
 # 2.0.3
 
 ## Other:

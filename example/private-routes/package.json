@@ -4,7 +4,7 @@
     "serve": "sirv public --single --port 6062"
   },
   "dependencies": {
-    "svelte-navigator": "^2.0.1"
+    "svelte-navigator": "^3.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.1.0",
