@@ -38,7 +38,6 @@
   const a11yConfig = {
     createAnnouncement: route => `Navigated to ${route.uri}`,
     announcements: true,
-    manageFocus: true,
     ...a11y,
   };
 
@@ -127,7 +126,7 @@
       tick().then(() => {
         if (!focusCandidate) return;
         if (!initialNavigation) {
-          if (a11yConfig.manageFocus) {
+          if (manageFocus) {
             handleFocus(focusCandidate.route);
           }
           if (a11yConfig.announcements) {
