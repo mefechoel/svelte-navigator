@@ -2,7 +2,7 @@
   "plugins": ["svelte3", "react"],
   "extends": ["airbnb"],
   "rules": {
-    "quotes": ["error", "double"],
+    "quotes": "off",
     "indent": "off",
     "no-underscore-dangle": "off",
     "arrow-parens": "off",
@@ -28,7 +28,6 @@
       "files": ["**/*.svelte"],
       "processor": "svelte3/svelte3",
       "rules": {
-        "quotes": "off",
         "import/first": "off",
         "import/no-duplicates": "off",
         "import/no-mutable-exports": "off",
