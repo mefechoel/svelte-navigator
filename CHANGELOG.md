@@ -1,3 +1,9 @@
+# 3.0.4
+
+## Other:
+
+- Warn, when hooks are called outside of a required context
+
 # 3.0.3
 
 ## Fix:
