@@ -1,10 +1,9 @@
-import { getContext } from "svelte";
+import { getContext, onDestroy, tick } from "svelte";
 import { derived, get, writable } from "svelte/store";
 import { LOCATION, ROUTER, ROUTE, ROUTE_PARAMS, FOCUS_ELEM } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 import { isNumber } from "./utils";
 import { fail } from "./warning";
-
 /**
  * Access the current location via a readable store.
  * @returns {import("svelte/store").Readable<{
@@ -346,20 +345,30 @@ export function useParams() {
 export function useFocus() {
   const location = useLocation();
   const focusElement = getContext(FOCUS_ELEM);
+
   let resolve;
-  const lazyElement = new Promise(_resolve => {
-    resolve = _resolve;
+  const unsubscribe = location.subscribe(() => {
+    const lazyElement = new Promise(_resolve => {
+      resolve = _resolve;
+    });
+    focusElement.set(lazyElement);
   });
-  focusElement.set(lazyElement);
+
+  onDestroy(unsubscribe);
+
   return node => {
-    resolve(node);
-    const unsubscribe = location.subscribe(() => {
-      focusElement.set(node);
+    let unmounted = false;
+    const innerUnsubscribe = location.subscribe(() => {
+      tick().then(() => {
+        if (!unmounted) {
+          resolve(node);
+        }
+      });
     });
     return {
       destroy() {
-        focusElement.set(null);
-        unsubscribe();
+        unmounted = true;
+        innerUnsubscribe();
       },
     };
   };

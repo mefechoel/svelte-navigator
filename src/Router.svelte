@@ -12,7 +12,7 @@
    * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
    */
 
-  import { getContext, setContext, onMount, tick } from "svelte";
+  import { getContext, setContext, onMount } from "svelte";
   import { writable } from "svelte/store";
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
@@ -21,12 +21,9 @@
   import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import {
-    handleFocus,
-    focusCandidate,
     pushFocusCandidate,
-    clearFocusCandidate,
-    initialNavigation,
     visuallyHiddenStyle,
+    createTriggerFocus,
   } from "./a11y";
 
   export let basepath = "/";
@@ -54,7 +51,7 @@
 
   const manageFocus = primary && !(routerContext && !routerContext.manageFocus);
   let announcementRegion;
-  let announcementText = "";
+  const announcementText = writable("");
 
   const routes = writable([]);
   const activeRoute = writable(null);
@@ -75,6 +72,12 @@
   const location = isTopLevelRouter
     ? writable(getInitialLocation())
     : locationContext;
+
+  const triggerFocus = createTriggerFocus(
+    a11yConfig,
+    announcementText,
+    location,
+  );
 
   function filterRoutes(routeList, routeId) {
     return routeList.filter(routeItem => routeItem.id !== routeId);
@@ -120,28 +123,14 @@
   $: {
     const bestMatch = pick($routes, $location.pathname);
     activeRoute.set(bestMatch);
+  }
 
-    // Manage focus and announce navigation to screen reader users
-    if (isTopLevelRouter) {
-      tick().then(() => {
-        if (!focusCandidate) return;
-        if (!initialNavigation) {
-          if (manageFocus) {
-            handleFocus(focusCandidate.route);
-          }
-          if (a11yConfig.announcements) {
-            const { path, fullPath, meta, params, uri } = focusCandidate.route;
-            const announcementMessage = a11yConfig.createAnnouncement(
-              { path, fullPath, meta, params, uri },
-              $location,
-            );
-            Promise.resolve(announcementMessage).then(message => {
-              announcementText = message;
-            });
-          }
-        }
-        clearFocusCandidate();
-      });
+  // Manage focus and announce navigation to screen reader users
+  $: {
+    // We need to check for $location here, to force svelte to run this
+    // whenever the location changes
+    if (isTopLevelRouter && $location) {
+      triggerFocus(manageFocus);
     }
   }
 
@@ -174,11 +163,14 @@
     registerRoute,
     unregisterRoute,
     manageFocus,
+    level,
+    id: routerId,
     history: isTopLevelRouter ? history : routerContext.history,
     basepath: isTopLevelRouter ? normalizedBasepath : routerContext.basepath,
-    level,
   });
 </script>
+
+<div style="display:none;" aria-hidden="true" data-svnav-router={routerId} />
 
 <slot />
 
@@ -190,6 +182,6 @@
     style={visuallyHiddenStyle}
     bind:this={announcementRegion}
   >
-    {announcementText}
+    {$announcementText}
   </div>
 {/if}

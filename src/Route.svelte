@@ -101,8 +101,8 @@
 </script>
 
 <div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
-<Router {primary}>
-  {#if isActive}
+{#if isActive}
+  <Router {primary}>
     {#if component !== null}
       <svelte:component
         this={component}
@@ -114,6 +114,6 @@
     {:else}
       <slot params={$params} location={$location} {navigate} />
     {/if}
-  {/if}
-</Router>
+  </Router>
+{/if}
 <div style="display:none;" aria-hidden="true" data-svnav-route-end={id} />

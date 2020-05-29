@@ -585,6 +585,7 @@ describe("Router", () => {
       getByTestId("a11y-link-b").click();
       // eslint-disable-next-line quotes
       cy.get('[role="status"]')
+        .last()
         .invoke("text")
         .should("equal", "Navigated to /b");
     });
