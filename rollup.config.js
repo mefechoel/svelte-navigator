@@ -7,6 +7,7 @@ import pkg from "./package.json";
 
 const babelConfig = {
   babelrc: false,
+  babelHelpers: "bundled",
   extensions: [".js", ".mjs", ".html", ".svelte"],
   include: ["src/**", "node_modules/svelte/**"],
   plugins: [

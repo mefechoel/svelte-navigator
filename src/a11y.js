@@ -76,13 +76,14 @@ export function initialNavigationOccurred() {
  */
 export function focus(elem) {
   if (!elem) return false;
+  const TABINDEX = "tabindex";
   try {
-    if (!elem.hasAttribute("tabindex")) {
-      elem.setAttribute("tabindex", "-1");
+    if (!elem.hasAttribute(TABINDEX)) {
+      elem.setAttribute(TABINDEX, "-1");
       // We remove tabindex after blur to avoid weird browser behavior
       // where a mouse click can activate elements with tabindex="-1".
       const blurListener = () => {
-        elem.removeAttribute("tabindex");
+        elem.removeAttribute(TABINDEX);
         elem.removeEventListener("blur", blurListener);
       };
       elem.addEventListener("blur", blurListener);
@@ -132,10 +133,8 @@ export function handleFocus(route) {
         ROUTER_ID,
         "Could not find an element to focus. " +
           "You should always render a header for accessibility reasons, " +
-          // eslint-disable-next-line quotes
           'or set a custom focus element via the "useFocus" hook. ' +
           "If you don't want this Route or Router to manage focus, " +
-          // eslint-disable-next-line quotes
           'pass "primary={false}" to it.',
         route,
         ROUTE_ID,
