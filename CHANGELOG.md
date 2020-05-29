@@ -5,17 +5,23 @@
 - `Router` now automatically manages focus in your app
   - It focuses an appropriate heading, when changing `Route`s
   - It makes an announcement to screen reader users when changing `Route`s
-  - You can customize which element should be focused after the `Route` transition via the `useFocus` hook
-  - You can customize the screen reader announcement via the `a11y.createAnnouncement` prop
+  - You can customize which element should be focused after the `Route`
+    transition via the `useFocus` hook
+  - You can customize the screen reader announcement via the
+    `a11y.createAnnouncement` prop
 - `Route`s can now be nested
-- The `useParams` hook allows access to url params, matched by the parent `Route`
+- The `useParams` hook allows access to url params, matched by the parent
+  `Route`
 - The `useResolvable` hook allows to subscribe to a resolved path
 
 ## Breaking:
 
-- Link props and getProps return value will be merged, with getProps taking precedent
-- Path resolution now does not treat the base of a nested Router as an absolute base any more
-- The `useActiveRoute` has been removed. You should use `useMatch` or `useParams` instead
+- Link props and getProps return value will be merged, with getProps taking
+  precedent
+- Path resolution now does not treat the base of a nested Router as an absolute
+  base any more
+- The `useActiveRoute` has been removed. You should use `useMatch` or
+  `useParams` instead
 - The `useBase` hook has been removed
 - The `useLinkResolve` hook has been renamed to `useResolve`
 
@@ -51,12 +57,14 @@
 
 ## Fixes:
 
-- Fix incorrect resolving of links after component initialization, when using `useLinkResolve`
+- Fix incorrect resolving of links after component initialization, when using
+  `useLinkResolve`
 
 ## Breaking:
 
 - Remove `name` prop from `Route`. Use `meta` prop instead
-- Remove the apps basepath from the location, so the location always looks the same, no matter where the app is served from
+- Remove the apps basepath from the location, so the location always looks the
+  same, no matter where the app is served from
 
 ## Other:
 
@@ -67,15 +75,20 @@
 
 # 1.1.0
 
-- Add `name` prop to `Route`, to identify a specific `Route` for example, when using the `useActiveRoute` hook
-- Always keep the `route.path` intact. Use `route.fullPath` for resolved absolute path in navigation
+- Add `name` prop to `Route`, to identify a specific `Route` for example, when
+  using the `useActiveRoute` hook
+- Always keep the `route.path` intact. Use `route.fullPath` for resolved
+  absolute path in navigation
 - Use a unique id internally for matching, instead of object identity
 
 # 1.0.0
 
-- Expose scoped `navigate` function as prop of `Route` `component` and in slots with `let:navigate`
-- Allow configuration of `Router` history through `history` prop, and exposition of `createHistory` and `createMemorySource` functions
-- Allow passing of custom `navigate` function to `link` and `links` actions via `use:link={myCustomNavigate}`
+- Expose scoped `navigate` function as prop of `Route` `component` and in slots
+  with `let:navigate`
+- Allow configuration of `Router` history through `history` prop, and exposition
+  of `createHistory` and `createMemorySource` functions
+- Allow passing of custom `navigate` function to `link` and `links` actions via
+  `use:link={myCustomNavigate}`
 - Add more examples and improve documentation
 
 # 0.4.0
@@ -92,4 +105,6 @@
 
 - Fix link resolution
 
-Checkout [svelte-routings Changelog](https://github.com/EmilTholin/svelte-routing/blob/master/CHANGELOG.md) for previous changes.
+Checkout
+[svelte-routings Changelog](https://github.com/EmilTholin/svelte-routing/blob/master/CHANGELOG.md)
+for previous changes.
