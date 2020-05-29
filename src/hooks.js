@@ -3,7 +3,50 @@ import { derived, get, writable } from "svelte/store";
 import { LOCATION, ROUTER, ROUTE, ROUTE_PARAMS, FOCUS_ELEM } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 import { isNumber } from "./utils";
-import { fail } from "./warning";
+import {
+  fail,
+  createLabel,
+  USE_FOCUS_ID,
+  ROUTER_ID,
+  USE_LOCATION_ID,
+  ROUTE_ID,
+  USE_RESOLVE_ID,
+  USE_RESOLVABLE_ID,
+  USE_NAVIGATE_ID,
+  USE_MATCH_ID,
+  USE_PARAMS_ID,
+} from "./warning";
+
+/**
+ * Check if a component or hook have been created outside of a
+ * context providing component
+ * @param {number} componentId
+ * @param {*} props
+ * @param {string?} ctxKey
+ * @param {number?} ctxProviderId
+ */
+export function usePreflightCheck(
+  componentId,
+  props,
+  ctxKey = ROUTER,
+  ctxProviderId = ROUTER_ID,
+) {
+  const ctx = getContext(ctxKey);
+  if (!ctx) {
+    fail(
+      componentId,
+      label =>
+        `You cannot use ${label} outside of a ${createLabel(ctxProviderId)}.`,
+      props,
+    );
+  }
+}
+
+const toReadonly = ctx => {
+  const { subscribe } = getContext(ctx);
+  return { subscribe };
+};
+
 /**
  * Access the current location via a readable store.
  * @returns {import("svelte/store").Readable<{
@@ -31,8 +74,8 @@ import { fail } from "./warning";
   ```
  */
 export function useLocation() {
-  const { subscribe } = getContext(LOCATION);
-  return { subscribe };
+  usePreflightCheck(USE_LOCATION_ID);
+  return toReadonly(LOCATION);
 }
 
 /**
@@ -86,6 +129,7 @@ export function useRouteBase() {
   ```
  */
 export function useResolve() {
+  usePreflightCheck(USE_RESOLVE_ID);
   const routeBase = useRouteBase();
   const { basepath: appBase } = getContext(ROUTER);
   /**
@@ -119,6 +163,7 @@ export function useResolve() {
   ```
  */
 export function useResolvable(path) {
+  usePreflightCheck(USE_RESOLVABLE_ID);
   const routeBase = useRouteBase();
   const { basepath: appBase } = getContext(ROUTER);
   return derived(routeBase, _routeBase =>
@@ -192,6 +237,7 @@ export function useResolvable(path) {
   ```
  */
 export function useNavigate() {
+  usePreflightCheck(USE_NAVIGATE_ID);
   const resolve = useResolve();
   const { navigate } = useHistory();
   /**
@@ -242,6 +288,7 @@ export function useNavigate() {
   ```
  */
 export function useMatch(path) {
+  usePreflightCheck(USE_MATCH_ID);
   const location = useLocation();
   const resolve = useResolve();
   const { basepath: appBase } = getContext(ROUTER);
@@ -277,8 +324,8 @@ export function useMatch(path) {
   ```
  */
 export function useParams() {
-  const { subscribe } = getContext(ROUTE_PARAMS);
-  return { subscribe };
+  usePreflightCheck(USE_PARAMS_ID, null, ROUTE, ROUTE_ID);
+  return toReadonly(ROUTE_PARAMS);
 }
 
 /**
@@ -343,6 +390,7 @@ export function useParams() {
   ```
  */
 export function useFocus() {
+  usePreflightCheck(USE_FOCUS_ID, null, ROUTE, ROUTE_ID);
   const location = useLocation();
   const focusElement = getContext(FOCUS_ELEM);
 
@@ -372,20 +420,4 @@ export function useFocus() {
       },
     };
   };
-}
-
-/**
- * Check if a Link or Route have been created outside of a Router
- * @param {number} componentId
- * @param {*} props
- */
-export function usePreflightCheck(componentId, props) {
-  const routerCtx = getContext(ROUTER);
-  if (!routerCtx) {
-    fail(
-      componentId,
-      label => `You cannot use a ${label} outside of a Router.`,
-      props,
-    );
-  }
 }
