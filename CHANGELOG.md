@@ -1,3 +1,22 @@
+# 3.0.3
+
+## Fix:
+
+- Asyncronous focus now works correctly, when location changes, but the
+  component does not
+
+# 3.0.2
+
+## Other:
+
+- Fix cased links in README
+
+# 3.0.1
+
+## Other:
+
+- Add `useFocus` link in README
+
 # 3.0.0
 
 ## Features:
