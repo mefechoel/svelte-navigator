@@ -5,7 +5,7 @@
  */
 
 import { navigate as defaultNavigate } from "./history";
-import { shouldNavigate, findClosest } from "./utils";
+import { shouldNavigate, findClosest, addListener } from "./utils";
 
 const createAction = getAnchor => (node, navigate = defaultNavigate) => {
   const handleClick = event => {
@@ -16,12 +16,8 @@ const createAction = getAnchor => (node, navigate = defaultNavigate) => {
       navigate(to, { replace: anchor.hasAttribute("replace") });
     }
   };
-  node.addEventListener("click", handleClick);
-  return {
-    destroy() {
-      node.removeEventListener("click", handleClick);
-    },
-  };
+  const unlisten = addListener(node, "click", handleClick);
+  return { destroy: unlisten };
 };
 
 /**

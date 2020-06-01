@@ -1,6 +1,7 @@
 import { get } from "svelte/store";
 import { tick } from "svelte";
 import { warn, ROUTER_ID, ROUTE_ID } from "./warning";
+import { addListener } from "./utils";
 
 // We need to keep the focus candidate in a separate file, so svelte does
 // not update, when we mutate it.
@@ -80,13 +81,14 @@ export function focus(elem) {
   try {
     if (!elem.hasAttribute(TABINDEX)) {
       elem.setAttribute(TABINDEX, "-1");
+      let unlisten;
       // We remove tabindex after blur to avoid weird browser behavior
       // where a mouse click can activate elements with tabindex="-1".
       const blurListener = () => {
         elem.removeAttribute(TABINDEX);
-        elem.removeEventListener("blur", blurListener);
+        unlisten();
       };
-      elem.addEventListener("blur", blurListener);
+      unlisten = addListener(elem, "blur", blurListener);
     }
     elem.focus();
     return document.activeElement === elem;

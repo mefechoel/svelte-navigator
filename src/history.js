@@ -4,7 +4,7 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
-import { createGlobalId, isSSR, isNumber } from "./utils";
+import { createGlobalId, isSSR, isNumber, addListener } from "./utils";
 
 function getLocation(source) {
   return {
@@ -31,10 +31,9 @@ function createHistory(source) {
         listener({ location, action: "POP" });
       };
 
-      source.addEventListener("popstate", popstateListener);
-
+      const unlisten = addListener(source, "popstate", popstateListener);
       return () => {
-        source.removeEventListener("popstate", popstateListener);
+        unlisten();
         listeners = listeners.filter(fn => fn !== listener);
       };
     },
