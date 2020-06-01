@@ -20,6 +20,7 @@ const createAction = getAnchor => (node, navigate = defaultNavigate) => {
   return { destroy: unlisten };
 };
 
+// prettier-ignore
 /**
  * A link action that can be added to <a href=""> tags rather
  * than using the <Link> component.
@@ -29,8 +30,9 @@ const createAction = getAnchor => (node, navigate = defaultNavigate) => {
  * <a href="/post/{postId}" use:link>{post.title}</a>
  * ```
  */
-export const link = createAction(event => event.currentTarget);
+export const link = /*#__PURE__*/createAction(event => event.currentTarget); // eslint-disable-line spaced-comment, max-len
 
+// prettier-ignore
 /**
  * An action to be added at a root element of your application to
  * capture all relative links and push them onto the history stack.
@@ -48,7 +50,7 @@ export const link = createAction(event => event.currentTarget);
  * </div>
  * ```
  */
-export const links = createAction(event => {
+export const links = /*#__PURE__*/createAction(event => { // eslint-disable-line spaced-comment
   const anchor = findClosest("A", event.target);
   if (!anchor.hasAttribute("noroute")) {
     return anchor;
