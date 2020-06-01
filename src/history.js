@@ -11,7 +11,7 @@ function getLocation(source) {
     ...source.location,
     pathname: encodeURI(decodeURI(source.location.pathname)),
     state: source.history.state,
-    _key: (source.history.state && source.history.state.key) || "initial",
+    _key: (source.history.state && source.history.state._key) || "initial",
   };
 }
 
