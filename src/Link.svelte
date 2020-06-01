@@ -34,10 +34,8 @@
   $: href = resolve(to, $location);
   $: isPartiallyCurrent = startsWith($location.pathname, href);
   $: isCurrent = href === $location.pathname;
-  $: ariaCurrent = isCurrent ? "page" : undefined;
+  $: ariaCurrent = isCurrent ? "page" : null;
   $: props = (() => {
-    // eslint-disable-next-line no-shadow
-    let { to, replace, state, getProps: _getProps, ...restProps } = $$props;
     if (isFunction(getProps)) {
       const dynamicProps = getProps({
         location: $location,
@@ -45,9 +43,9 @@
         isPartiallyCurrent,
         isCurrent,
       });
-      restProps = { ...restProps, ...dynamicProps };
+      return { ...$$restProps, ...dynamicProps };
     }
-    return restProps;
+    return $$restProps;
   })();
 
   function onClick(event) {

@@ -79,9 +79,8 @@
     location,
   );
 
-  function filterRoutes(routeList, routeId) {
-    return routeList.filter(routeItem => routeItem.id !== routeId);
-  }
+  const createRouteFilter = routeId => routeList =>
+    routeList.filter(routeItem => routeItem.id !== routeId);
 
   function registerRoute(route) {
     if (isSSR) {
@@ -101,7 +100,7 @@
       routes.update(prevRoutes => {
         // Remove an old version of the updated route,
         // before pushing the new version
-        const nextRoutes = filterRoutes(prevRoutes, route.id);
+        const nextRoutes = createRouteFilter(route.id)(prevRoutes);
         nextRoutes.push(route);
         return nextRoutes;
       });
@@ -109,7 +108,7 @@
   }
 
   function unregisterRoute(routeId) {
-    routes.update(prevRoutes => filterRoutes(prevRoutes, routeId));
+    routes.update(createRouteFilter(routeId));
   }
 
   $: if (basepath !== initialBasepath) {

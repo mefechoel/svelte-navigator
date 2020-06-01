@@ -41,11 +41,12 @@
   const location = useLocation();
   const focusElement = writable(null);
 
-  // eslint-disable-next-line no-shadow
-  function createRoute(path, meta, parentBase, loc) {
+  const route = writable();
+  $: {
+    // The route store will be re-computed whenever props, location or parentBase change.
     const isDefault = path === "";
-    const rawBase = join(parentBase, path);
-    return {
+    const rawBase = join($parentBase, path);
+    const updatedRoute = {
       id,
       path,
       meta,
@@ -53,42 +54,21 @@
       // that is rendered if no other Route in the Router is a match
       default: isDefault,
       fullPath: isDefault ? "" : rawBase,
-      base: isDefault ? parentBase : extractBaseUri(rawBase, loc.pathname),
+      base: isDefault
+        ? $parentBase
+        : extractBaseUri(rawBase, $location.pathname),
       primary,
       focusElement,
     };
-  }
-
-  const route = writable(createRoute(path, meta, $parentBase, $location));
-  const params = writable({});
-
-  $: {
-    // We need to pass in `$location` here, so the route updates its base
-    // when location changes.
-    // This will prevent parameters in bases
-    const updatedRoute = createRoute(path, meta, $parentBase, $location);
     route.set(updatedRoute);
     registerRoute(updatedRoute);
   }
 
-  let props = {};
-
   $: isActive = $activeRoute && $activeRoute.id === id;
 
+  const params = writable({});
   $: if (isActive) {
     params.set($activeRoute.params);
-  }
-
-  $: {
-    // eslint-disable-next-line no-shadow
-    const { path, component, meta, primary, ...rest } = $$props;
-    props = rest;
-  }
-
-  // There is no need to unregister Routes in SSR since it will all be
-  // thrown away anyway
-  if (!isSSR) {
-    onDestroy(() => unregisterRoute(id));
   }
 
   setContext(ROUTE, route);
@@ -98,6 +78,12 @@
   // We need to call useNavigate after the route is set,
   // so we can use the routes path for link resolution
   const navigate = useNavigate();
+
+  // There is no need to unregister Routes in SSR since it will all be
+  // thrown away anyway
+  if (!isSSR) {
+    onDestroy(() => unregisterRoute(id));
+  }
 </script>
 
 <div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
@@ -109,7 +95,7 @@
         location={$location}
         {navigate}
         {...$params}
-        {...props}
+        {...$$restProps}
       />
     {:else}
       <slot params={$params} location={$location} {navigate} />
