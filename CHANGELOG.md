@@ -1,3 +1,10 @@
+# 3.0.5
+
+## Other:
+
+- Refactor Route and Link component to be 'sveltier'
+- Slightly improve bundle size
+
 # 3.0.4
 
 ## Other:
