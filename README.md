@@ -818,7 +818,7 @@ You can also call `registerFocus` manually:
 <p bind:this="{focusElement}">Here, look at me!</p>
 ```
 
-You can also use `registerFocus` asyncronously:
+You can also use `registerFocus` asynchronously:
 
 ```html
 <!-- Somewhere inside a Route -->
@@ -845,7 +845,7 @@ You can also use `registerFocus` asyncronously:
 <h1 use:registerFocus>Hi there!</h1>
 ```
 
-You should however only use it asyncronously, if you KNOW, that the focus
+You should however only use it asynchronously, if you KNOW, that the focus
 element will register soon. Otherwise, focus will remain at the clicked link,
 and randomly change a few seconds later without explanation, which is a very bad
 experience for screen reader users.
