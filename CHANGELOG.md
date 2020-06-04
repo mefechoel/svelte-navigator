@@ -1,3 +1,19 @@
+# 3.0.6
+
+## Fix:
+
+- Server side rendering works properly now:
+  - `window is undefined` error is fixed
+  - All matched Routes and nested Routes will be rendered
+  - Accessing params in slots and Route component is fixed
+  - Search string is extracted from url and can be accessed in location
+  - Update SSR example
+
+## Other:
+
+- Fix typo in README [#2](https://github.com/mefechoel/svelte-navigator/pull/2)
+  ([hidde](https://github.com/hidde))
+
 # 3.0.5
 
 ## Other:

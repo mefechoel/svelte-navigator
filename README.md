@@ -25,8 +25,8 @@ React-esque hooks.
 
 - Accessible routing: The `Router` manages focus in your app automatically and
   makes announcements to screen reader users
-- Relative routing (paths and links are relative to the parent `Route` and
-  `Router`)
+- Relative routing: Paths and links are relative to the parent `Route` and
+  `Router`
 - Nestable `Route`s for easy, flexible and reusable component composition
 - Automatic route ranking: The `Router` chooses the best match automatically, so
   you don't need to worry about the order of your `Route`s
@@ -35,12 +35,14 @@ React-esque hooks.
 - React-esque hooks api for accessing parts of the Router context
 - Nestable Routers for seamless merging of many smaller apps
 - HTML5 history mode by default (Memory mode as fallback, or for testing)
+- SSR (**S**erver **S**ide **R**endering) support
 
 ## Table of Contents
 
 - [Getting started](#getting-started)
 - [Installation](#installation)
 - [Usage](#usage)
+- [SSR Caveat](#ssr-caveat)
 - [API](#api)
   - [Components](#components)
     - [Router](#router)
@@ -60,7 +62,6 @@ React-esque hooks.
     - [link](#link-1)
     - [links](#links)
   - [Custom History](#custom-history)
-- [SSR Caveat](#ssr-caveat)
 
 ## Getting started
 
@@ -157,6 +158,18 @@ You can read more about the History API here:
 
 - [MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/History)
 - [Deep dive into client side routing](https://krasimirtsonev.com/blog/article/deep-dive-into-client-side-routing-navigo-pushstate-hash)
+
+## SSR Caveat
+
+In the browser we wait until all child `Route` components have registered with
+their ancestor `Router` component before we let the `Router` pick the best
+match. This approach is not possible on the server, because when all `Route`
+components have registered and it is time to pick a match the SSR has already
+completed, and a document with no matching Route will be returned.
+
+We therefore resort to picking the first matching `Route` that is registered on
+the server, so it is of utmost importance that you **sort your Route components
+from the most specific to the least specific if you are using SSR**.
 
 ## API
 
@@ -312,7 +325,7 @@ It's probably easier to nest `Route`s though.
 When you are serving your app from a subdirectory on your server, you can add a
 `basepath` prop to the router. It will be prepended to all routes and to all
 resolved navigations (i.e. using `Link`, `useNavigate` or `useResolve`). A
-`basepath` should have a leading, but no trailing slash.
+properly formatted `basepath` should have a leading, but no trailing slash.
 
 ```html
 <Router basepath="/base">
@@ -352,7 +365,7 @@ history][example-custom-hash-history]).
 |         `history`         |   `HistorySource`    |            \<HTML5 History>            | The `history` property can be used to use a navigation method other than the browsers History API (See [custom Hash based history][example-custom-hash-history]).                                                                                                                                                                                                                                                                                                                                                                         |
 |         `primary`         |      `boolean`       |                 `true`                 | If set to false, the `Router` will not manage focus for its children. Analougus to the `Route`s `primary` prop.                                                                                                                                                                                                                                                                                                                                                                                                                           |
 |          `a11y`           |       `object`       |                                        | Configuration object for Svelte Navigators accessibility features                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `a11y.createAnnouncement` | `CreateAnnouncement` | `route => 'Navigated to ${route.uri}'` | Function to create an announcement message, that is read by screen readers on navigation. It takes the matched `Route` and the current `location` as arguments and returns a `string` or a `Promise`, that resolves to a string.                                                                                                                                                                                                                                                                                                          |
+| `a11y.createAnnouncement` | `CreateAnnouncement` | `route => 'Navigated to ${route.uri}'` | Function to create an announcement message, that is read by screen readers on navigation. It takes the matched `Route` and the current `location` as arguments and returns a `string` or a `Promise`, that resolves to a `string`.                                                                                                                                                                                                                                                                                                        |
 |   `a11y.announcements`    |      `boolean`       |                 `true`                 | Set it to false, to disable screen reader announcements                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 Where:
@@ -453,14 +466,14 @@ ancestor `Router` component decides it is the best match.
 All properties other than `path`, `component`, `meta` and `primary` given to the
 `Route` will be passed to the rendered `component`.
 
-A Route path can match parameters with `"path/:parameterName"` and wildcards
+A `Route` path can match parameters with `"path/:parameterName"` and wildcards
 with `"path/*"` or `"path/*wildcardName"`. All parameters and wildcard values
 will be provided to the `component` as props. They can also be accessed inside a
-Route slot via `let:params`.
+`Route` slot via `let:params`.
 
-The Route `component` will also receive the current `location`, as well as the
-`navigate` function, that is scoped to the current route as props. They can be
-accessed inside the Route slot, via `let:location` and `let:navigate`.
+The `Route` `component` will also receive the current `location`, as well as the
+`navigate` function, that is scoped to the current `Route` as props. They can be
+accessed inside the `Route` slot, via `let:location` and `let:navigate`.
 
 ```html
 <!-- Both variants will do the same -->
@@ -475,13 +488,21 @@ accessed inside the Route slot, via `let:location` and `let:navigate`.
 </Route>
 
 <!--
+  Navigate programatically using relative links
+  (See also `navigate` and `useNavigate`)
+-->
+<Route path="search" let:navigate>
+  <BlogPost {navigate} />
+</Route>
+
+<!--
   Routes without a path are default routes.
   They will match if no other Route could be matched
 -->
 <Route component="{Home}"></Route>
 ```
 
-You can nest `Routes`, to easily define a routing structure for your app. Just
+You can nest `Route`s, to easily define a routing structure for your app. Just
 remember to add a splat (`*`) to the end of the parent `Route`s `path`.
 
 ```html
@@ -528,17 +549,17 @@ function the the parent `Router`.
 ###### Properties
 
 |  Property   |       Type        | Default Value | Description                                                                                                                                                              |
-| :---------: | :---------------: | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   `path`    |     `string`      | `''`          | The path for when this component should be rendered. If no `path` is given the `Route` will act as the default that matches if no other `Route` in the `Router` matches. |
-| `component` | `SvelteComponent` | `null`        | The component constructor that will be used for rendering when the `Route` matches. If `component` is not set, the children of `Route` will be rendered instead.         |
-|   `meta`    |     `object`      | `{}`          | An arbitrary object you can pass the `Route`, to later access it (for example in `a11y.createAnnouncement`).                                                             |
-|  `primary`  |     `boolean`     | `true`        | If set to false, the parent `Router` will not manage focus for this `Route` or any child `Route`s.                                                                       |
+| :---------: | :---------------: | :-----------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   `path`    |     `string`      |     `''`      | The path for when this component should be rendered. If no `path` is given the `Route` will act as the default that matches if no other `Route` in the `Router` matches. |
+| `component` | `SvelteComponent` |    `null`     | The component constructor that will be used for rendering when the `Route` matches. If `component` is not set, the children of `Route` will be rendered instead.         |
+|   `meta`    |     `object`      |     `{}`      | An arbitrary object you can pass the `Route`, to later access it (for example in `a11y.createAnnouncement`).                                                             |
+|  `primary`  |     `boolean`     |    `true`     | If set to false, the parent `Router` will not manage focus for this `Route` or any child `Route`s.                                                                       |
 
 ### Hooks
 
 Svelte Navigator exposes a few React-esque hooks to access parts of the
-`Router`s context. These hooks must always be called during component
-initialization, because thats when Sveltes `getContext` must be called.
+`Router`s context. These hooks **must always be called during component
+initialization**, because thats when Sveltes `getContext` must be called.
 
 All navigator hooks return either a readable store you can subscibe to, or a
 function, that internally interacts with the Routers context.
@@ -604,8 +625,8 @@ It will also resolve a link against the `basepath` of the Router
 ```
 
 The returned `navigate` function is identical to the `navigate` prop, that is
-passed to Route `component`s. `useNavigate`s advantage is, that you can use it
-easily in deeply nested components.
+passed to a `Route`s `component`. `useNavigate`s advantage is, that you can use
+it easily in deeply nested components.
 
 ```html
 <!-- App.svelte -->
@@ -643,12 +664,12 @@ The returned `navigate` function accepts the same parameters as the global
 
 ###### Parameters
 
-|     Parameter     |       Type        | Default Value | Description                                                                                                                                                                                                                                         |
-| :---------------: | :---------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|       `to`        | `string | number` |               | The path you want to navigate to. If `to` is a number, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
-|     `options`     |     `object`      |               | The navigation options                                                                                                                                                                                                                              |
-|  `options.state`  |     `object`      |     `{}`      | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                 |
-| `options.replace` |     `boolean`     |    `false`    | If true, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
+|     Parameter     |       Type        | Default Value | Description                                                                                                                                                                                                                                           |
+| :---------------: | :---------------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|       `to`        | `string | number` |               | The path you want to navigate to. If `to` is a `number`, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
+|     `options`     |     `object`      |               | The navigation options                                                                                                                                                                                                                                |
+|  `options.state`  |     `object`      |     `{}`      | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                   |
+| `options.replace` |     `boolean`     |    `false`    | If `true`, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
 
 #### `useLocation`
 
@@ -730,15 +751,14 @@ You can use `useResolvable` to manually resolve links, when using the `link` or
 
 ```html
 <script>
-  import { link, useResolve } from "svelte-navigator";
+  import { link, useResolvable } from "svelte-navigator";
 
-  const resolve = useResolve();
   // `resolvedLink` will be resolved relative to its parent Route
   // and the Router `basepath`
-  const resolvedLink = resolve("relativePath");
+  const resolvedLink = useResolvable("relativePath");
 </script>
 
-<a href="{$ resolvedLink}" use:link>Relative link</a>
+<a href="{$resolvedLink}" use:link>Relative link</a>
 ```
 
 #### `useMatch`
@@ -782,10 +802,7 @@ Access the parent Routes matched params and wildcards via a readable store.
 #### `useFocus`
 
 Provide a custom element to focus, when the parent route is visited. It returns
-the `registerFocus` function you can call manually with an Element or use as a
-Svelte action via the `use` directive.
-
-It's easiest, just to use `registerFocus` as a Svelte action:
+the `registerFocus` action you can apply to an element via the `use` directive:
 
 ```html
 <!-- Somewhere inside a Route -->
@@ -797,25 +814,6 @@ It's easiest, just to use `registerFocus` as a Svelte action:
 
 <h1>Don't worry about me...</h1>
 <p use:registerFocus>Here, look at me!</p>
-```
-
-You can also call `registerFocus` manually:
-
-```html
-<!-- Somewhere inside a Route -->
-<script>
-  import { onMount } from "svelte";
-  import { useFocus } from "svelte-navigator";
-
-  const registerFocus = useFocus();
-
-  let focusElement;
-
-  onMount(() => registerFocus(focusElement));
-</script>
-
-<h1>Don't worry about me...</h1>
-<p bind:this="{focusElement}">Here, look at me!</p>
 ```
 
 You can also use `registerFocus` asynchronously:
@@ -845,7 +843,7 @@ You can also use `registerFocus` asynchronously:
 <h1 use:registerFocus>Hi there!</h1>
 ```
 
-You should however only use it asynchronously, if you KNOW, that the focus
+You should however only use it asynchronously, if you **know**, that the focus
 element will register soon. Otherwise, focus will remain at the clicked link,
 and randomly change a few seconds later without explanation, which is a very bad
 experience for screen reader users.
@@ -943,16 +941,16 @@ functionality).
 
 ###### Parameters
 
-|     Parameter     |         Type         | Default Value | Description                                                                                                                                                                                                                                         |
-| :---------------: | :------------------: | :------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|       `to`        | `string` \| `number` |               | The path you want to navigate to. If `to` is a number, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
-|     `options`     |       `object`       |               | The navigation options                                                                                                                                                                                                                              |
-|  `options.state`  |       `object`       | `{}`          | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                 |
-| `options.replace` |      `boolean`       | `false`       | If true, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
+|     Parameter     |       Type        | Default Value | Description                                                                                                                                                                                                                                         |
+| :---------------: | :---------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|       `to`        | `string | number` |               | The path you want to navigate to. If `to` is a number, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
+|     `options`     |     `object`      |               | The navigation options                                                                                                                                                                                                                              |
+|  `options.state`  |     `object`      |     `{}`      | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                 |
+| `options.replace` |     `boolean`     |    `false`    | If true, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
 
 ### Actions
 
-You can use the `link` and `links` actions, to use standard `<a href=".." />`
+You can use the `link` and `links` actions, to use standard `<a href="..." />`
 elements for navigation.
 
 #### `link`
@@ -1020,7 +1018,7 @@ a custom `navigate` function to the action.
 </Router>
 ```
 
-Because the issues with link resolution and the dependency on the global
+Because of the issues with link resolution and the dependency on the global
 navigation function, it is generally advised, not to use the `link` and `links`
 actions if you're not using a standard app, with all the default configuration.
 
@@ -1087,18 +1085,6 @@ different history for each one.
 
 For a more advanced example, checkout the [Custom Hash History
 example][example-custom-hash-history].
-
-## SSR Caveat
-
-In the browser we wait until all child `Route` components have registered with
-their ancestor `Router` component before we let the `Router` pick the best
-match. This approach is not possible on the server, because when all `Route`
-components have registered and it is time to pick a match the SSR has already
-completed, and a document with no matching Route will be returned.
-
-We therefore resort to picking the first matching `Route` that is registered on
-the server, so it is of utmost importance that you
-`sort your Route components from the most specific to the least specific if you are using SSR`.
 
 ## License
 
