@@ -31,7 +31,9 @@
     "declarative routing",
     "hooks",
     "a11y",
-    "accessibility"
+    "accessibility",
+    "ssr",
+    "server side rendering"
   ],
   "sideEffects": false,
   "scripts": {
