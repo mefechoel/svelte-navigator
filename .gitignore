@@ -1,6 +1,5 @@
 /**/node_modules
 example/**/public/build
-example/**/public/bundle.*
 example/**/yarn.lock
 test/testApp/public/build
 .vscode
