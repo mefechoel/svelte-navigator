@@ -17,7 +17,7 @@
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
   import { normalizePath } from "./paths";
-  import { pick, match, normalizeLocation } from "./routes";
+  import { pick, match, normalizeLocation, createLocation } from "./routes";
   import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import {
@@ -66,7 +66,7 @@
   // If we're running an SSR we force the location to the `url` prop
   const getInitialLocation = () =>
     normalizeLocation(
-      isSSR ? { pathname: url } : history.location,
+      isSSR ? createLocation(url) : history.location,
       normalizedBasepath,
     );
   const location = isTopLevelRouter
@@ -93,8 +93,11 @@
 
       const matchingRoute = match(route, $location.pathname);
       if (matchingRoute) {
-        activeRoute.set(matchingRoute);
         hasActiveRoute = true;
+        // Return the match in SSR mode, so the matched Route can use it immediatly.
+        // Waiting for activeRoute to update does not work, because it updates
+        // after the Route is initialized
+        return matchingRoute; // eslint-disable-line consistent-return
       }
     } else {
       routes.update(prevRoutes => {

@@ -278,6 +278,24 @@ export function normalizeLocation(location, basepath) {
 }
 
 /**
+ * Creates a partial location object from an url.
+ * It is used to create a location from the url prop used in SSR
+ *
+ * @param {string} url The url string (e.g. "/path/to/somewhere")
+ *
+ * @returns {{ pathname: string; search: string }} The partial location
+ */
+export function createLocation(url) {
+  const searchIndex = url.indexOf("?");
+  const hasIndex = searchIndex !== -1;
+  const hasSearch = hasIndex && url.length - 1 !== searchIndex;
+  const search = hasSearch ? url.substring(searchIndex, url.length) : "";
+  const pathEndIndex = hasIndex ? searchIndex : url.length;
+  const pathname = url.substring(0, pathEndIndex);
+  return { pathname, search };
+}
+
+/**
  * Resolves a link relative to the parent Route and the Routers basepath.
  *
  * @param {string} path The given path, that will be resolved

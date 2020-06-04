@@ -134,7 +134,7 @@ const canUseDOM = !!(
   window.document.createElement
 );
 // Use memory history in iframes (for example in Svelte REPL)
-const isEmbeddedPage = window.location.origin === "null";
+const isEmbeddedPage = !isSSR && window.location.origin === "null";
 const globalHistory = createHistory(
   canUseDOM && !isEmbeddedPage ? window : createMemorySource(),
 );

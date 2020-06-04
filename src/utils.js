@@ -50,7 +50,7 @@ export function findClosest(tagName, element) {
   return element;
 }
 
-export const isSSR = isUndefined(window);
+export const isSSR = !window;
 
 export function addListener(target, type, handler) {
   target.addEventListener(type, handler);

@@ -13,7 +13,7 @@
    */
 
   import { getContext, onDestroy, setContext } from "svelte";
-  import { writable } from "svelte/store";
+  import { writable, get } from "svelte/store";
   import Router from "./Router.svelte";
   import { ROUTER, ROUTE, ROUTE_PARAMS, FOCUS_ELEM } from "./contexts";
   import {
@@ -41,9 +41,13 @@
   const location = useLocation();
   const focusElement = writable(null);
 
+  // In SSR we cannot wait for $activeRoute to update,
+  // so we use the match returned from `registerRoute` instead
+  let ssrMatch;
+
   const route = writable();
   $: {
-    // The route store will be re-computed whenever props, location or parentBase change.
+    // The route store will be re-computed whenever props, location or parentBase change
     const isDefault = path === "";
     const rawBase = join($parentBase, path);
     const updatedRoute = {
@@ -61,14 +65,17 @@
       focusElement,
     };
     route.set(updatedRoute);
-    registerRoute(updatedRoute);
+    // If we're in SSR mode and the Route matches,
+    // `registerRoute` will return the match
+    ssrMatch = registerRoute(updatedRoute);
   }
 
-  $: isActive = $activeRoute && $activeRoute.id === id;
+  $: isActive = !!(ssrMatch || ($activeRoute && $activeRoute.id === id));
 
   const params = writable({});
   $: if (isActive) {
-    params.set($activeRoute.params);
+    const { params: activeParams } = ssrMatch || $activeRoute;
+    params.set(activeParams);
   }
 
   setContext(ROUTE, route);
@@ -89,16 +96,26 @@
 <div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
 {#if isActive}
   <Router {primary}>
+    <!--
+      `$params` always returns `{}` in SSR in Route, because it will
+      update after component initialisation has already happend.
+      `get(params)` always works, but is not reactive, so we can't
+      use it in client rendered mode
+    -->
     {#if component !== null}
       <svelte:component
         this={component}
         location={$location}
         {navigate}
-        {...$params}
+        {...isSSR ? get(params) : $params}
         {...$$restProps}
       />
     {:else}
-      <slot params={$params} location={$location} {navigate} />
+      <slot
+        params={isSSR ? get(params) : $params}
+        location={$location}
+        {navigate}
+      />
     {/if}
   </Router>
 {/if}

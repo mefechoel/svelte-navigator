@@ -34,7 +34,7 @@
   $: href = resolve(to, $location);
   $: isPartiallyCurrent = startsWith($location.pathname, href);
   $: isCurrent = href === $location.pathname;
-  $: ariaCurrent = isCurrent ? "page" : null;
+  $: ariaCurrent = isCurrent ? { "aria-current": "page" } : {};
   $: props = (() => {
     if (isFunction(getProps)) {
       const dynamicProps = getProps({
@@ -61,6 +61,6 @@
   }
 </script>
 
-<a {href} aria-current={ariaCurrent} on:click={onClick} {...props}>
+<a {href} {...ariaCurrent} on:click={onClick} {...props}>
   <slot />
 </a>
