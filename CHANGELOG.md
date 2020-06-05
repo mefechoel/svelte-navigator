@@ -1,3 +1,9 @@
+# 3.0.7
+
+## Fix:
+
+- Fix `window is undefined` in SSR mode
+
 # 3.0.6
 
 ## Fix:
