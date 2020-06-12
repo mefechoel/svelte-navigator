@@ -247,7 +247,7 @@ export function resolve(to, base) {
 
 /**
  * Normalizes a location for consumption by `Route` children and the `Router`.
- * It removes the apps basepath from the pathnam
+ * It removes the apps basepath from the pathname
  * and sets default values for `search` and `hash` properties.
  *
  * @param {Object} location The current global location supplied by the history component
