@@ -1,3 +1,14 @@
+# 3.0.8
+
+## Fix:
+
+- In-page jumps via fragment links work properly now
+  [#3](https://github.com/mefechoel/svelte-navigator/issues/3):
+  - Focus management is disabled, when jumpin in-page, so the browser can move
+    focus correctly
+  - Navigation is not announced, when a fragment is added to the url, but the
+    `Route` does not change
+
 # 3.0.7
 
 ## Fix:
