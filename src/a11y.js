@@ -149,8 +149,9 @@ export function handleFocus(route) {
 }
 
 export const createTriggerFocus = (a11yConfig, announcementText, location) => (
-  manageFocus = true,
-) => {
+  manageFocus,
+  announceNavigation,
+) =>
   // Wait until the dom is updated, so we can look for headings
   tick().then(() => {
     if (!focusCandidate || initialNavigation) {
@@ -160,7 +161,7 @@ export const createTriggerFocus = (a11yConfig, announcementText, location) => (
     if (manageFocus) {
       handleFocus(focusCandidate.route);
     }
-    if (a11yConfig.announcements) {
+    if (a11yConfig.announcements && announceNavigation) {
       const { path, fullPath, meta, params, uri } = focusCandidate.route;
       const announcementMessage = a11yConfig.createAnnouncement(
         { path, fullPath, meta, params, uri },
@@ -172,7 +173,6 @@ export const createTriggerFocus = (a11yConfig, announcementText, location) => (
     }
     clearFocusCandidate();
   });
-};
 
 export const visuallyHiddenStyle =
   "position:absolute;" +

@@ -72,6 +72,7 @@
   const location = isTopLevelRouter
     ? writable(getInitialLocation())
     : locationContext;
+  const prevLocation = writable($location);
 
   const triggerFocus = createTriggerFocus(
     a11yConfig,
@@ -129,10 +130,16 @@
 
   // Manage focus and announce navigation to screen reader users
   $: {
-    // We need to check for $location here, to force svelte to run this
-    // whenever the location changes
-    if (isTopLevelRouter && $location) {
-      triggerFocus(manageFocus);
+    if (isTopLevelRouter) {
+      const hasHash = !!$location.hash;
+      // When a hash is present in the url, we skip focus management, because
+      // focusing a different element will prevent in-page jumps (See #3)
+      const shouldManageFocus = !hasHash && manageFocus;
+      // We don't want to make an announcement, when the hash changes,
+      // but the active route stays the same
+      const announceNavigation =
+        !hasHash || $location.pathname !== $prevLocation.pathname;
+      triggerFocus(shouldManageFocus, announceNavigation);
     }
   }
 
@@ -151,6 +158,7 @@
           changedHistory.location,
           normalizedBasepath,
         );
+        prevLocation.set($location);
         location.set(normalizedLocation);
       });
 
