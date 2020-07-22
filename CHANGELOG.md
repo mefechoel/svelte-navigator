@@ -1,3 +1,10 @@
+# 3.0.9
+
+## Other:
+
+- Update dependencies
+- Fix lodash security alert
+
 # 3.0.8
 
 ## Fix:
