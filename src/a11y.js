@@ -1,7 +1,7 @@
 import { get } from "svelte/store";
 import { tick } from "svelte";
 import { warn, ROUTER_ID, ROUTE_ID } from "./warning";
-import { addListener } from "./utils";
+import { addListener, query } from "./utils";
 
 // We need to keep the focus candidate in a separate file, so svelte does
 // not update, when we mutate it.
@@ -105,10 +105,6 @@ export function isEndMarker(elem, id) {
 
 export function isHeading(elem) {
   return /^H[1-6]$/i.test(elem.tagName);
-}
-
-function query(selector, parent = document) {
-  return parent.querySelector(selector);
 }
 
 export function queryHeading(id) {

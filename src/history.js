@@ -4,7 +4,13 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
-import { createGlobalId, isSSR, isNumber, addListener } from "./utils";
+import {
+  createGlobalId,
+  isSSR,
+  isNumber,
+  addListener,
+  forceJumpToFragment,
+} from "./utils";
 
 function getLocation(source) {
   return {
@@ -15,26 +21,44 @@ function getLocation(source) {
   };
 }
 
+const equalsLocation = (locA, locB) =>
+  ["pathname", "search", "hash"].every(key => locA[key] === locB[key]);
+
 function createHistory(source) {
   let listeners = [];
   let location = getLocation(source);
+  let prevLocation;
+  let action;
+  let popstateUnlisten;
+
+  const update = _action => {
+    action = _action;
+    prevLocation = location;
+    location = getLocation(source);
+    if (action !== "POP" || !equalsLocation(location, prevLocation)) {
+      listeners.forEach(listener => listener({ location, action }));
+      forceJumpToFragment(location.hash);
+    }
+  };
+
+  const popstateListener = () => update("POP");
 
   return {
     get location() {
       return location;
     },
     listen(listener) {
+      if (listeners.length === 0) {
+        popstateUnlisten = addListener(source, "popstate", popstateListener);
+      }
+
       listeners.push(listener);
 
-      const popstateListener = () => {
-        location = getLocation(source);
-        listener({ location, action: "POP" });
-      };
-
-      const unlisten = addListener(source, "popstate", popstateListener);
       return () => {
-        unlisten();
         listeners = listeners.filter(fn => fn !== listener);
+        if (listeners.length === 0) {
+          popstateUnlisten();
+        }
       };
     },
     /**
@@ -50,9 +74,9 @@ function createHistory(source) {
      * stack, instead of pushing on a new one
      */
     navigate(to, { state, replace = false } = {}) {
-      let action = replace ? "REPLACE" : "PUSH";
       if (isNumber(to)) {
-        action = "POP";
+        // `history.go` triggers a `popstate` event, so we don't need to notify
+        // the listeners here
         source.history.go(to);
       } else {
         const keyedState = { ...state, _key: createGlobalId() };
@@ -66,10 +90,8 @@ function createHistory(source) {
         } catch (e) {
           source.location[replace ? "replace" : "assign"](to);
         }
+        update(replace ? "REPLACE" : "PUSH");
       }
-
-      location = getLocation(source);
-      listeners.forEach(listener => listener({ location, action }));
     },
   };
 }

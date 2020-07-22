@@ -36,11 +36,10 @@ export function createCounter() {
  *
  * @returns {string} An id
  */
-export function createGlobalId() {
-  return Math.random()
+export const createGlobalId = () =>
+  Math.random()
     .toString(36)
     .substring(2);
-}
 
 export function findClosest(tagName, element) {
   while (element && element.tagName !== tagName) {
@@ -55,4 +54,54 @@ export const isSSR = typeof window === "undefined";
 export function addListener(target, type, handler) {
   target.addEventListener(type, handler);
   return () => target.removeEventListener(type, handler);
+}
+
+export function query(selector, parent = document) {
+  return parent.querySelector(selector);
+}
+
+export const waitForElement = hash =>
+  // eslint-disable-next-line consistent-return
+  new Promise(res => {
+    if (!hash) return res();
+
+    let observer;
+    let timeoutId;
+
+    const resolve = () => {
+      observer.disconnect();
+      clearTimeout(timeoutId);
+      res();
+    };
+
+    // Push onto callback queue so it runs after the DOM is updated
+    // eslint-disable-next-line consistent-return
+    setTimeout(() => {
+      if (query(hash)) return res();
+      observer = new MutationObserver(() => {
+        if (query(hash)) resolve();
+      });
+      observer.observe(document, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
+      // if the element doesn't show up in 3 seconds, stop checking
+      timeoutId = setTimeout(resolve, 3000);
+    }, 0);
+  });
+
+export function forceJumpToFragment(hash, timeout = 0) {
+  if (!hash) return;
+  waitForElement(hash)
+    .then(() => {
+      setTimeout(() => {
+        console.log("RE-HASH");
+        // eslint-disable-next-line no-self-assign
+        window.location.href = window.location.href;
+      }, timeout);
+    })
+    .catch(() => {
+      console.log("FAIL");
+    });
 }

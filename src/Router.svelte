@@ -18,7 +18,7 @@
   import { globalHistory } from "./history";
   import { normalizePath } from "./paths";
   import { pick, match, normalizeLocation, createLocation } from "./routes";
-  import { isSSR } from "./utils";
+  import { isSSR, forceJumpToFragment } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import {
     pushFocusCandidate,
@@ -153,6 +153,8 @@
     // The topmost Router in the tree is responsible for updating
     // the location store and supplying it through context.
     onMount(() => {
+      forceJumpToFragment($location.hash, 200);
+
       const unlisten = history.listen(changedHistory => {
         const normalizedLocation = normalizeLocation(
           changedHistory.location,
