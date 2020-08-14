@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "history": "^4.10.1",
-    "svelte-navigator": "^3.0.6"
+    "svelte-navigator": "^3.0.9"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.1.0",

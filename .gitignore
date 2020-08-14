@@ -9,3 +9,4 @@ coverage-jest
 coverage-cypress
 reports
 .nyc_output
+tmp
