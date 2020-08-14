@@ -1,3 +1,12 @@
+# 3.0.10
+
+## Other:
+
+- Update dependencies
+- Fix serialize-javascript security alert (originating from
+  rollup-plugin-terser)
+- Bump svelte-navigator version in examples
+
 # 3.0.9
 
 ## Other:
