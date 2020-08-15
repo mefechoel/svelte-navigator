@@ -5,7 +5,7 @@
  */
 
 import { navigate as defaultNavigate } from "./history";
-import { shouldNavigate, findClosest, addListener } from "./utils";
+import { shouldNavigate, findClosest, addListener, isFunction } from "./utils";
 
 const createAction = getAnchor => (node, navigate = defaultNavigate) => {
   const handleClick = event => {
@@ -52,7 +52,11 @@ export const link = /*#__PURE__*/createAction(event => event.currentTarget); // 
  */
 export const links = /*#__PURE__*/createAction(event => { // eslint-disable-line spaced-comment
   const anchor = findClosest("A", event.target);
-  if (!anchor.hasAttribute("noroute")) {
+  if (
+    anchor &&
+    isFunction(anchor.hasAttribute) &&
+    !anchor.hasAttribute("noroute")
+  ) {
     return anchor;
   }
   return null;
