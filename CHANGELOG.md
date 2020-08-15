@@ -1,3 +1,10 @@
+# 3.0.11
+
+## Fix:
+
+- Check if an element, that might be an anchor is null, when using `use:links`,
+  to avoid error [#12](https://github.com/mefechoel/svelte-navigator/issues/12)
+
 # 3.0.10
 
 ## Other:
