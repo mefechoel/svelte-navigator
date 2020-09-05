@@ -6,9 +6,11 @@
   "unpkg": "dist/svelte-navigator.umd.min.js",
   "module": "dist/svelte-navigator.module.mjs",
   "svelte": "src/index.js",
+  "types": "types",
   "files": [
     "src",
-    "dist"
+    "dist",
+    "types"
   ],
   "author": "Michel Strelow @mefechoel",
   "license": "MIT",
