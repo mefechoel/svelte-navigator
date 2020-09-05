@@ -1,5 +1,8 @@
 import { LocalComponent } from "./SvelteInternal";
 import AnyObject from "./AnyObject";
+import RouteParams from "svelte-navigator/types/RouteParam";
+import NavigatorLocation from "./NavigatorLocation";
+import { NavigateFn } from "./NavigatorHistory";
 
 export interface RouteProps<Meta extends AnyObject = AnyObject> {
   /**
@@ -26,6 +29,17 @@ export interface RouteProps<Meta extends AnyObject = AnyObject> {
   primary?: boolean;
 }
 
+interface RouteSlots<
+  Params extends RouteParams = RouteParams,
+  State extends AnyObject = AnyObject
+> {
+  default: {
+    params: Params;
+    location: NavigatorLocation;
+    navigate: NavigateFn<State>;
+  };
+}
+
 /**
  * A component that will render its `component` property or children when its
  * ancestor `Router` component decides it is the best match.
@@ -43,6 +57,6 @@ export interface RouteProps<Meta extends AnyObject = AnyObject> {
  * They can be accessed inside the `Route` slot, via `let:location` and
  * `let:navigate`.
  */
-declare class Route extends LocalComponent<RouteProps> {}
+declare class Route extends LocalComponent<RouteProps, RouteSlots> {}
 
 export default Route;
