@@ -63,7 +63,6 @@ export function pushFocusCandidate(item) {
  */
 export function clearFocusCandidate() {
   focusCandidate = null;
-  // initialNavigation = false;
 }
 
 export function initialNavigationOccurred() {
