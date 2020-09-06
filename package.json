@@ -1,12 +1,12 @@
 {
   "name": "svelte-navigator",
-  "version": "3.0.11",
+  "version": "3.1.0",
   "description": "Simple, accessible routing for Svelte",
   "main": "dist/svelte-navigator.umd.js",
   "unpkg": "dist/svelte-navigator.umd.min.js",
   "module": "dist/svelte-navigator.module.mjs",
   "svelte": "src/index.js",
-  "types": "types",
+  "types": "types/index.d.ts",
   "files": [
     "src",
     "dist",
@@ -35,7 +35,8 @@
     "a11y",
     "accessibility",
     "ssr",
-    "server side rendering"
+    "server side rendering",
+    "typescript"
   ],
   "sideEffects": false,
   "scripts": {

@@ -1,3 +1,16 @@
+# 3.1.0
+
+## Features:
+
+- TypeScript support 🎉
+  [#14](https://github.com/mefechoel/svelte-navigator/issues/14)
+
+## Other:
+
+- Provide a warning when passing a `basepath` prop to a non-top-level `Router`
+- Provide a warning when passing a NavigationOptions object to `navigate`, when
+  the first argument is a number
+
 # 3.0.11
 
 ## Fix:

@@ -1,7 +1,7 @@
 [npm]: https://img.shields.io/npm/v/svelte-navigator.svg?style=flat-square
 [npm-url]: https://npmjs.com/package/svelte-navigator
 [example-folder-navlink]:
-  https://github.com/mefechoeml/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
+  https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
 
 # Svelte Navigator
 
@@ -36,6 +36,7 @@ React-esque hooks.
 - Nestable Routers for seamless merging of many smaller apps
 - HTML5 history mode by default (Memory mode as fallback, or for testing)
 - SSR (**S**erver **S**ide **R**endering) support
+- TypeScript ready 🎉
 
 ## Table of Contents
 
@@ -391,14 +392,14 @@ type CreateAnnouncement = (
 ) => string | Promise<string>;
 
 interface HistorySource {
-  get location(): Location;
+  readonly location: Location;
   addEventListener(event: "popstate", handler: () => void): void;
   removeEventListener(event: "popstate", handler: () => void): void;
   history: {
-    get state(): object;
+    readonly state: object;
     pushState(state: object, title: string, uri: string): void;
     replaceState(state: object, title: string, uri: string): void;
-    go: (to: number) => void;
+    go(to: number): void;
   };
 }
 ```
