@@ -13,7 +13,7 @@ declare namespace Router {
       State extends AnyObject = AnyObject
     > = (
       route: RouteInstance<Params, Meta>,
-      location: NavigatorLocation<State>
+      location: NavigatorLocation<State>,
     ) => string | Promise<string>;
   }
 

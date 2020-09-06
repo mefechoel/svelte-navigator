@@ -1,20 +1,17 @@
 import Router from "./Router";
 import Route from "./Route";
 import Link from "./Link";
-import RouteInstance from './RouteInstance';
-import NavigatorLocation from './NavigatorLocation';
-import HistorySource from './HistorySource';
-import {
-  NavigationAction,
-  NavigateOptions,
-  NavigateFn,
-  NavigatorHistory,
-} from "./NavigatorHistory";
+import RouteInstance from "./RouteInstance";
+import NavigatorLocation from "./NavigatorLocation";
+import HistorySource from "./HistorySource";
+import { NavigationAction, NavigatorHistory } from "./NavigatorHistory";
 import {
   navigate,
   createHistory,
   createMemorySource,
   globalHistory,
+  NavigateOptions,
+  NavigateFn,
 } from "./history";
 import { link, links } from "./actions";
 import {
@@ -35,9 +32,9 @@ export {
   NavigatorLocation,
   HistorySource,
   NavigationAction,
+  NavigatorHistory,
   NavigateOptions,
   NavigateFn,
-  NavigatorHistory,
   navigate,
   createHistory,
   createMemorySource,
@@ -51,4 +48,4 @@ export {
   useMatch,
   useParams,
   useFocus,
-}
+};

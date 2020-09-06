@@ -1,9 +1,9 @@
 import { Readable } from "svelte/store";
 import NavigatorLocation from "./NavigatorLocation";
-import { NavigateFn } from "./NavigatorHistory";
 import { LocalAction } from "./SvelteInternal";
 import RouteParams from "./RouteParam";
 import AnyObject from "./AnyObject";
+import { NavigateFn } from "./history";
 
 /**
  * Access the current location via a readable store.
@@ -14,7 +14,7 @@ export declare function useLocation<
 
 /**
  * Resolve a given link relative to the current `Route` and the `Router`s
- * `basepath`. * It is used under the hood in `Link` and `useNavigate`.
+ * `basepath`. It is used under the hood in `Link` and `useNavigate`.
  * You can use it to manually resolve links, when using the `link` or `links`
  * actions.
  */
@@ -50,7 +50,7 @@ interface RouteMatch<Params extends RouteParams> {
  * as you're used to with all paths in Svelte Navigator.
  */
 export declare function useMatch<Params extends RouteParams>(
-  path: string
+  path: string,
 ): Readable<RouteMatch<Params> | null>;
 
 /**

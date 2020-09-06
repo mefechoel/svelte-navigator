@@ -1,8 +1,8 @@
 import { LocalComponent } from "./SvelteInternal";
 import AnyObject from "./AnyObject";
-import RouteParams from "svelte-navigator/types/RouteParam";
+import RouteParams from "./RouteParam";
 import NavigatorLocation from "./NavigatorLocation";
-import { NavigateFn } from "./NavigatorHistory";
+import { NavigateFn } from "./history";
 
 export interface RouteProps<Meta extends AnyObject = AnyObject> {
   /**

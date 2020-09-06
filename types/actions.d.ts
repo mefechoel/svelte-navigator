@@ -1,5 +1,5 @@
 import { LocalAction } from "./SvelteInternal";
-import { NavigateFn } from "./NavigatorHistory";
+import { NavigateFn } from "./history";
 
 export declare const link: LocalAction<NavigateFn>;
 
