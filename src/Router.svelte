@@ -26,7 +26,9 @@
     createTriggerFocus,
   } from "./a11y";
 
-  export let basepath = "/";
+  const defaultBasepath = "/";
+
+  export let basepath = defaultBasepath;
   export let url = null;
   export let history = globalHistory;
   export let primary = true;
@@ -115,6 +117,13 @@
     routes.update(createRouteFilter(routeId));
   }
 
+  if (!isTopLevelRouter && basepath !== defaultBasepath) {
+    warn(
+      ROUTER_ID,
+      'Only top-level Routers can have a "basepath" prop. It is ignored.',
+      { basepath },
+    );
+  }
   $: if (basepath !== initialBasepath) {
     warn(ROUTER_ID, 'You cannot change the "basepath" prop. It is ignored.');
   }

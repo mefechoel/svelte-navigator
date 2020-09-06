@@ -12,6 +12,7 @@ export const USE_NAVIGATE_ID = 7;
 export const USE_PARAMS_ID = 8;
 export const USE_RESOLVABLE_ID = 9;
 export const USE_RESOLVE_ID = 10;
+export const NAVIGATE_ID = 11;
 
 const labels = {
   [LINK_ID]: "Link",
@@ -24,22 +25,25 @@ const labels = {
   [USE_PARAMS_ID]: "useParams",
   [USE_RESOLVABLE_ID]: "useResolvable",
   [USE_RESOLVE_ID]: "useResolve",
+  [NAVIGATE_ID]: "navigate",
 };
 
 export const createLabel = labelId => labels[labelId];
 
-export function createIdentificator(labelId, props) {
+export function createIdentifier(labelId, props) {
   let attr;
   if (labelId === ROUTE_ID) {
     attr = props.path ? `path="${props.path}"` : "default";
   } else if (labelId === LINK_ID) {
     attr = `to="${props.to}"`;
+  } else if (labelId === ROUTER_ID) {
+    attr = `basepath="${props.basepath || ""}"`;
   }
   return `<${createLabel(labelId)} ${attr || ""} />`;
 }
 
 export function createMessage(labelId, message, props, originId) {
-  const origin = props && createIdentificator(originId || labelId, props);
+  const origin = props && createIdentifier(originId || labelId, props);
   const originMsg = origin ? `\n\nOccurred in: ${origin}` : "";
   const label = createLabel(labelId);
   const msg = isFunction(message) ? message(label) : message;

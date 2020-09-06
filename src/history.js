@@ -5,6 +5,7 @@
  */
 
 import { createGlobalId, isSSR, isNumber, addListener } from "./utils";
+import { warn, NAVIGATE_ID } from "./warning";
 
 function getLocation(source) {
   return {
@@ -49,9 +50,18 @@ function createHistory(source) {
      * @param {boolean} [options.replace=false] Replace the current entry in the history
      * stack, instead of pushing on a new one
      */
-    navigate(to, { state, replace = false } = {}) {
+    navigate(to, options) {
+      const { state = {}, replace = false } = options || {};
       let action = replace ? "REPLACE" : "PUSH";
       if (isNumber(to)) {
+        if (options) {
+          warn(
+            NAVIGATE_ID,
+            "Navigation options (state or replace) are not supported, " +
+              "when passing a number as the first argument to navigate. " +
+              "They are ignored.",
+          );
+        }
         action = "POP";
         source.history.go(to);
       } else {
