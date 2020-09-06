@@ -18,7 +18,7 @@ export declare function useLocation<
  * You can use it to manually resolve links, when using the `link` or `links`
  * actions.
  */
-export declare function useResolve(path: string): string;
+export declare function useResolve(): (path: string) => string;
 
 /**
  * Manually resolve links, when using the `link` or `links` actions.
