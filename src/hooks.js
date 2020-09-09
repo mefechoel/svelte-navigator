@@ -252,11 +252,11 @@ export function useNavigate() {
    * @param {*} [options.state]
    * @param {boolean} [options.replace=false]
    */
-  const navigateRelative = (to, { state, replace = false } = {}) => {
+  const navigateRelative = (to, options) => {
     // If to is a number, we navigate to the target stack entry via `history.go`.
     // Otherwise resolve the link
     const target = isNumber(to) ? to : resolve(to);
-    return navigate(target, { state, replace });
+    return navigate(target, options);
   };
   return navigateRelative;
 }

@@ -7,6 +7,10 @@
 import { createGlobalId, isSSR, isNumber, addListener } from "./utils";
 import { warn, NAVIGATE_ID } from "./warning";
 
+const POP = "POP";
+const PUSH = "PUSH";
+const REPLACE = "REPLACE";
+
 function getLocation(source) {
   return {
     ...source.location,
@@ -19,6 +23,10 @@ function getLocation(source) {
 function createHistory(source) {
   let listeners = [];
   let location = getLocation(source);
+  let action = POP;
+
+  const notifyListeners = (listenerFns = listeners) =>
+    listenerFns.forEach(listener => listener({ location, action }));
 
   return {
     get location() {
@@ -29,8 +37,12 @@ function createHistory(source) {
 
       const popstateListener = () => {
         location = getLocation(source);
-        listener({ location, action: "POP" });
+        action = POP;
+        notifyListeners([listener]);
       };
+
+      // Call listener when it is registered
+      notifyListeners([listener]);
 
       const unlisten = addListener(source, "popstate", popstateListener);
       return () => {
@@ -52,7 +64,7 @@ function createHistory(source) {
      */
     navigate(to, options) {
       const { state = {}, replace = false } = options || {};
-      let action = replace ? "REPLACE" : "PUSH";
+      action = replace ? REPLACE : PUSH;
       if (isNumber(to)) {
         if (options) {
           warn(
@@ -62,24 +74,24 @@ function createHistory(source) {
               "They are ignored.",
           );
         }
-        action = "POP";
+        action = POP;
         source.history.go(to);
       } else {
         const keyedState = { ...state, _key: createGlobalId() };
         // try...catch iOS Safari limits to 100 pushState calls
         try {
-          if (replace) {
-            source.history.replaceState(keyedState, "", to);
-          } else {
-            source.history.pushState(keyedState, "", to);
-          }
+          source.history[replace ? "replaceState" : "pushState"](
+            keyedState,
+            "",
+            to,
+          );
         } catch (e) {
           source.location[replace ? "replace" : "assign"](to);
         }
       }
 
       location = getLocation(source);
-      listeners.forEach(listener => listener({ location, action }));
+      notifyListeners();
     },
   };
 }
