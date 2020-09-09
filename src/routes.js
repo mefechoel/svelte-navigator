@@ -277,22 +277,30 @@ export function normalizeLocation(location, basepath) {
   };
 }
 
+const normalizeUrlFragment = frag => (frag.length === 1 ? "" : frag);
+
 /**
- * Creates a partial location object from an url.
+ * Creates a location object from an url.
  * It is used to create a location from the url prop used in SSR
  *
  * @param {string} url The url string (e.g. "/path/to/somewhere")
  *
- * @returns {{ pathname: string; search: string }} The partial location
+ * @returns {{ pathname: string; search: string; hash: string }} The location
  */
 export function createLocation(url) {
   const searchIndex = url.indexOf("?");
-  const hasIndex = searchIndex !== -1;
-  const hasSearch = hasIndex && url.length - 1 !== searchIndex;
-  const search = hasSearch ? url.substring(searchIndex, url.length) : "";
-  const pathEndIndex = hasIndex ? searchIndex : url.length;
-  const pathname = url.substring(0, pathEndIndex);
-  return { pathname, search };
+  const hashIndex = url.indexOf("#");
+  const hasSearchIndex = searchIndex !== -1;
+  const hasHashIndex = hashIndex !== -1;
+  const hash = hasHashIndex ? normalizeUrlFragment(url.substr(hashIndex)) : "";
+  const pathnameAndSearch = hash ? url.substring(0, hashIndex) : url;
+  const search = hasSearchIndex
+    ? normalizeUrlFragment(pathnameAndSearch.substr(searchIndex))
+    : "";
+  const pathname = search
+    ? pathnameAndSearch.substring(0, searchIndex)
+    : pathnameAndSearch;
+  return { pathname, search, hash };
 }
 
 /**
