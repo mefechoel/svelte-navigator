@@ -1,6 +1,6 @@
 {
   "name": "svelte-navigator",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Simple, accessible routing for Svelte",
   "main": "dist/svelte-navigator.umd.js",
   "unpkg": "dist/svelte-navigator.umd.min.js",

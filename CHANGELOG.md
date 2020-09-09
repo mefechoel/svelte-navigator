@@ -1,3 +1,10 @@
+# 3.1.1
+
+## Fix:
+
+- Prevent navigations getting lost, that occur before the `Router` mounts
+  [#16](https://github.com/mefechoel/svelte-navigator/issues/16)
+
 # 3.1.0
 
 ## Features:
