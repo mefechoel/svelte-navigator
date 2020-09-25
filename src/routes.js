@@ -293,12 +293,12 @@ export function createLocation(url) {
   const hasSearchIndex = searchIndex !== -1;
   const hasHashIndex = hashIndex !== -1;
   const hash = hasHashIndex ? normalizeUrlFragment(url.substr(hashIndex)) : "";
-  const pathnameAndSearch = hash ? url.substring(0, hashIndex) : url;
+  const pathnameAndSearch = hasHashIndex ? url.substr(0, hashIndex) : url;
   const search = hasSearchIndex
     ? normalizeUrlFragment(pathnameAndSearch.substr(searchIndex))
     : "";
-  const pathname = search
-    ? pathnameAndSearch.substring(0, searchIndex)
+  const pathname = hasSearchIndex
+    ? pathnameAndSearch.substr(0, searchIndex)
     : pathnameAndSearch;
   return { pathname, search, hash };
 }
