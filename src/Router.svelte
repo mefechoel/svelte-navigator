@@ -52,7 +52,6 @@
   const routerId = createId();
 
   const manageFocus = primary && !(routerContext && !routerContext.manageFocus);
-  let announcementRegion;
   const announcementText = writable("");
 
   const routes = writable([]);
@@ -199,7 +198,6 @@
     aria-atomic="true"
     aria-live="polite"
     style={visuallyHiddenStyle}
-    bind:this={announcementRegion}
   >
     {$announcementText}
   </div>
