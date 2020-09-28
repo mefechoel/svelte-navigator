@@ -1,3 +1,13 @@
+# 3.1.2
+
+## Fix:
+
+- Fix incorrect search string when parsing url with empty search and hash in ssr
+
+## Other:
+
+- Remove unused ref binding to announcement live region in `Router`
+
 # 3.1.1
 
 ## Fix:
