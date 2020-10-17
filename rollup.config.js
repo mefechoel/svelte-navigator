@@ -1,9 +1,15 @@
+import { join } from "path";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import svelte from "rollup-plugin-svelte";
 import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
+import rimraf from "rimraf";
 import pkg from "./package.json";
+
+// eslint-disable-next-line no-console
+console.log("\nCleaning previous build...");
+rimraf.sync(join(__dirname, "../dist"));
 
 const babelConfig = {
   babelrc: false,

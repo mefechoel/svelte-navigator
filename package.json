@@ -54,7 +54,8 @@
     "cy:start": "yarn cy:build && yarn cy:serve",
     "cy:start:quiet": "yarn cy:build && yarn cy:serve:quiet",
     "cy:run": "cypress run --headless",
-    "test": "yarn test:unit && yarn test:ssr && yarn test:integ"
+    "test": "yarn test:unit && yarn test:ssr && yarn test:integ",
+    "prepublishOnly": "yarn test && yarn build"
   },
   "peerDependencies": {
     "svelte": "3.x"
