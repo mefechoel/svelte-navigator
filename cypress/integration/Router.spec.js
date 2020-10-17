@@ -5,10 +5,12 @@ function getByTestId(id) {
 }
 
 function assertPath(expectedPath) {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(200);
   return cy
     .window()
     .then(win => win.location.pathname)
-    .should("be", expectedPath);
+    .should("equal", expectedPath);
 }
 
 function appState(field) {
@@ -195,7 +197,7 @@ describe("Router", () => {
       it("renders nested page with parameter", () => {
         getByTestId("link-dashboard-mark").click();
         getByTestId("link-dashboard-article-987").click();
-        assertPath("/dashboard/mark/article/987");
+        assertPath("/dashboard/mark/articles/987");
         cy.contains("Article 987");
       });
 
@@ -204,13 +206,13 @@ describe("Router", () => {
         assertPath("/dashboard/mark");
 
         getByTestId("link-dashboard-article-987").click();
-        assertPath("/dashboard/mark/article/987");
+        assertPath("/dashboard/mark/articles/987");
 
         getByTestId("link-dashboard-paul").click();
         assertPath("/dashboard/paul");
 
         getByTestId("link-dashboard-article-987").click();
-        assertPath("/dashboard/paul/article/987");
+        assertPath("/dashboard/paul/articles/987");
       });
     });
   });
@@ -342,42 +344,45 @@ describe("Router", () => {
       it("works", () => {
         getByTestId("link-blog").click();
         getByTestId("link-blog-navigate").click();
+        const navigate = (...args) =>
+          cy.window().then(win => win.navigate(...args));
 
-        cy.window().then(({ navigate }) => {
-          navigate("/");
-          assertPath("/blog");
+        navigate("/");
+        assertPath("/");
 
-          navigate("/something");
-          assertPath("/blog/something");
+        navigate("/something");
+        assertPath("/something");
 
-          navigate("something");
-          assertPath("/blog/navigate/something");
+        navigate("something");
+        assertPath("/blog/navigate/something");
 
-          navigate("../something");
-          assertPath("/blog/something");
+        navigate("../something");
+        assertPath("/blog/something");
 
-          navigate("../../something");
-          assertPath("/something");
+        navigate("../../something");
+        assertPath("/something");
 
-          navigate("../../../something");
-          assertPath("/something");
+        navigate("../../../something");
+        assertPath("/something");
 
-          navigate("..");
-          assertPath("/blog");
+        navigate("..");
+        assertPath("/blog");
 
-          navigate("../..");
-          assertPath("/");
+        navigate("../..");
+        assertPath("/");
 
-          navigate(-1);
-          assertPath("/blog");
+        navigate(-1);
+        assertPath("/blog");
 
-          navigate(1);
-          assertPath("/");
+        navigate(1);
+        assertPath("/");
 
-          navigate("/");
-          navigate("/something", { replace: true });
-          assertPath("/");
-        });
+        navigate("/blog");
+        navigate("/something", { replace: true });
+        assertPath("/something");
+
+        navigate(-1);
+        assertPath("/");
       });
     });
 
