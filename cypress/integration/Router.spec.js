@@ -314,7 +314,7 @@ describe("Router", () => {
   });
 
   describe("Hooks", () => {
-    describe("useLinkResolve", () => {
+    describe("useResolve", () => {
       it("works", () => {
         getByTestId("link-blog").click();
         getByTestId("link-blog-resolve").click();
@@ -439,6 +439,11 @@ describe("Router", () => {
           .then(w => w.customNavigateCalled)
           .should("be.true");
       });
+
+      it("does not break when no <a> tag is present", () => {
+        getByTestId("action-links-not-a-link").click();
+        assertPath("/");
+      });
     });
 
     describe("link", () => {
@@ -554,11 +559,11 @@ describe("Router", () => {
   });
 
   describe("A11y", () => {
-    const assertFocusElement = testId =>
+    const assertFocusElement = (testId, assertion = "have.attr") =>
       cy
         .window()
         .then(win => win.document.activeElement)
-        .should("have.attr", "data-testid", testId);
+        .should(assertion, "data-testid", testId);
 
     it("focuses appropriate heading on navigation", () => {
       getByTestId("a11y-link-b").click();
@@ -588,6 +593,26 @@ describe("Router", () => {
         .last()
         .invoke("text")
         .should("equal", "Navigated to /b");
+    });
+
+    it("focuses heading when no hash fragment is present", () => {
+      getByTestId("a11y-link-no-hash").click();
+      getByTestId("a11y-route-hash");
+      assertFocusElement("a11y-route-hash");
+    });
+
+    it("does not focuses heading when hash fragment is present", () => {
+      getByTestId("a11y-link-hash").click();
+      getByTestId("a11y-route-hash");
+      assertFocusElement("a11y-route-hash", "not.have.attr");
+    });
+  });
+
+  describe("cold redirect", () => {
+    it("correctly redirects on page load, before mount", () => {
+      cy.visit("/redirect-source");
+      assertPath("/redirect-target");
+      getByTestId("redirect-target");
     });
   });
 });

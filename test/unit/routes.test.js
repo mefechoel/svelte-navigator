@@ -5,7 +5,7 @@ import {
   resolveLink,
   normalizeLocation,
   createLocation,
-} from "../src/routes";
+} from "../../src/routes";
 import { testRoutes } from "./testRoutes";
 
 describe("pick", () => {

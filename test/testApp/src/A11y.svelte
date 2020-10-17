@@ -18,6 +18,8 @@
   <Link data-testid="a11y-link-c" to="b/c">Link C</Link>
   <Link data-testid="a11y-link-d" to="b/d">Link D</Link>
   <Link data-testid="a11y-link-e" to="b/e">Link E</Link>
+  <Link data-testid="a11y-link-no-hash" to="hash">No Hash</Link>
+  <Link data-testid="a11y-link-hash" to="hash#hash-anchor">Hash</Link>
 
   <Route path="a">
     <h1 data-testid="a11y-route-a">Path A</h1>
@@ -48,5 +50,12 @@
     <Route path="e">
       <UseFocusAsync />
     </Route>
+  </Route>
+
+  <Route path="hash">
+    <h1 data-testid="a11y-route-hash">Hash Navigation</h1>
+    <p data-testid="a11y-route-hash-anchor" id="hash-anchor">
+      If I'm jumped to, no heading should be focused.
+    </p>
   </Route>
 </Router>

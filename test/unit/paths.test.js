@@ -1,4 +1,4 @@
-import { combinePaths } from "../src/paths";
+import { combinePaths } from "../../src/paths";
 
 describe("combinePaths", () => {
   it("returns basepath", () => {

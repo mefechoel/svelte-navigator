@@ -26,6 +26,7 @@ export default {
     }),
     commonjs(),
     babel({
+      babelHelpers: "bundled",
       babelrc: false,
       extensions: [".js", ".mjs", ".html", ".svelte"],
       include: ["src/**", "node_modules/svelte/**"],
