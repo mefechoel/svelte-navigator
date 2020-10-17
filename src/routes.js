@@ -277,32 +277,6 @@ export function normalizeLocation(location, basepath) {
   };
 }
 
-const normalizeUrlFragment = frag => (frag.length === 1 ? "" : frag);
-
-/**
- * Creates a location object from an url.
- * It is used to create a location from the url prop used in SSR
- *
- * @param {string} url The url string (e.g. "/path/to/somewhere")
- *
- * @returns {{ pathname: string; search: string; hash: string }} The location
- */
-export function createLocation(url) {
-  const searchIndex = url.indexOf("?");
-  const hashIndex = url.indexOf("#");
-  const hasSearchIndex = searchIndex !== -1;
-  const hasHashIndex = hashIndex !== -1;
-  const hash = hasHashIndex ? normalizeUrlFragment(url.substr(hashIndex)) : "";
-  const pathnameAndSearch = hasHashIndex ? url.substr(0, hashIndex) : url;
-  const search = hasSearchIndex
-    ? normalizeUrlFragment(pathnameAndSearch.substr(searchIndex))
-    : "";
-  const pathname = hasSearchIndex
-    ? pathnameAndSearch.substr(0, searchIndex)
-    : pathnameAndSearch;
-  return { pathname, search, hash };
-}
-
 /**
  * Resolves a link relative to the parent Route and the Routers basepath.
  *

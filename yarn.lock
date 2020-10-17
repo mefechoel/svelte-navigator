@@ -7654,6 +7654,11 @@ svelte-jester@^1.0.5:
   dependencies:
     cosmiconfig "^6.0.0"
 
+svelte-navigator-history@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/svelte-navigator-history/-/svelte-navigator-history-0.1.1.tgz#c45e2d445c06bcce0e1ce023c712d333f715039e"
+  integrity sha512-kaCv2RR8Fww2D5pv+IcK9vEhUNgMHcZS0+SM/NFN6Ng7isK1kOStJiEMw6OByWPLC5L8fdICRS2QN2KHF0tnaw==
+
 svelte@^3.22.2:
   version "3.24.1"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.24.1.tgz#aca364937dd1df27fe131e2a4c234acb6061db4b"

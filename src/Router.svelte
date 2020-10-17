@@ -14,10 +14,11 @@
 
   import { getContext, setContext, onMount } from "svelte";
   import { writable } from "svelte/store";
+  import { parsePath } from "svelte-navigator-history";
   import { LOCATION, ROUTER } from "./contexts";
   import { globalHistory } from "./history";
   import { normalizePath } from "./paths";
-  import { pick, match, normalizeLocation, createLocation } from "./routes";
+  import { pick, match, normalizeLocation } from "./routes";
   import { isSSR } from "./utils";
   import { warn, ROUTER_ID } from "./warning";
   import {
@@ -64,14 +65,14 @@
   // focus on navigation, so we can focus the first possible router
   const level = isTopLevelRouter ? 0 : routerContext.level + 1;
 
-  // If we're running an SSR we force the location to the `url` prop
-  const getInitialLocation = () =>
-    normalizeLocation(
-      isSSR ? createLocation(url) : history.location,
-      normalizedBasepath,
-    );
   const location = isTopLevelRouter
-    ? writable(getInitialLocation())
+    ? writable(
+        normalizeLocation(
+          // If we're running an SSR we force the location to the `url` prop
+          isSSR ? parsePath(url) : history.location,
+          normalizedBasepath,
+        ),
+      )
     : locationContext;
   const prevLocation = writable($location);
 

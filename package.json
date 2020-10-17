@@ -112,5 +112,8 @@
       ".jsx",
       ".svelte"
     ]
+  },
+  "dependencies": {
+    "svelte-navigator-history": "^0.1.1"
   }
 }
