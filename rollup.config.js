@@ -1,5 +1,5 @@
 import { join } from "path";
-import resolve from "@rollup/plugin-node-resolve";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import svelte from "rollup-plugin-svelte";
 import babel from "@rollup/plugin-babel";
@@ -48,7 +48,7 @@ function createConfig({ file, format, minify = false }) {
     external: ["svelte", "svelte/store", "svelte/internal"],
     plugins: [
       svelte(),
-      resolve({
+      nodeResolve({
         dedupe: importee =>
           importee === "svelte" || importee.startsWith("svelte/"),
       }),

@@ -16,6 +16,7 @@ export interface RouteProps<Meta extends AnyObject = AnyObject> {
    * matches. If `component` is not set, the children of `Route` will be
    * rendered instead.
    */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   component?: Function;
   /**
    * An arbitrary object you can pass the `Route`, to later access it (for
