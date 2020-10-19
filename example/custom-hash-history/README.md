@@ -4,10 +4,15 @@ An example for creating a custom history.
 
 The basic-client-side example but using a custom Hash based history.
 
-We use the Hash-history from the [`history`](https://www.npmjs.com/package/history) package. This is what's used in [`react-router`](https://www.npmjs.com/package/react-router). You could reimplement `svelte-navigator`s Memory and HTML5 history modes in much the same way with the provided modules from `history` if you're curious.
+We use the Hash-history from the
+[`history`](https://www.npmjs.com/package/history) package. This is what's used
+in [`react-router`](https://www.npmjs.com/package/react-router). You could
+reimplement `svelte-navigator`s Memory and HTML5 history modes in much the same
+way with the provided modules from `history` if you're curious.
 
-Were creating a `HistorySource` object to use with `svelte-navigator`s `createHistory` function.
-A `HistorySource` is an object that resembles a subset of `window.history`. It looks like this:
+Were creating a `HistorySource` object to use with `svelte-navigator`s
+`createHistory` function. A `HistorySource` is an object that resembles a subset
+of `window.history`. It looks like this:
 
 ```js
 const source = {
@@ -36,7 +41,7 @@ const source = {
     // -> `go(-1)` goes back one step
     go(to) {},
   },
-}
+};
 ```
 
 ### Try it out

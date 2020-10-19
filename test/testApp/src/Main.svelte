@@ -131,7 +131,8 @@
       </Link>
       <Route path="/">Hello {params.username}!</Route>
       <Route path="articles/:articleId" let:params>
-        Article {params.articleId}
+        Article
+        {params.articleId}
       </Route>
     </Route>
 

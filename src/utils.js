@@ -37,9 +37,7 @@ export function createCounter() {
  * @returns {string} An id
  */
 export function createGlobalId() {
-  return Math.random()
-    .toString(36)
-    .substring(2);
+  return Math.random().toString(36).substring(2);
 }
 
 export function findClosest(tagName, element) {
