@@ -58,7 +58,7 @@
     "lint": "eslint . && prettier . --check",
     "lint:fix": "eslint . --fix && prettier . --write",
     "prepublishOnly": "npm run test && npm run build",
-    "_postinstall": "is-ci || husky install",
+    "postinstall": "is-ci || husky install",
     "prepublish": "pinst --disable",
     "postpublish": "pinst --enable"
   },
