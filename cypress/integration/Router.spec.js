@@ -5,10 +5,12 @@ function getByTestId(id) {
 }
 
 function assertPath(expectedPath) {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(200);
   return cy
     .window()
     .then(win => win.location.pathname)
-    .should("be", expectedPath);
+    .should("equal", expectedPath);
 }
 
 function appState(field) {
@@ -195,7 +197,7 @@ describe("Router", () => {
       it("renders nested page with parameter", () => {
         getByTestId("link-dashboard-mark").click();
         getByTestId("link-dashboard-article-987").click();
-        assertPath("/dashboard/mark/article/987");
+        assertPath("/dashboard/mark/articles/987");
         cy.contains("Article 987");
       });
 
@@ -204,13 +206,13 @@ describe("Router", () => {
         assertPath("/dashboard/mark");
 
         getByTestId("link-dashboard-article-987").click();
-        assertPath("/dashboard/mark/article/987");
+        assertPath("/dashboard/mark/articles/987");
 
         getByTestId("link-dashboard-paul").click();
         assertPath("/dashboard/paul");
 
         getByTestId("link-dashboard-article-987").click();
-        assertPath("/dashboard/paul/article/987");
+        assertPath("/dashboard/paul/articles/987");
       });
     });
   });
@@ -314,7 +316,7 @@ describe("Router", () => {
   });
 
   describe("Hooks", () => {
-    describe("useLinkResolve", () => {
+    describe("useResolve", () => {
       it("works", () => {
         getByTestId("link-blog").click();
         getByTestId("link-blog-resolve").click();
@@ -342,42 +344,45 @@ describe("Router", () => {
       it("works", () => {
         getByTestId("link-blog").click();
         getByTestId("link-blog-navigate").click();
+        const navigate = (...args) =>
+          cy.window().then(win => win.navigate(...args));
 
-        cy.window().then(({ navigate }) => {
-          navigate("/");
-          assertPath("/blog");
+        navigate("/");
+        assertPath("/");
 
-          navigate("/something");
-          assertPath("/blog/something");
+        navigate("/something");
+        assertPath("/something");
 
-          navigate("something");
-          assertPath("/blog/navigate/something");
+        navigate("something");
+        assertPath("/blog/navigate/something");
 
-          navigate("../something");
-          assertPath("/blog/something");
+        navigate("../something");
+        assertPath("/blog/something");
 
-          navigate("../../something");
-          assertPath("/something");
+        navigate("../../something");
+        assertPath("/something");
 
-          navigate("../../../something");
-          assertPath("/something");
+        navigate("../../../something");
+        assertPath("/something");
 
-          navigate("..");
-          assertPath("/blog");
+        navigate("..");
+        assertPath("/blog");
 
-          navigate("../..");
-          assertPath("/");
+        navigate("../..");
+        assertPath("/");
 
-          navigate(-1);
-          assertPath("/blog");
+        navigate(-1);
+        assertPath("/blog");
 
-          navigate(1);
-          assertPath("/");
+        navigate(1);
+        assertPath("/");
 
-          navigate("/");
-          navigate("/something", { replace: true });
-          assertPath("/");
-        });
+        navigate("/blog");
+        navigate("/something", { replace: true });
+        assertPath("/something");
+
+        navigate(-1);
+        assertPath("/");
       });
     });
 
@@ -438,6 +443,11 @@ describe("Router", () => {
         cy.window()
           .then(w => w.customNavigateCalled)
           .should("be.true");
+      });
+
+      it("does not break when no <a> tag is present", () => {
+        getByTestId("action-links-not-a-link").click();
+        assertPath("/");
       });
     });
 
@@ -554,11 +564,11 @@ describe("Router", () => {
   });
 
   describe("A11y", () => {
-    const assertFocusElement = testId =>
+    const assertFocusElement = (testId, assertion = "have.attr") =>
       cy
         .window()
         .then(win => win.document.activeElement)
-        .should("have.attr", "data-testid", testId);
+        .should(assertion, "data-testid", testId);
 
     it("focuses appropriate heading on navigation", () => {
       getByTestId("a11y-link-b").click();
@@ -588,6 +598,26 @@ describe("Router", () => {
         .last()
         .invoke("text")
         .should("equal", "Navigated to /b");
+    });
+
+    it("focuses heading when no hash fragment is present", () => {
+      getByTestId("a11y-link-no-hash").click();
+      getByTestId("a11y-route-hash");
+      assertFocusElement("a11y-route-hash");
+    });
+
+    it("does not focuses heading when hash fragment is present", () => {
+      getByTestId("a11y-link-hash").click();
+      getByTestId("a11y-route-hash");
+      assertFocusElement("a11y-route-hash", "not.have.attr");
+    });
+  });
+
+  describe("cold redirect", () => {
+    it("correctly redirects on page load, before mount", () => {
+      cy.visit("/redirect-source");
+      assertPath("/redirect-target");
+      getByTestId("redirect-target");
     });
   });
 });

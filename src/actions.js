@@ -4,10 +4,9 @@
  * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
  */
 
-import { navigate as defaultNavigate } from "./history";
 import { shouldNavigate, findClosest, addListener, isFunction } from "./utils";
 
-const createAction = getAnchor => (node, navigate = defaultNavigate) => {
+const createAction = getAnchor => (node, navigate) => {
   const handleClick = event => {
     const anchor = getAnchor(event);
     if (anchor && anchor.target === "" && shouldNavigate(event)) {

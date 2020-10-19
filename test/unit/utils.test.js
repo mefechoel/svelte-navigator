@@ -1,4 +1,4 @@
-import { findClosest } from "../src/utils";
+import { findClosest } from "../../src/utils";
 
 describe("findClosest", () => {
   const testElem = {

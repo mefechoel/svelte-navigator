@@ -2,6 +2,7 @@
   import { Router, Route, Link, link, links, navigate } from "../../../src";
   import LocationChange from "./LocationChange.svelte";
   import Blog from "./Blog.svelte";
+  import Redirect from "./Redirect.svelte";
 
   function appChange(state) {
     window.appState = state;
@@ -84,6 +85,12 @@
       </a>
     </div>
 
+    <div use:links>
+      <button data-testid="action-links-not-a-link">
+        ACTION LINKS NOT A LINK
+      </button>
+    </div>
+
     <a use:link href="/about">
       <span data-testid="action-link-about">ACTION LINK ABOUT</span>
     </a>
@@ -124,8 +131,16 @@
       </Link>
       <Route path="/">Hello {params.username}!</Route>
       <Route path="articles/:articleId" let:params>
-        Article {params.articleId}
+        Article
+        {params.articleId}
       </Route>
+    </Route>
+
+    <Route path="redirect-source">
+      <Redirect to="/redirect-target" replace />
+    </Route>
+    <Route path="redirect-target">
+      <div data-testid="redirect-target">REDIRECT-TARGET</div>
     </Route>
   </main>
 </Router>

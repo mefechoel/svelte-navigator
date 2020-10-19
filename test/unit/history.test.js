@@ -1,10 +1,11 @@
-import { createMemorySource, createHistory } from "../src/history";
+import { createMemorySource, createHistory } from "../../src/history";
 
 describe("createMemorySource", () => {
   it("creates a memory source with correct pathname (no initialPathname)", () => {
     const testHistory = createMemorySource();
     expect(testHistory.location.pathname).toBe("/");
     expect(testHistory.location.search).toBe("");
+    expect(testHistory.location.hash).toBe("");
   });
 
   it("creates a memory source with correct pathname", () => {
@@ -15,6 +16,11 @@ describe("createMemorySource", () => {
   it("creates a memory source with search", () => {
     const testHistory = createMemorySource("/test?foo=bar");
     expect(testHistory.location.search).toBe("?foo=bar");
+  });
+
+  it("creates a memory source with hash", () => {
+    const testHistory = createMemorySource("/test#anchor");
+    expect(testHistory.location.hash).toBe("#anchor");
   });
 
   it("creates a memory source with initial state = null", () => {

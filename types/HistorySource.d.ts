@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 interface HistorySource {
   readonly location: Location;
   addEventListener(event: "popstate", handler: () => void): void;

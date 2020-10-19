@@ -9,7 +9,7 @@
   let password;
 
   function handleSubmit() {
-    $user = { username, password };
+    user.set({ username, password });
     const from = ($location.state && $location.state.from) || "/";
     navigate(from, { replace: true });
   }

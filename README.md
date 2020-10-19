@@ -1,14 +1,9 @@
-[npm]: https://img.shields.io/npm/v/svelte-navigator.svg?style=flat-square
-[npm-url]: https://npmjs.com/package/svelte-navigator
-[example-folder-navlink]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte
-
 # Svelte Navigator
 
-[![npm package][npm]][npm-url]
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/svelte-navigator?style=flat-square)
-![NPM](https://img.shields.io/npm/l/svelte-navigator?style=flat-square)
-![GitHub last commit](https://img.shields.io/github/last-commit/mefechoel/svelte-navigator?style=flat-square)
+[![npm package](https://img.shields.io/npm/v/svelte-navigator.svg?style=flat-square)](https://npmjs.com/package/svelte-navigator)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/svelte-navigator?style=flat-square)](<(https://bundlephobia.com/result?p=svelte-navigator)>)
+[![NPM](https://img.shields.io/npm/l/svelte-navigator?style=flat-square)](<(https://github.com/mefechoel/svelte-navigator/blob/main/LICENSE)>)
+[![GitHub last commit](https://img.shields.io/github/last-commit/mefechoel/svelte-navigator?style=flat-square)](<(https://github.com/mefechoel/svelte-navigator/commits/main)>)
 
 > Simple, accessible routing for Svelte.
 
@@ -430,12 +425,12 @@ resolve the `to` path relative to the current `Route` and to the `Router`s
 
 ###### Properties
 
-|  Property  |    Type    | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                               |
-| :--------: | :--------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|    `to`    | `string` ️ |               | URL the component should link to. It will be resolved relative to the current Route.                                                                                                                                                                                                                                                                                                      |
-| `replace`  | `boolean`  |    `false`    | When `true`, clicking the `Link` will replace the current entry in the history stack instead of adding a new one.                                                                                                                                                                                                                                                                         |
-|  `state`   |  `object`  |     `{}`      | An object that will be pushed to the history stack when the `Link` is clicked. A state is arbitrary data, that you don't want to communicate through the url, much like the body of a HTTP POST request.                                                                                                                                                                                  |
-| `getProps` | `GetProps` |    `null`     | A function that returns an object that will be spread on the underlying anchor element's attributes. The first argument given to the function is an object with the properties `location`, `href`, `isPartiallyCurrent`, `isCurrent`. Look at the [`NavLink` component in the example project setup][example-folder-navlink] to see how you can build your own link components with this. |
+|  Property  |    Type    | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| :--------: | :--------: | :-----------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    `to`    | `string` ️ |               | URL the component should link to. It will be resolved relative to the current Route.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `replace`  | `boolean`  |    `false`    | When `true`, clicking the `Link` will replace the current entry in the history stack instead of adding a new one.                                                                                                                                                                                                                                                                                                                                                      |
+|  `state`   |  `object`  |     `{}`      | An object that will be pushed to the history stack when the `Link` is clicked. A state is arbitrary data, that you don't want to communicate through the url, much like the body of a HTTP POST request.                                                                                                                                                                                                                                                               |
+| `getProps` | `GetProps` |    `null`     | A function that returns an object that will be spread on the underlying anchor element's attributes. The first argument given to the function is an object with the properties `location`, `href`, `isPartiallyCurrent`, `isCurrent`. Look at the [`NavLink` component in the example project setup](https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr/src/components/NavLink.svelte) to see how you can build your own link components with this. |
 
 Where:
 
@@ -665,12 +660,12 @@ The returned `navigate` function accepts the same parameters as the global
 
 ###### Parameters
 
-|     Parameter     |       Type        | Default Value | Description                                                                                                                                                                                                                                           |
-| :---------------: | :---------------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|       `to`        | `string | number` |               | The path you want to navigate to. If `to` is a `number`, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
-|     `options`     |     `object`      |               | The navigation options                                                                                                                                                                                                                                |
-|  `options.state`  |     `object`      |     `{}`      | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                   |
-| `options.replace` |     `boolean`     |    `false`    | If `true`, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
+|     Parameter     |        Type        | Default Value | Description                                                                                                                                                                                                                                           |
+| :---------------: | :----------------: | :-----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|       `to`        | `string \| number` |               | The path you want to navigate to. If `to` is a `number`, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
+|     `options`     |      `object`      |               | The navigation options                                                                                                                                                                                                                                |
+|  `options.state`  |      `object`      |     `{}`      | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                   |
+| `options.replace` |     `boolean`      |    `false`    | If `true`, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
 
 #### `useLocation`
 
@@ -942,12 +937,12 @@ functionality).
 
 ###### Parameters
 
-|     Parameter     |       Type        | Default Value | Description                                                                                                                                                                                                                                         |
-| :---------------: | :---------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|       `to`        | `string | number` |               | The path you want to navigate to. If `to` is a number, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
-|     `options`     |     `object`      |               | The navigation options                                                                                                                                                                                                                              |
-|  `options.state`  |     `object`      |     `{}`      | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                 |
-| `options.replace` |     `boolean`     |    `false`    | If true, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
+|     Parameter     |        Type        | Default Value | Description                                                                                                                                                                                                                                         |
+| :---------------: | :----------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|       `to`        | `string \| number` |               | The path you want to navigate to. If `to` is a number, it is used to navigate in through the existing history stack, to the entry with the index `currentStackIndex + to` (`navigate(-1)` is equivalent to hitting the back button in your browser) |
+|     `options`     |      `object`      |               | The navigation options                                                                                                                                                                                                                              |
+|  `options.state`  |      `object`      |     `{}`      | An arbitrary object, that will be pushed to the history state stack                                                                                                                                                                                 |
+| `options.replace` |     `boolean`      |    `false`    | If true, the current entry in the history stack will be replaced with the next navigation, instead of pushing the next navigation onto the stack                                                                                                    |
 
 ### Actions
 

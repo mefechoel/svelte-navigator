@@ -16,11 +16,10 @@
   import { writable } from "svelte/store";
   import { parsePath } from "svelte-navigator-history";
   import { LOCATION, ROUTER } from "./contexts";
-  import { globalHistory } from "./history";
   import { normalizePath } from "./paths";
   import { pick, match, normalizeLocation } from "./routes";
   import { isSSR } from "./utils";
-  import { warn, ROUTER_ID } from "./warning";
+  import { warn, fail, ROUTER_ID } from "./warning";
   import {
     pushFocusCandidate,
     visuallyHiddenStyle,
@@ -31,7 +30,7 @@
 
   export let basepath = defaultBasepath;
   export let url = null;
-  export let history = globalHistory;
+  export let history = null;
   export let primary = true;
   export let a11y = {};
 
@@ -64,6 +63,13 @@
   // We will need this to identify sibling routers, when moving
   // focus on navigation, so we can focus the first possible router
   const level = isTopLevelRouter ? 0 : routerContext.level + 1;
+
+  if (isTopLevelRouter && !history) {
+    fail(
+      ROUTER_ID,
+      "Top level Routers require a history, but none was supplied",
+    );
+  }
 
   const location = isTopLevelRouter
     ? writable(

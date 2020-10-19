@@ -1,3 +1,15 @@
+# 3.1.3
+
+## Fix:
+
+- Support hash fragments in memory locations
+
+## Other:
+
+- Add more tests [#19](https://github.com/mefechoel/svelte-navigator/issues/19)
+- Update dependencies
+- Add prepublish hook
+
 # 3.1.2
 
 ## Fix:

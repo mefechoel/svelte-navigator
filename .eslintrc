@@ -12,7 +12,8 @@
     "function-paren-newline": "off",
     "no-confusing-arrow": "off",
     "no-continue": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "linebreak-style": "off"
   },
   "env": {
     "es6": true,
@@ -20,10 +21,16 @@
     "jest": true
   },
   "parserOptions": {
-    "ecmaVersion": 2019,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "overrides": [
+    {
+      "files": ["example/**/*"],
+      "rules": {
+        "import/no-unresolved": "off"
+      }
+    },
     {
       "files": ["**/*.svelte"],
       "processor": "svelte3/svelte3",
@@ -51,6 +58,24 @@
         "spaced-comment": "off",
         "import/no-extraneous-dependencies": "off"
       }
+    },
+    {
+      "files": ["**/*.ts"],
+      "plugins": ["@typescript-eslint/eslint-plugin"],
+      "extends": ["plugin:@typescript-eslint/recommended"],
+      "parser": "@typescript-eslint/parser",
+      "rules": {
+        "import/extensions": "off",
+        "import/no-unresolved": "off",
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off"
+      }
     }
-  ]
+  ],
+  "settings": {
+    "react": {
+      "version": "16.13"
+    }
+  }
 }

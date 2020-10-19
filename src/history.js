@@ -4,6 +4,7 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
+import { parsePath } from "svelte-navigator-history";
 import { createGlobalId, isSSR, isNumber, addListener } from "./utils";
 import { warn, NAVIGATE_ID } from "./warning";
 
@@ -97,11 +98,7 @@ function createHistory(source) {
 }
 
 function createStackFrame(state, uri) {
-  const [pathname, queryParams = ""] = uri.split("?");
-  // Browsers add a "?" to the start of a search if there is any.
-  // Otherwise they return ""
-  const search = queryParams.length ? `?${queryParams}` : "";
-  return { pathname, search, state };
+  return { ...parsePath(uri), state };
 }
 
 // Stores history entries in memory for testing or other platforms like Native

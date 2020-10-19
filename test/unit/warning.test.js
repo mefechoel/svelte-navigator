@@ -6,7 +6,7 @@ import {
   fail,
   createMessage,
   createMessageHandler,
-} from "../src/warning";
+} from "../../src/warning";
 
 describe("createMessage", () => {
   it("creates basic message", () => {

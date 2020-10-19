@@ -4,8 +4,7 @@ import {
   resolve,
   resolveLink,
   normalizeLocation,
-  createLocation,
-} from "../src/routes";
+} from "../../src/routes";
 import { testRoutes } from "./testRoutes";
 
 describe("pick", () => {
@@ -226,40 +225,40 @@ describe("normalizeLocation", () => {
   });
 });
 
-describe("createLocation", () => {
-  it("happy path", () => {
-    expect(createLocation("/path?search#hash")).toEqual({
-      pathname: "/path",
-      search: "?search",
-      hash: "#hash",
-    });
-    expect(createLocation("/path?search")).toEqual({
-      pathname: "/path",
-      search: "?search",
-      hash: "",
-    });
-    expect(createLocation("/path#hash")).toEqual({
-      pathname: "/path",
-      search: "",
-      hash: "#hash",
-    });
-  });
+// describe("createLocation", () => {
+//   it("happy path", () => {
+//     expect(createLocation("/path?search#hash")).toEqual({
+//       pathname: "/path",
+//       search: "?search",
+//       hash: "#hash",
+//     });
+//     expect(createLocation("/path?search")).toEqual({
+//       pathname: "/path",
+//       search: "?search",
+//       hash: "",
+//     });
+//     expect(createLocation("/path#hash")).toEqual({
+//       pathname: "/path",
+//       search: "",
+//       hash: "#hash",
+//     });
+//   });
 
-  it("removes empty hash or search", () => {
-    expect(createLocation("/path?#hash")).toEqual({
-      pathname: "/path",
-      search: "",
-      hash: "#hash",
-    });
-    expect(createLocation("/path?search#")).toEqual({
-      pathname: "/path",
-      search: "?search",
-      hash: "",
-    });
-    expect(createLocation("/path?#")).toEqual({
-      pathname: "/path",
-      search: "",
-      hash: "",
-    });
-  });
-});
+//   it("removes empty hash or search", () => {
+//     expect(createLocation("/path?#hash")).toEqual({
+//       pathname: "/path",
+//       search: "",
+//       hash: "#hash",
+//     });
+//     expect(createLocation("/path?search#")).toEqual({
+//       pathname: "/path",
+//       search: "?search",
+//       hash: "",
+//     });
+//     expect(createLocation("/path?#")).toEqual({
+//       pathname: "/path",
+//       search: "",
+//       hash: "",
+//     });
+//   });
+// });
