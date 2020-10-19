@@ -44,20 +44,20 @@
     "test:unit": "jest test/unit",
     "test:unit:watch": "jest test/unit --watch",
     "test:integ": "start-server-and-test cy:start:quiet http-get://localhost:7070 cy:run",
-    "test:ssr": "yarn test:ssr:build && jest test/ssr --env=node",
-    "test:ssr:watch": "yarn test:ssr:build && jest test/ssr --env=node --watch",
+    "test:ssr": "npm run test:ssr:build && jest test/ssr --env=node",
+    "test:ssr:watch": "npm run test:ssr:build && jest test/ssr --env=node --watch",
     "test:ssr:build": "node test/ssr/scripts/build",
     "cy:open": "cypress open",
     "cy:build": "rollup -c test/testApp/rollup.config.js",
     "cy:serve": "sirv test/testApp/public --single --port 7070",
     "cy:serve:quiet": "sirv test/testApp/public --single --port 7070 --quiet",
-    "cy:start": "yarn cy:build && yarn cy:serve",
-    "cy:start:quiet": "yarn cy:build && yarn cy:serve:quiet",
+    "cy:start": "npm run cy:build && npm run cy:serve",
+    "cy:start:quiet": "npm run cy:build && npm run cy:serve:quiet",
     "cy:run": "cypress run --headless",
-    "test": "yarn test:unit && yarn test:ssr && yarn test:integ",
+    "test": "npm run test:unit && npm run test:ssr && npm run test:integ",
     "lint": "eslint . && prettier . --check",
     "lint:fix": "eslint . --fix && prettier . --write",
-    "prepublishOnly": "yarn lint && yarn test && yarn build"
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "peerDependencies": {
     "svelte": "3.x"
