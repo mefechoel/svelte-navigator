@@ -62,12 +62,6 @@
     "prepublish": "pinst --disable",
     "postpublish": "pinst --enable"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm test"
-    }
-  },
   "peerDependencies": {
     "svelte": "3.x"
   },
