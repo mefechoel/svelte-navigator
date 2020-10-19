@@ -1,4 +1,5 @@
 import cheerio from "cheerio";
+// eslint-disable-next-line import/extensions, import/no-unresolved
 import app from "./dist/App";
 
 const createSelector = testId => `[data-testid="${testId}"]`;

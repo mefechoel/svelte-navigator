@@ -26,6 +26,12 @@
   },
   "overrides": [
     {
+      "files": ["example/**/*"],
+      "rules": {
+        "import/no-unresolved": "off"
+      }
+    },
+    {
       "files": ["**/*.svelte"],
       "processor": "svelte3/svelte3",
       "rules": {
