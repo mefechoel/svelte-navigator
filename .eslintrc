@@ -12,7 +12,8 @@
     "function-paren-newline": "off",
     "no-confusing-arrow": "off",
     "no-continue": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "linebreak-style": "off"
   },
   "env": {
     "es6": true,
@@ -20,7 +21,7 @@
     "jest": true
   },
   "parserOptions": {
-    "ecmaVersion": 2019,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "overrides": [
@@ -65,5 +66,10 @@
         "@typescript-eslint/explicit-member-accessibility": "off"
       }
     }
-  ]
+  ],
+  "settings": {
+    "react": {
+      "version": "16.13"
+    }
+  }
 }

@@ -1,2 +1,8 @@
 /**/public/
 /**/dist/
+/**/build/
+/**/coverage/
+/**/coverage-cypress/
+/**/coverage-jest/
+/**/node_modules/
+/**/tmp/

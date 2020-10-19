@@ -55,7 +55,8 @@
     "cy:start:quiet": "yarn cy:build && yarn cy:serve:quiet",
     "cy:run": "cypress run --headless",
     "test": "yarn test:unit && yarn test:ssr && yarn test:integ",
-    "lint": "yarn eslint src test cypress types",
+    "lint": "eslint . && prettier . --check",
+    "lint:fix": "eslint . --fix && prettier . --write",
     "prepublishOnly": "yarn lint && yarn test && yarn build"
   },
   "peerDependencies": {
