@@ -54,10 +54,19 @@
     "cy:start": "npm run cy:build && npm run cy:serve",
     "cy:start:quiet": "npm run cy:build && npm run cy:serve:quiet",
     "cy:run": "cypress run --headless",
-    "test": "npm run test:unit && npm run test:ssr && npm run test:integ",
+    "test": "npm run lint && npm run test:unit && npm run test:ssr && npm run test:integ",
     "lint": "eslint . && prettier . --check",
     "lint:fix": "eslint . --fix && prettier . --write",
-    "prepublishOnly": "npm run lint && npm run test && npm run build"
+    "prepublishOnly": "npm run test && npm run build",
+    "_postinstall": "is-ci || husky install",
+    "prepublish": "pinst --disable",
+    "postpublish": "pinst --enable"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
   },
   "peerDependencies": {
     "svelte": "3.x"
@@ -89,9 +98,12 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.4",
     "eslint-plugin-svelte3": "^2.7.3",
+    "husky": "^5.0.0-beta.0",
+    "is-ci": "^2.0.0",
     "jest": "^26.5.3",
     "mkdirp": "^1.0.4",
     "nyc": "^15.0.1",
+    "pinst": "^2.0.0",
     "prettier": "^2.1.2",
     "prettier-plugin-svelte": "^1.4.1",
     "rimraf": "^3.0.2",
