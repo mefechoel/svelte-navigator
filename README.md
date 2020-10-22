@@ -62,23 +62,23 @@ React-esque hooks.
 ## Getting started
 
 [example-folder-url]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example
+	https://github.com/mefechoel/svelte-navigator/tree/master/example
 [example-basic-client-side]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example/basic-client-side
+	https://github.com/mefechoel/svelte-navigator/tree/master/example/basic-client-side
 [example-custom-hash-history]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example/custom-hash-history
+	https://github.com/mefechoel/svelte-navigator/tree/master/example/custom-hash-history
 [example-private-routes]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example/private-routes
+	https://github.com/mefechoel/svelte-navigator/tree/master/example/private-routes
 [example-lazy-loading]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example/lazy-loading
+	https://github.com/mefechoel/svelte-navigator/tree/master/example/lazy-loading
 [example-ssr]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr
+	https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr
 [example-url-bar]:
-  https://github.com/mefechoel/svelte-navigator/tree/master/example/url-bar
+	https://github.com/mefechoel/svelte-navigator/tree/master/example/url-bar
 [repl-basic-client-side]:
-  https://svelte.dev/repl/451fd183e0d3403cb7800101f7d799fb
+	https://svelte.dev/repl/451fd183e0d3403cb7800101f7d799fb
 [repl-custom-hash-history]:
-  https://svelte.dev/repl/195011a49a714e22b1a335037e124458
+	https://svelte.dev/repl/195011a49a714e22b1a335037e124458
 [repl-private-routes]: https://svelte.dev/repl/c81d8f3dff584065a82b2d3ea7cd4aee
 [repl-lazy-loading]: https://svelte.dev/repl/09abb8c287f745169f66f62d51f766d5
 [repl-url-bar]: https://svelte.dev/repl/dc82bb89447647edb0d7ed8cbe7999ae
@@ -119,30 +119,30 @@ Basic Setup for a client-side SPA:
 ```html
 <!-- App.svelte -->
 <script>
-  import { Router, Link, Route } from "svelte-navigator";
-  import Home from "./routes/Home.svelte";
-  import About from "./routes/About.svelte";
-  import Blog from "./routes/Blog.svelte";
+	import { Router, Link, Route } from "svelte-navigator";
+	import Home from "./routes/Home.svelte";
+	import About from "./routes/About.svelte";
+	import Blog from "./routes/Blog.svelte";
 </script>
 
 <Router>
-  <nav>
-    <Link to="/">Home</Link>
-    <Link to="about">About</Link>
-    <Link to="blog">Blog</Link>
-  </nav>
-  <div>
-    <Route path="/">
-      <Home />
-    </Route>
-    <Route path="about" component={About} />
-    <Route path="blog/*">
-      <Route path="/">
-        <Blog />
-      </Route>
-      <Route path=":id" component={BlogPost} />
-    </Route>
-  </div>
+	<nav>
+		<Link to="/">Home</Link>
+		<Link to="about">About</Link>
+		<Link to="blog">Blog</Link>
+	</nav>
+	<div>
+		<Route path="/">
+			<Home />
+		</Route>
+		<Route path="about" component={About} />
+		<Route path="blog/*">
+			<Route path="/">
+				<Blog />
+			</Route>
+			<Route path=":id" component={BlogPost} />
+		</Route>
+	</div>
 </Router>
 ```
 
@@ -201,10 +201,10 @@ and picks the best match to render.
 
 ```html
 <Router>
-  <Link to="profile">Go to /profile</Link>
-  <Link to="blog">Go to /blog</Link>
-  <Route path="blog" component={Blog} />
-  <Route path="profile" component={Profile} />
+	<Link to="profile">Go to /profile</Link>
+	<Link to="blog">Go to /blog</Link>
+	<Route path="blog" component={Blog} />
+	<Route path="profile" component={Profile} />
 </Router>
 ```
 
@@ -217,17 +217,17 @@ don't want to manage focus (in this case the nav `Router`).
 
 ```html
 <Router primary={false}>
-  <nav>
-    <Link to="profile">Go to /profile</Link>
-    <Link to="blog">Go to /blog</Link>
-  </nav>
+	<nav>
+		<Link to="profile">Go to /profile</Link>
+		<Link to="blog">Go to /blog</Link>
+	</nav>
 </Router>
 <!-- ... -->
 <Router>
-  <main>
-    <Route path="blog" component={Blog} />
-    <Route path="profile" component={Profile} />
-  </main>
+	<main>
+		<Route path="blog" component={Blog} />
+		<Route path="profile" component={Profile} />
+	</main>
 </Router>
 ```
 
@@ -246,41 +246,41 @@ implementing Svelte Navigators focus management.
 ```html
 <!-- App.svelte -->
 <script>
-  import { Router, Route, Link } from "svelte-navigator";
+	import { Router, Route, Link } from "svelte-navigator";
 
-  // Provide a custom message when navigating using
-  // a routes `meta` information
-  function createAnnouncement(route, location) {
-    const viewName = route.meta.name;
-    const { pathname } = location;
-    return `Navigated to the ${viewName} view at ${pathname}`;
-  }
+	// Provide a custom message when navigating using
+	// a routes `meta` information
+	function createAnnouncement(route, location) {
+		const viewName = route.meta.name;
+		const { pathname } = location;
+		return `Navigated to the ${viewName} view at ${pathname}`;
+	}
 </script>
 
 <Router a11y="{{ createAnnouncement }}">
-  <Link to="profile">Go to /profile</Link>
-  <Route
-    path="profile"
-    component="{Profile}"
-    meta="{{ name: 'user profile' }}"
-  />
-  <Route path="blog/*" meta="{{ name: 'blog' }}">
-    <Blog />
-  </Route>
+	<Link to="profile">Go to /profile</Link>
+	<Route
+		path="profile"
+		component="{Profile}"
+		meta="{{ name: 'user profile' }}"
+	/>
+	<Route path="blog/*" meta="{{ name: 'blog' }}">
+		<Blog />
+	</Route>
 </Router>
 
 <!-- Blog.svelte -->
 <script>
-  import { Route, Link, useFocus } from "svelte-navigator";
+	import { Route, Link, useFocus } from "svelte-navigator";
 
-  // Provide a custom element to focus when this Route is navigated to
-  const registerFocus = useFocus();
+	// Provide a custom element to focus when this Route is navigated to
+	const registerFocus = useFocus();
 
-  function skipNavigation() { /* ... */ }
+	function skipNavigation() { /* ... */ }
 </script>
 
 <button use:registerFocus on:click={skipNavigation}>
-  Skip navigation
+	Skip navigation
 </button>
 <Link to="svelte">Go to /blog/svelte</Link>
 <Link to="navigator">Go to /blog/navigator</Link>
@@ -297,24 +297,24 @@ It's probably easier to nest `Route`s though.
 ```html
 <!-- App.svelte -->
 <Router>
-  <Link to="profile">Go to /profile</Link>
-  <Route path="profile" component="{Profile}" />
-  <Route path="blog/*">
-    <Blog />
-  </Route>
+	<Link to="profile">Go to /profile</Link>
+	<Route path="profile" component="{Profile}" />
+	<Route path="blog/*">
+		<Blog />
+	</Route>
 </Router>
 
 <!-- Blog.svelte -->
 <Router>
-  <Link to="svelte">Go to /blog/svelte</Link>
-  <Link to="navigator">Go to /blog/navigator</Link>
-  <!-- Break out of the scope of the current Router -->
-  <Link to="../profile">Go to /profile</Link>
-  <Route path="svelte">Yeah, Svelte!</Route>
-  <Route path="navigator">Yeah, Routing!</Route>
-  <Route path=":id" let:params>
-    <BlogPost id={params.id} />
-  </Route>
+	<Link to="svelte">Go to /blog/svelte</Link>
+	<Link to="navigator">Go to /blog/navigator</Link>
+	<!-- Break out of the scope of the current Router -->
+	<Link to="../profile">Go to /profile</Link>
+	<Route path="svelte">Yeah, Svelte!</Route>
+	<Route path="navigator">Yeah, Routing!</Route>
+	<Route path=":id" let:params>
+		<BlogPost id={params.id} />
+	</Route>
 </Router>
 ```
 
@@ -325,10 +325,10 @@ properly formatted `basepath` should have a leading, but no trailing slash.
 
 ```html
 <Router basepath="/base">
-  <Link to="profile">Go to /base/profile</Link>
-  <Link to="blog">Go to /base/blog</Link>
-  <Route path="blog" component={Blog} />
-  <Route path="profile" component={Profile} />
+	<Link to="profile">Go to /base/profile</Link>
+	<Link to="blog">Go to /base/blog</Link>
+	<Route path="blog" component={Blog} />
+	<Route path="profile" component={Profile} />
 </Router>
 ```
 
@@ -342,13 +342,13 @@ history][example-custom-hash-history]).
 
 ```html
 <script>
-  import { createHistory, createMemorySource } from "svelte-navigator";
+	import { createHistory, createMemorySource } from "svelte-navigator";
 
-  const memoryHistory = createHistory(createMemorySource());
+	const memoryHistory = createHistory(createMemorySource());
 </script>
 
 <Router history="{memoryHistory}">
-  <!-- ... -->
+	<!-- ... -->
 </Router>
 ```
 
@@ -368,34 +368,34 @@ Where:
 
 ```ts
 interface Route {
-  uri: string;
-  path: string;
-  meta: object;
-  params: object;
+	uri: string;
+	path: string;
+	meta: object;
+	params: object;
 }
 
 interface Location {
-  pathname: string;
-  search: string;
-  hash: string;
-  state: object;
+	pathname: string;
+	search: string;
+	hash: string;
+	state: object;
 }
 
 type CreateAnnouncement = (
-  route: Route,
-  location: Location,
+	route: Route,
+	location: Location,
 ) => string | Promise<string>;
 
 interface HistorySource {
-  readonly location: Location;
-  addEventListener(event: "popstate", handler: () => void): void;
-  removeEventListener(event: "popstate", handler: () => void): void;
-  history: {
-    readonly state: object;
-    pushState(state: object, title: string, uri: string): void;
-    replaceState(state: object, title: string, uri: string): void;
-    go(to: number): void;
-  };
+	readonly location: Location;
+	addEventListener(event: "popstate", handler: () => void): void;
+	removeEventListener(event: "popstate", handler: () => void): void;
+	history: {
+		readonly state: object;
+		pushState(state: object, title: string, uri: string): void;
+		replaceState(state: object, title: string, uri: string): void;
+		go(to: number): void;
+	};
 }
 ```
 
@@ -407,19 +407,19 @@ resolve the `to` path relative to the current `Route` and to the `Router`s
 
 ```html
 <Router>
-  <Route path="blog/*">
-    <Link to="svelte">Go to /blog/svelte</Link>
-    <Link to="../profile">Go to /profile</Link>
-  </Route>
+	<Route path="blog/*">
+		<Link to="svelte">Go to /blog/svelte</Link>
+		<Link to="../profile">Go to /profile</Link>
+	</Route>
 </Router>
 ```
 
 ```html
 <Router basepath="/base">
-  <Route path="blog/*">
-    <Link to="svelte">Go to /base/blog/svelte</Link>
-    <Link to="../profile">Go to /base/profile</Link>
-  </Route>
+	<Route path="blog/*">
+		<Link to="svelte">Go to /base/blog/svelte</Link>
+		<Link to="../profile">Go to /base/profile</Link>
+	</Route>
 </Router>
 ```
 
@@ -436,17 +436,17 @@ Where:
 
 ```ts
 interface Location {
-  pathname: string;
-  search: string;
-  hash: string;
-  state: object;
+	pathname: string;
+	search: string;
+	hash: string;
+	state: object;
 }
 
 type GetProps = ({
-  location: Location;
-  href: string;
-  isPartiallyCurrent: boolean;
-  isCurrent: boolean;
+	location: Location;
+	href: string;
+	isPartiallyCurrent: boolean;
+	isCurrent: boolean;
 }) => object;
 ```
 
@@ -475,12 +475,12 @@ accessed inside the `Route` slot, via `let:location` and `let:navigate`.
 <!-- Both variants will do the same -->
 <Route path="blog/:id" component="{BlogPost}" />
 <Route path="blog/:id" let:params>
-  <BlogPost id="{params.id}" />
+	<BlogPost id="{params.id}" />
 </Route>
 
 <!-- Access the current location inside the slot -->
 <Route path="search" let:location>
-  <BlogPost queryString="{location.search}" />
+	<BlogPost queryString="{location.search}" />
 </Route>
 
 <!--
@@ -488,7 +488,7 @@ accessed inside the `Route` slot, via `let:location` and `let:navigate`.
   (See also `navigate` and `useNavigate`)
 -->
 <Route path="search" let:navigate>
-  <BlogPost {navigate} />
+	<BlogPost {navigate} />
 </Route>
 
 <!--
@@ -504,10 +504,10 @@ remember to add a splat (`*`) to the end of the parent `Route`s `path`.
 ```html
 <!-- Don't forget the '*' -->
 <Route path="blog/*">
-  <!-- Render specific post with id "123" at /blog/post/123 -->
-  <Route path="post/:id" component="{BlogPost}" />
-  <!-- Index Route for /blog -->
-  <Route path="/" component="{Favourites}" />
+	<!-- Render specific post with id "123" at /blog/post/123 -->
+	<Route path="post/:id" component="{BlogPost}" />
+	<!-- Index Route for /blog -->
+	<Route path="/" component="{Favourites}" />
 </Route>
 <Route component="{Home}"></Route>
 ```
@@ -518,27 +518,27 @@ function the the parent `Router`.
 
 ```html
 <script>
-  import { Router, Route, Link } from "svelte-navigator";
+	import { Router, Route, Link } from "svelte-navigator";
 
-  // Provide a custom message when navigating using
-  // a routes `meta` information
-  function createAnnouncement(route, location) {
-    const viewName = route.meta.name;
-    const { pathname } = location;
-    return `Navigated to the ${viewName} view at ${pathname}`;
-  }
+	// Provide a custom message when navigating using
+	// a routes `meta` information
+	function createAnnouncement(route, location) {
+		const viewName = route.meta.name;
+		const { pathname } = location;
+		return `Navigated to the ${viewName} view at ${pathname}`;
+	}
 </script>
 
 <Router a11y="{{ createAnnouncement }}">
-  <Link to="profile">Go to /profile</Link>
-  <Route
-    path="profile"
-    component="{Profile}"
-    meta="{{ name: 'user profile' }}"
-  />
-  <Route path="blog/*" meta="{{ name: 'blog' }}">
-    <Blog />
-  </Route>
+	<Link to="profile">Go to /profile</Link>
+	<Route
+		path="profile"
+		component="{Profile}"
+		meta="{{ name: 'user profile' }}"
+	/>
+	<Route path="blog/*" meta="{{ name: 'blog' }}">
+		<Blog />
+	</Route>
 </Router>
 ```
 
@@ -568,29 +568,29 @@ automatically resolve the given link relative to the current Route.
 ```html
 <!-- App.svelte -->
 <script>
-  import { Router, Route } from "svelte-navigator";
-  import RouteComponent from "./RouteComponent.svelte";
+	import { Router, Route } from "svelte-navigator";
+	import RouteComponent from "./RouteComponent.svelte";
 </script>
 
 <Router>
-  <Route path="routePath">
-    <RouteComponent />
-  </Route>
-  <!-- ... -->
+	<Route path="routePath">
+		<RouteComponent />
+	</Route>
+	<!-- ... -->
 </Router>
 
 <!-- RouteComponent.svelte -->
 <script>
-  import { useNavigate } from "svelte-navigator";
+	import { useNavigate } from "svelte-navigator";
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 </script>
 
 <button on:click="{() => navigate('relativePath')}">
-  go to /routePath/relativePath
+	go to /routePath/relativePath
 </button>
 <button on:click="{() => navigate('/absolutePath')}">
-  go to /absolutePath
+	go to /absolutePath
 </button>
 ```
 
@@ -599,24 +599,24 @@ It will also resolve a link against the `basepath` of the Router
 ```html
 <!-- App.svelte -->
 <Router basepath="/base">
-  <Route path="routePath">
-    <RouteComponent />
-  </Route>
-  <!-- ... -->
+	<Route path="routePath">
+		<RouteComponent />
+	</Route>
+	<!-- ... -->
 </Router>
 
 <!-- RouteComponent.svelte -->
 <script>
-  import { useNavigate } from "svelte-navigator";
+	import { useNavigate } from "svelte-navigator";
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 </script>
 
 <button on:click="{() => navigate('relativePath')}">
-  go to /base/routePath/relativePath
+	go to /base/routePath/relativePath
 </button>
 <button on:click="{() => navigate('/absolutePath')}">
-  go to /base/absolutePath
+	go to /base/absolutePath
 </button>
 ```
 
@@ -627,31 +627,31 @@ it easily in deeply nested components.
 ```html
 <!-- App.svelte -->
 <Router>
-  <Route path="routeA" component="{RouteA}" />
-  <Route path="routeB" let:navigate>
-    <RouteB {navigate} />
-  </Route>
-  <Route path="routeC">
-    <RouteC />
-  </Route>
-  <!-- ... -->
+	<Route path="routeA" component="{RouteA}" />
+	<Route path="routeB" let:navigate>
+		<RouteB {navigate} />
+	</Route>
+	<Route path="routeC">
+		<RouteC />
+	</Route>
+	<!-- ... -->
 </Router>
 
 <!-- All three components can use the navigate function in the same way -->
 <!-- RouteA.svelte -->
 <script>
-  export let navigate;
+	export let navigate;
 </script>
 
 <!-- RouteB.svelte -->
 <script>
-  export let navigate;
+	export let navigate;
 </script>
 
 <!-- RouteC.svelte -->
 <script>
-  import { useNavigate } from "svelte-navigator";
-  const navigate = useNavigate();
+	import { useNavigate } from "svelte-navigator";
+	const navigate = useNavigate();
 </script>
 ```
 
@@ -675,19 +675,19 @@ location.
 ```html
 <!-- RouteComponent.svelte -->
 <script>
-  import { useLocation } from "svelte-navigator";
+	import { useLocation } from "svelte-navigator";
 
-  const location = useLocation();
+	const location = useLocation();
 
-  $: console.log($location);
-  /*
-    {
-      pathname: "/blog",
-      search: "?id=123",
-      hash: "#comments",
-      state: {}
-    }
-  */
+	$: console.log($location);
+	/*
+	  {
+	    pathname: "/blog",
+	    search: "?id=123",
+	    hash: "#comments",
+	    state: {}
+	  }
+	*/
 </script>
 ```
 
@@ -700,14 +700,14 @@ it to manually resolve links, when using the `link` or `links` actions. (See
 
 ```html
 <script>
-  import { link, useResolve } from "svelte-navigator";
+	import { link, useResolve } from "svelte-navigator";
 
-  export let path;
+	export let path;
 
-  const resolve = useResolve();
-  // `resolvedLink` will be resolved relative to its parent Route
-  // and the Router `basepath`
-  $: resolvedLink = resolve(path);
+	const resolve = useResolve();
+	// `resolvedLink` will be resolved relative to its parent Route
+	// and the Router `basepath`
+	$: resolvedLink = resolve(path);
 </script>
 
 <a href="{resolvedLink}" use:link>Relative link</a>
@@ -720,14 +720,14 @@ by passing `$location` as a second argument to `resolve`:
 
 ```html
 <script>
-  import { link, useResolve, useLocation } from "svelte-navigator";
+	import { link, useResolve, useLocation } from "svelte-navigator";
 
-  export let path;
+	export let path;
 
-  const resolve = useResolve();
-  const location = useLocation();
-  // Force Svelte to re-run this assignement, when location changes
-  $: resolvedLink = resolve(path, $location);
+	const resolve = useResolve();
+	const location = useLocation();
+	// Force Svelte to re-run this assignement, when location changes
+	$: resolvedLink = resolve(path, $location);
 </script>
 
 <a href="{resolvedLink}" use:link>Relative link</a>
@@ -747,11 +747,11 @@ You can use `useResolvable` to manually resolve links, when using the `link` or
 
 ```html
 <script>
-  import { link, useResolvable } from "svelte-navigator";
+	import { link, useResolvable } from "svelte-navigator";
 
-  // `resolvedLink` will be resolved relative to its parent Route
-  // and the Router `basepath`
-  const resolvedLink = useResolvable("relativePath");
+	// `resolvedLink` will be resolved relative to its parent Route
+	// and the Router `basepath`
+	const resolvedLink = useResolvable("relativePath");
 </script>
 
 <a href="{$resolvedLink}" use:link>Relative link</a>
@@ -765,13 +765,13 @@ changes.
 
 ```html
 <script>
-  import { useMatch } from "svelte-navigator";
+	import { useMatch } from "svelte-navigator";
 
-  const relativeMatch = useMatch("relative/path/:to/*somewhere");
-  const absoluteMatch = useMatch("/absolute/path/:to/*somewhere");
+	const relativeMatch = useMatch("relative/path/:to/*somewhere");
+	const absoluteMatch = useMatch("/absolute/path/:to/*somewhere");
 
-  $: console.log($relativeMatch.params.to);
-  $: console.log($absoluteMatch.params.somewhere);
+	$: console.log($relativeMatch.params.to);
+	$: console.log($absoluteMatch.params.somewhere);
 </script>
 ```
 
@@ -781,15 +781,15 @@ Access the parent Routes matched params and wildcards via a readable store.
 
 ```html
 <!--
-  Somewhere inside <Route path="user/:id/*splat" />
-  with a current url of "/myApp/user/123/pauls-profile"
+	Somewhere inside <Route path="user/:id/*splat" />
+	with a current url of "/myApp/user/123/pauls-profile"
 -->
 <script>
-  import { useParams } from "svelte-navigator";
+	import { useParams } from "svelte-navigator";
 
-  const params = useParams();
+	const params = useParams();
 
-  $: console.log($params); // -> { id: "123", splat: "pauls-profile" }
+	$: console.log($params); // -> { id: "123", splat: "pauls-profile" }
 </script>
 
 <h3>Welcome user {$params.id}! bleep bloop...</h3>
@@ -803,9 +803,9 @@ the `registerFocus` action you can apply to an element via the `use` directive:
 ```html
 <!-- Somewhere inside a Route -->
 <script>
-  import { useFocus } from "svelte-navigator";
+	import { useFocus } from "svelte-navigator";
 
-  const registerFocus = useFocus();
+	const registerFocus = useFocus();
 </script>
 
 <h1>Don't worry about me...</h1>
@@ -817,14 +817,14 @@ You can also use `registerFocus` asynchronously:
 ```html
 <!-- Somewhere inside a Route -->
 <script>
-  import { onMount } from "svelte";
-  import { useFocus } from "svelte-navigator";
+	import { onMount } from "svelte";
+	import { useFocus } from "svelte-navigator";
 
-  const registerFocus = useFocus();
+	const registerFocus = useFocus();
 
-  const lazyImport = import("./MyComponent.svelte").then(
-    module => module.default,
-  );
+	const lazyImport = import("./MyComponent.svelte").then(
+		module => module.default,
+	);
 </script>
 
 {#await lazyImport then MyComponent}
@@ -833,7 +833,7 @@ You can also use `registerFocus` asynchronously:
 
 <!-- MyComponent.svelte -->
 <script>
-  export let registerFocus;
+	export let registerFocus;
 </script>
 
 <h1 use:registerFocus>Hi there!</h1>
@@ -851,31 +851,31 @@ current loading process.
 ```html
 <!-- Somewhere inside a Route -->
 <script>
-  import { onMount } from "svelte";
-  import { useFocus } from "svelte-navigator";
-  import BlogPost from "./BlogPost.svelte";
+	import { onMount } from "svelte";
+	import { useFocus } from "svelte-navigator";
+	import BlogPost from "./BlogPost.svelte";
 
-  const registerFocus = useFocus();
+	const registerFocus = useFocus();
 
-  const blogPostRequest = fetch("some/blog/post");
+	const blogPostRequest = fetch("some/blog/post");
 </script>
 
 <style>
-  .visuallyHidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
+	.visuallyHidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
 </style>
 
 {#await blogPostRequest}
 <h1 class="visuallyHidden" use:registerFocus>
-  The blog post is being loaded...
+	The blog post is being loaded...
 </h1>
 {:then data}
 <BlogPost {data} />
@@ -912,13 +912,13 @@ automatically resolve relative links. You might prefer `useNavigate` instead.
 
 ```html
 <script>
-  import { navigate } from "svelte-navigator";
+	import { navigate } from "svelte-navigator";
 
-  function onSubmit() {
-    login().then(() => {
-      navigate("/success", { replace: true });
-    });
-  }
+	function onSubmit() {
+		login().then(() => {
+			navigate("/success", { replace: true });
+		});
+	}
 </script>
 ```
 
@@ -928,7 +928,7 @@ functionality).
 
 ```html
 <script>
-  import { navigate } from "svelte-navigator";
+	import { navigate } from "svelte-navigator";
 </script>
 
 <button on:click="{() => navigate(-1)}">Back</button>
@@ -958,14 +958,14 @@ adding a new one.
 ```html
 <!-- App.svelte -->
 <script>
-  import { link, Route, Router } from "svelte-navigator";
-  import RouteComponent from "./RouteComponent.svelte";
+	import { link, Route, Router } from "svelte-navigator";
+	import RouteComponent from "./RouteComponent.svelte";
 </script>
 
 <Router>
-  <a href="/" use:link>Home</a>
-  <a href="/replace" use:link replace>Replace this URL</a>
-  <!-- ... -->
+	<a href="/" use:link>Home</a>
+	<a href="/replace" use:link replace>Replace this URL</a>
+	<!-- ... -->
 </Router>
 ```
 
@@ -977,11 +977,11 @@ link manually.
 
 ```html
 <script>
-  import { link, useResolve } from "svelte-navigator";
+	import { link, useResolve } from "svelte-navigator";
 
-  const resolve = useResolve();
-  // `resolvedLink` will be "/route1/relativePath"
-  const resolvedLink = resolve("relativePath");
+	const resolve = useResolve();
+	// `resolvedLink` will be "/route1/relativePath"
+	const resolvedLink = resolve("relativePath");
 </script>
 
 <a href="{resolvedLink}" use:link>Relative link</a>
@@ -996,21 +996,21 @@ a custom `navigate` function to the action.
 ```html
 <!-- App.svelte -->
 <script>
-  import {
-    link,
-    Route,
-    Router,
-    createHistory,
-    createMemorySource,
-  } from "svelte-navigator";
+	import {
+		link,
+		Route,
+		Router,
+		createHistory,
+		createMemorySource,
+	} from "svelte-navigator";
 
-  const memoryHistory = createHistory(createMemorySource());
-  const { navigate } = memoryHistory;
+	const memoryHistory = createHistory(createMemorySource());
+	const { navigate } = memoryHistory;
 </script>
 
 <Router history="{memoryHistory}">
-  <a href="/" use:link="{navigate}">Home</a>
-  <!-- ... -->
+	<a href="/" use:link="{navigate}">Home</a>
+	<!-- ... -->
 </Router>
 ```
 
@@ -1029,16 +1029,16 @@ it to use the native browser action.
 ```html
 <!-- App.svelte -->
 <script>
-  import { links, Router } from "svelte-navigator";
+	import { links, Router } from "svelte-navigator";
 </script>
 
 <div use:links>
-  <Router>
-    <a href="/">Home</a>
-    <a href="/replace" replace>Replace this URL</a>
-    <a href="/native" noroute>Use the native action</a>
-    <!-- ... -->
-  </Router>
+	<Router>
+		<a href="/">Home</a>
+		<a href="/replace" replace>Replace this URL</a>
+		<a href="/native" noroute>Use the native action</a>
+		<!-- ... -->
+	</Router>
 </div>
 ```
 
@@ -1064,18 +1064,18 @@ different history for each one.
 
 ```html
 <script>
-  import { Router, createHistory, createMemorySource } from "svelte-navigator";
+	import { Router, createHistory, createMemorySource } from "svelte-navigator";
 
-  const html5History = createHistory(window);
-  const memoryHistory = createHistory(createMemorySource());
+	const html5History = createHistory(window);
+	const memoryHistory = createHistory(createMemorySource());
 </script>
 
 <Router history="{html5History}">
-  <!-- I will function like the standard Router -->
+	<!-- I will function like the standard Router -->
 </Router>
 
 <Router history="{memoryHistory}">
-  <!-- I store the history stack in memory -->
+	<!-- I store the history stack in memory -->
 </Router>
 ```
 

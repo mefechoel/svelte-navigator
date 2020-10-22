@@ -8,9 +8,9 @@ const server = express();
 server.use(express.static(path.join(__dirname, "public")));
 
 server.get("*", (req, res) => {
-  const { html } = app.render({ url: req.url });
+	const { html } = app.render({ url: req.url });
 
-  res.write(`
+	res.write(`
     <!DOCTYPE html>
     <html>
       <head>
@@ -29,7 +29,7 @@ server.get("*", (req, res) => {
     </html>
   `);
 
-  res.end();
+	res.end();
 });
 
 const port = 3000;

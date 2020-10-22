@@ -8,16 +8,16 @@ import { navigate as defaultNavigate } from "./history";
 import { shouldNavigate, findClosest, addListener, isFunction } from "./utils";
 
 const createAction = getAnchor => (node, navigate = defaultNavigate) => {
-  const handleClick = event => {
-    const anchor = getAnchor(event);
-    if (anchor && anchor.target === "" && shouldNavigate(event)) {
-      event.preventDefault();
-      const to = anchor.pathname + anchor.search + anchor.hash;
-      navigate(to, { replace: anchor.hasAttribute("replace") });
-    }
-  };
-  const unlisten = addListener(node, "click", handleClick);
-  return { destroy: unlisten };
+	const handleClick = event => {
+		const anchor = getAnchor(event);
+		if (anchor && anchor.target === "" && shouldNavigate(event)) {
+			event.preventDefault();
+			const to = anchor.pathname + anchor.search + anchor.hash;
+			navigate(to, { replace: anchor.hasAttribute("replace") });
+		}
+	};
+	const unlisten = addListener(node, "click", handleClick);
+	return { destroy: unlisten };
 };
 
 // prettier-ignore

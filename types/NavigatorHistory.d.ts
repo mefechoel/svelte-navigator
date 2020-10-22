@@ -26,34 +26,34 @@ export type NavigationAction = "POP" | "PUSH" | "REPLACE";
 type Unlisten = () => void;
 
 export interface NavigatorHistory {
-  /**
-   * The current location
-   */
-  readonly location: RawLocation;
-  /**
-   * Listen to changes in location.
-   *
-   * @param listener The listener function will be called when the
-   * location changes.
-   * @returns The unlisten function, which can be used to unsubscribe
-   * the listener
-   */
-  listen(
-    listener: ({
-      location,
-      action,
-    }: {
-      location: RawLocation;
-      action: NavigationAction;
-    }) => void,
-  ): Unlisten;
-  /**
-   * Navigate to a new route.
-   * @param to The path to navigate to.
-   *
-   * If `to` is a number we will navigate to the stack entry index + `to`
-   * (-> `navigate(-1)`, is equivalent to hitting the back button of the browser)
-   * @param options Navigation options
-   */
-  navigate: NavigateFn;
+	/**
+	 * The current location
+	 */
+	readonly location: RawLocation;
+	/**
+	 * Listen to changes in location.
+	 *
+	 * @param listener The listener function will be called when the
+	 * location changes.
+	 * @returns The unlisten function, which can be used to unsubscribe
+	 * the listener
+	 */
+	listen(
+		listener: ({
+			location,
+			action,
+		}: {
+			location: RawLocation;
+			action: NavigationAction;
+		}) => void,
+	): Unlisten;
+	/**
+	 * Navigate to a new route.
+	 * @param to The path to navigate to.
+	 *
+	 * If `to` is a number we will navigate to the stack entry index + `to`
+	 * (-> `navigate(-1)`, is equivalent to hitting the back button of the browser)
+	 * @param options Navigation options
+	 */
+	navigate: NavigateFn;
 }

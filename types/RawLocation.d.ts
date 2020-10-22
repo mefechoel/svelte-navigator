@@ -1,7 +1,7 @@
 import NavigatorLocation from "./NavigatorLocation";
 
 interface RawLocation extends NavigatorLocation {
-  _key: string;
+	_key: string;
 }
 
 export default RawLocation;

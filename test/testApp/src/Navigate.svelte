@@ -1,7 +1,7 @@
 <script>
-  import { useNavigate } from "../../../src";
+	import { useNavigate } from "../../../src";
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  window.navigate = navigate;
+	window.navigate = navigate;
 </script>
