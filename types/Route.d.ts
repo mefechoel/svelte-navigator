@@ -5,40 +5,40 @@ import NavigatorLocation from "./NavigatorLocation";
 import { NavigateFn } from "./history";
 
 export interface RouteProps<Meta extends AnyObject = AnyObject> {
-  /**
-   * The path for when this component should be rendered. If no `path` is
-   * given the `Route` will act as the default that matches if no other
-   * `Route` in the `Router` matches.
-   */
-  path?: string;
-  /**
-   * The component constructor that will be used for rendering when the `Route`
-   * matches. If `component` is not set, the children of `Route` will be
-   * rendered instead.
-   */
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  component?: Function;
-  /**
-   * An arbitrary object you can pass the `Route`, to later access it (for
-   * example in `a11y.createAnnouncement`).
-   */
-  meta?: Meta;
-  /**
-   * If set to false, the parent `Router` will not manage focus for this
-   * `Route` or any child `Route`s.
-   */
-  primary?: boolean;
+	/**
+	 * The path for when this component should be rendered. If no `path` is
+	 * given the `Route` will act as the default that matches if no other
+	 * `Route` in the `Router` matches.
+	 */
+	path?: string;
+	/**
+	 * The component constructor that will be used for rendering when the `Route`
+	 * matches. If `component` is not set, the children of `Route` will be
+	 * rendered instead.
+	 */
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	component?: Function;
+	/**
+	 * An arbitrary object you can pass the `Route`, to later access it (for
+	 * example in `a11y.createAnnouncement`).
+	 */
+	meta?: Meta;
+	/**
+	 * If set to false, the parent `Router` will not manage focus for this
+	 * `Route` or any child `Route`s.
+	 */
+	primary?: boolean;
 }
 
 interface RouteSlots<
-  Params extends RouteParams = RouteParams,
-  State extends AnyObject = AnyObject
+	Params extends RouteParams = RouteParams,
+	State extends AnyObject = AnyObject
 > {
-  default: {
-    params: Params;
-    location: NavigatorLocation;
-    navigate: NavigateFn<State>;
-  };
+	default: {
+		params: Params;
+		location: NavigatorLocation;
+		navigate: NavigateFn<State>;
+	};
 }
 
 /**

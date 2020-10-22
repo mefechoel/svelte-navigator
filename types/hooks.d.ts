@@ -9,7 +9,7 @@ import { NavigateFn } from "./history";
  * Access the current location via a readable store.
  */
 export declare function useLocation<
-  State extends AnyObject = AnyObject
+	State extends AnyObject = AnyObject
 >(): Readable<NavigatorLocation<State>>;
 
 /**
@@ -35,10 +35,10 @@ export declare function useResolvable(path: string): Readable<string>;
 export declare function useNavigate(): NavigateFn;
 
 interface RouteMatch<Params extends RouteParams> {
-  path: string;
-  fullPath: string;
-  uri: string;
-  params: Params;
+	path: string;
+	fullPath: string;
+	uri: string;
+	params: Params;
 }
 
 /**
@@ -50,14 +50,14 @@ interface RouteMatch<Params extends RouteParams> {
  * as you're used to with all paths in Svelte Navigator.
  */
 export declare function useMatch<Params extends RouteParams>(
-  path: string,
+	path: string,
 ): Readable<RouteMatch<Params> | null>;
 
 /**
  * Access the parent Routes matched params and wildcards.
  */
 export declare function useParams<Params extends RouteParams>(): Readable<
-  Params
+	Params
 >;
 
 /**

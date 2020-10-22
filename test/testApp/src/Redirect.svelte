@@ -1,10 +1,10 @@
 <script>
-  import { useNavigate } from "../../../src";
+	import { useNavigate } from "../../../src";
 
-  export let to;
-  export let replace = false;
+	export let to;
+	export let replace = false;
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  navigate(to, { replace });
+	navigate(to, { replace });
 </script>

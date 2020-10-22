@@ -1,10 +1,10 @@
 <script>
-  import { useLocation, useMatch, useParams } from "../../../src";
+	import { useLocation, useMatch, useParams } from "../../../src";
 
-  const location = useLocation();
-  const relMatch = useMatch(":id/*splash");
-  const absMatch = useMatch("/hooks/:id/*splash");
-  const params = useParams();
+	const location = useLocation();
+	const relMatch = useMatch(":id/*splash");
+	const absMatch = useMatch("/hooks/:id/*splash");
+	const params = useParams();
 </script>
 
 <div data-testid="hooks-location-pathname">{$location.pathname}</div>

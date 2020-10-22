@@ -15,20 +15,20 @@ export const isNumber = value => typeof value === "number";
  * @param {object} event
  */
 export function shouldNavigate(event) {
-  return (
-    !event.defaultPrevented &&
-    event.button === 0 &&
-    !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
-  );
+	return (
+		!event.defaultPrevented &&
+		event.button === 0 &&
+		!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
+	);
 }
 
 export function createCounter() {
-  let i = 0;
-  /**
-   * Returns an id and increments the internal state
-   * @returns {number}
-   */
-  return () => i++;
+	let i = 0;
+	/**
+	 * Returns an id and increments the internal state
+	 * @returns {number}
+	 */
+	return () => i++;
 }
 
 /**
@@ -37,20 +37,20 @@ export function createCounter() {
  * @returns {string} An id
  */
 export function createGlobalId() {
-  return Math.random().toString(36).substring(2);
+	return Math.random().toString(36).substring(2);
 }
 
 export function findClosest(tagName, element) {
-  while (element && element.tagName !== tagName) {
-    // eslint-disable-next-line no-param-reassign
-    element = element.parentNode;
-  }
-  return element;
+	while (element && element.tagName !== tagName) {
+		// eslint-disable-next-line no-param-reassign
+		element = element.parentNode;
+	}
+	return element;
 }
 
 export const isSSR = typeof window === "undefined";
 
 export function addListener(target, type, handler) {
-  target.addEventListener(type, handler);
-  return () => target.removeEventListener(type, handler);
+	target.addEventListener(type, handler);
+	return () => target.removeEventListener(type, handler);
 }

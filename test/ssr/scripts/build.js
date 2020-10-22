@@ -8,15 +8,15 @@ const commonjs = require("@rollup/plugin-commonjs");
 rimraf.sync(join(__dirname, "../dist"));
 
 async function main() {
-  const bundle = await rollup({
-    input: join(__dirname, "../ssrApp/App.svelte"),
-    plugins: [svelte({ generate: "ssr" }), nodeResolve(), commonjs()],
-  });
-  await bundle.write({
-    format: "umd",
-    name: "ssrApp",
-    file: join(__dirname, "../dist/App.js"),
-  });
+	const bundle = await rollup({
+		input: join(__dirname, "../ssrApp/App.svelte"),
+		plugins: [svelte({ generate: "ssr" }), nodeResolve(), commonjs()],
+	});
+	await bundle.write({
+		format: "umd",
+		name: "ssrApp",
+		file: join(__dirname, "../dist/App.js"),
+	});
 }
 
 main();

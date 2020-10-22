@@ -3,46 +3,46 @@ import NavigatorLocation from "./NavigatorLocation";
 import AnyObject from "./AnyObject";
 
 declare namespace Link {
-  interface GetPropsParams {
-    location: NavigatorLocation;
-    href: string;
-    isPartiallyCurrent: boolean;
-    isCurrent: boolean;
-  }
+	interface GetPropsParams {
+		location: NavigatorLocation;
+		href: string;
+		isPartiallyCurrent: boolean;
+		isCurrent: boolean;
+	}
 
-  type GetProps<SpreadProps extends AnyObject = AnyObject> = ({
-    location,
-    href,
-    isPartiallyCurrent,
-    isCurrent,
-  }: GetPropsParams) => SpreadProps;
+	type GetProps<SpreadProps extends AnyObject = AnyObject> = ({
+		location,
+		href,
+		isPartiallyCurrent,
+		isCurrent,
+	}: GetPropsParams) => SpreadProps;
 }
 
 export interface LinkProps<State extends AnyObject = AnyObject> {
-  /**
-   * URL the component should link to. It will be resolved relative
-   * to the current Route.
-   */
-  to: string;
-  /**
-   * When `true`, clicking the `Link` will replace the current entry in the
-   * history stack instead of adding a new one.
-   */
-  replace?: boolean;
-  /**
-   * An object that will be pushed to the history stack when the `Link` is
-   * clicked. A state is arbitrary data, that you don't want to communicate
-   * through the url, much like the body of a HTTP POST request.
-   */
-  state?: State;
-  /**
-   * A function that returns an object that will be spread on the underlying
-   * anchor element's attributes. The first argument given to the function is
-   * an object with the properties `location`, `href`, `isPartiallyCurrent`,
-   * `isCurrent`. Look at the `NavLink` component in the example project setup
-   * to see how you can build your own link components with this.
-   */
-  getProps?: Link.GetProps;
+	/**
+	 * URL the component should link to. It will be resolved relative
+	 * to the current Route.
+	 */
+	to: string;
+	/**
+	 * When `true`, clicking the `Link` will replace the current entry in the
+	 * history stack instead of adding a new one.
+	 */
+	replace?: boolean;
+	/**
+	 * An object that will be pushed to the history stack when the `Link` is
+	 * clicked. A state is arbitrary data, that you don't want to communicate
+	 * through the url, much like the body of a HTTP POST request.
+	 */
+	state?: State;
+	/**
+	 * A function that returns an object that will be spread on the underlying
+	 * anchor element's attributes. The first argument given to the function is
+	 * an object with the properties `location`, `href`, `isPartiallyCurrent`,
+	 * `isCurrent`. Look at the `NavLink` component in the example project setup
+	 * to see how you can build your own link components with this.
+	 */
+	getProps?: Link.GetProps;
 }
 
 /**

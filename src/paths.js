@@ -7,7 +7,7 @@ export const paramRegex = /^:(.+)/;
  * @return {boolean}
  */
 export const startsWith = (string, search) =>
-  string.substr(0, search.length) === search;
+	string.substr(0, search.length) === search;
 
 /**
  * Check if `segment` is a root segment
@@ -50,8 +50,8 @@ export const stripSlashes = str => str.replace(/(^\/+|\/+$)/g, "");
  * @return {string[]}
  */
 export function segmentize(uri, filterFalsy = false) {
-  const segments = stripSlashes(uri).split("/");
-  return filterFalsy ? segments.filter(Boolean) : segments;
+	const segments = stripSlashes(uri).split("/");
+	return filterFalsy ? segments.filter(Boolean) : segments;
 }
 
 /**
@@ -61,7 +61,7 @@ export function segmentize(uri, filterFalsy = false) {
  * @return {string}
  */
 export const addQuery = (pathname, query) =>
-  pathname + (query ? `?${query}` : "");
+	pathname + (query ? `?${query}` : "");
 
 /**
  * Combines the `basepath` and the `path` into one path.
@@ -69,9 +69,9 @@ export const addQuery = (pathname, query) =>
  * @param {string} path
  */
 export function combinePaths(basepath, path) {
-  const barePath =
-    path === "/" ? basepath : `${stripSlashes(basepath)}/${stripSlashes(path)}`;
-  return `${stripSlashes(barePath)}/`;
+	const barePath =
+		path === "/" ? basepath : `${stripSlashes(basepath)}/${stripSlashes(path)}`;
+	return `${stripSlashes(barePath)}/`;
 }
 
 /**
@@ -92,7 +92,7 @@ export const normalizePath = path => `/${stripSlashes(path)}`;
  * @returns {string}
  */
 export function join(...pathFragments) {
-  const joinFragment = fragment => segmentize(fragment, true).join("/");
-  const joinedSegments = pathFragments.map(joinFragment).join("/");
-  return normalizePath(joinedSegments);
+	const joinFragment = fragment => segmentize(fragment, true).join("/");
+	const joinedSegments = pathFragments.map(joinFragment).join("/");
+	return normalizePath(joinedSegments);
 }

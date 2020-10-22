@@ -4,17 +4,17 @@ import { LOCATION, ROUTER, ROUTE, ROUTE_PARAMS, FOCUS_ELEM } from "./contexts";
 import { resolveLink, match, normalizeLocation } from "./routes";
 import { isNumber } from "./utils";
 import {
-  fail,
-  createLabel,
-  USE_FOCUS_ID,
-  ROUTER_ID,
-  USE_LOCATION_ID,
-  ROUTE_ID,
-  USE_RESOLVE_ID,
-  USE_RESOLVABLE_ID,
-  USE_NAVIGATE_ID,
-  USE_MATCH_ID,
-  USE_PARAMS_ID,
+	fail,
+	createLabel,
+	USE_FOCUS_ID,
+	ROUTER_ID,
+	USE_LOCATION_ID,
+	ROUTE_ID,
+	USE_RESOLVE_ID,
+	USE_RESOLVABLE_ID,
+	USE_NAVIGATE_ID,
+	USE_MATCH_ID,
+	USE_PARAMS_ID,
 } from "./warning";
 
 /**
@@ -26,25 +26,25 @@ import {
  * @param {number?} ctxProviderId
  */
 export function usePreflightCheck(
-  componentId,
-  props,
-  ctxKey = ROUTER,
-  ctxProviderId = ROUTER_ID,
+	componentId,
+	props,
+	ctxKey = ROUTER,
+	ctxProviderId = ROUTER_ID,
 ) {
-  const ctx = getContext(ctxKey);
-  if (!ctx) {
-    fail(
-      componentId,
-      label =>
-        `You cannot use ${label} outside of a ${createLabel(ctxProviderId)}.`,
-      props,
-    );
-  }
+	const ctx = getContext(ctxKey);
+	if (!ctx) {
+		fail(
+			componentId,
+			label =>
+				`You cannot use ${label} outside of a ${createLabel(ctxProviderId)}.`,
+			props,
+		);
+	}
 }
 
 const toReadonly = ctx => {
-  const { subscribe } = getContext(ctx);
-  return { subscribe };
+	const { subscribe } = getContext(ctx);
+	return { subscribe };
 };
 
 /**
@@ -74,8 +74,8 @@ const toReadonly = ctx => {
   ```
  */
 export function useLocation() {
-  usePreflightCheck(USE_LOCATION_ID);
-  return toReadonly(LOCATION);
+	usePreflightCheck(USE_LOCATION_ID);
+	return toReadonly(LOCATION);
 }
 
 /**
@@ -95,16 +95,16 @@ export function useLocation() {
  * Access the history of top level Router.
  */
 export function useHistory() {
-  const { history } = getContext(ROUTER);
-  return history;
+	const { history } = getContext(ROUTER);
+	return history;
 }
 
 /**
  * Access the base of the parent Route.
  */
 export function useRouteBase() {
-  const route = getContext(ROUTE);
-  return route ? derived(route, _route => _route.base) : writable("/");
+	const route = getContext(ROUTE);
+	return route ? derived(route, _route => _route.base) : writable("/");
 }
 
 /**
@@ -129,17 +129,17 @@ export function useRouteBase() {
   ```
  */
 export function useResolve() {
-  usePreflightCheck(USE_RESOLVE_ID);
-  const routeBase = useRouteBase();
-  const { basepath: appBase } = getContext(ROUTER);
-  /**
-   * Resolves the path relative to the current route and basepath.
-   *
-   * @param {string} path The path to resolve
-   * @returns {string} The resolved path
-   */
-  const resolve = path => resolveLink(path, get(routeBase), appBase);
-  return resolve;
+	usePreflightCheck(USE_RESOLVE_ID);
+	const routeBase = useRouteBase();
+	const { basepath: appBase } = getContext(ROUTER);
+	/**
+	 * Resolves the path relative to the current route and basepath.
+	 *
+	 * @param {string} path The path to resolve
+	 * @returns {string} The resolved path
+	 */
+	const resolve = path => resolveLink(path, get(routeBase), appBase);
+	return resolve;
 }
 
 /**
@@ -163,12 +163,12 @@ export function useResolve() {
   ```
  */
 export function useResolvable(path) {
-  usePreflightCheck(USE_RESOLVABLE_ID);
-  const routeBase = useRouteBase();
-  const { basepath: appBase } = getContext(ROUTER);
-  return derived(routeBase, _routeBase =>
-    resolveLink(path, _routeBase, appBase),
-  );
+	usePreflightCheck(USE_RESOLVABLE_ID);
+	const routeBase = useRouteBase();
+	const { basepath: appBase } = getContext(ROUTER);
+	return derived(routeBase, _routeBase =>
+		resolveLink(path, _routeBase, appBase),
+	);
 }
 
 /**
@@ -237,28 +237,28 @@ export function useResolvable(path) {
   ```
  */
 export function useNavigate() {
-  usePreflightCheck(USE_NAVIGATE_ID);
-  const resolve = useResolve();
-  const { navigate } = useHistory();
-  /**
-   * Navigate to a new route.
-   * Resolves the link relative to the current route and basepath.
-   *
-   * @param {string|number} to The path to navigate to.
-   *
-   * If `to` is a number we will navigate to the stack entry index + `to`
-   * (-> `navigate(-1)`, is equivalent to hitting the back button of the browser)
-   * @param {Object} options
-   * @param {*} [options.state]
-   * @param {boolean} [options.replace=false]
-   */
-  const navigateRelative = (to, options) => {
-    // If to is a number, we navigate to the target stack entry via `history.go`.
-    // Otherwise resolve the link
-    const target = isNumber(to) ? to : resolve(to);
-    return navigate(target, options);
-  };
-  return navigateRelative;
+	usePreflightCheck(USE_NAVIGATE_ID);
+	const resolve = useResolve();
+	const { navigate } = useHistory();
+	/**
+	 * Navigate to a new route.
+	 * Resolves the link relative to the current route and basepath.
+	 *
+	 * @param {string|number} to The path to navigate to.
+	 *
+	 * If `to` is a number we will navigate to the stack entry index + `to`
+	 * (-> `navigate(-1)`, is equivalent to hitting the back button of the browser)
+	 * @param {Object} options
+	 * @param {*} [options.state]
+	 * @param {boolean} [options.replace=false]
+	 */
+	const navigateRelative = (to, options) => {
+		// If to is a number, we navigate to the target stack entry via `history.go`.
+		// Otherwise resolve the link
+		const target = isNumber(to) ? to : resolve(to);
+		return navigate(target, options);
+	};
+	return navigateRelative;
 }
 
 /**
@@ -288,16 +288,16 @@ export function useNavigate() {
   ```
  */
 export function useMatch(path) {
-  usePreflightCheck(USE_MATCH_ID);
-  const location = useLocation();
-  const resolve = useResolve();
-  const { basepath: appBase } = getContext(ROUTER);
-  const resolvedPath = resolve(path);
-  const { pathname: fullPath } = normalizeLocation(
-    { pathname: resolvedPath },
-    appBase,
-  );
-  return derived(location, loc => match({ fullPath, path }, loc.pathname));
+	usePreflightCheck(USE_MATCH_ID);
+	const location = useLocation();
+	const resolve = useResolve();
+	const { basepath: appBase } = getContext(ROUTER);
+	const resolvedPath = resolve(path);
+	const { pathname: fullPath } = normalizeLocation(
+		{ pathname: resolvedPath },
+		appBase,
+	);
+	return derived(location, loc => match({ fullPath, path }, loc.pathname));
 }
 
 /**
@@ -324,8 +324,8 @@ export function useMatch(path) {
   ```
  */
 export function useParams() {
-  usePreflightCheck(USE_PARAMS_ID, null, ROUTE, ROUTE_ID);
-  return toReadonly(ROUTE_PARAMS);
+	usePreflightCheck(USE_PARAMS_ID, null, ROUTE, ROUTE_ID);
+	return toReadonly(ROUTE_PARAMS);
 }
 
 /**
@@ -390,34 +390,34 @@ export function useParams() {
   ```
  */
 export function useFocus() {
-  usePreflightCheck(USE_FOCUS_ID, null, ROUTE, ROUTE_ID);
-  const location = useLocation();
-  const focusElement = getContext(FOCUS_ELEM);
+	usePreflightCheck(USE_FOCUS_ID, null, ROUTE, ROUTE_ID);
+	const location = useLocation();
+	const focusElement = getContext(FOCUS_ELEM);
 
-  let resolve;
-  const unsubscribe = location.subscribe(() => {
-    const lazyElement = new Promise(_resolve => {
-      resolve = _resolve;
-    });
-    focusElement.set(lazyElement);
-  });
+	let resolve;
+	const unsubscribe = location.subscribe(() => {
+		const lazyElement = new Promise(_resolve => {
+			resolve = _resolve;
+		});
+		focusElement.set(lazyElement);
+	});
 
-  onDestroy(unsubscribe);
+	onDestroy(unsubscribe);
 
-  return node => {
-    let unmounted = false;
-    const innerUnsubscribe = location.subscribe(() => {
-      tick().then(() => {
-        if (!unmounted) {
-          resolve(node);
-        }
-      });
-    });
-    return {
-      destroy() {
-        unmounted = true;
-        innerUnsubscribe();
-      },
-    };
-  };
+	return node => {
+		let unmounted = false;
+		const innerUnsubscribe = location.subscribe(() => {
+			tick().then(() => {
+				if (!unmounted) {
+					resolve(node);
+				}
+			});
+		});
+		return {
+			destroy() {
+				unmounted = true;
+				innerUnsubscribe();
+			},
+		};
+	};
 }
