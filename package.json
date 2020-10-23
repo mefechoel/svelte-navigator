@@ -64,6 +64,9 @@
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
   },
+  "dependencies": {
+    "svelte-navigator-history": "^0.1.1"
+  },
   "peerDependencies": {
     "svelte": "3.x"
   },
@@ -97,6 +100,7 @@
     "husky": "^5.0.0-beta.0",
     "is-ci": "^2.0.0",
     "jest": "^26.5.3",
+    "lint-staged": "^10.4.2",
     "mkdirp": "^1.0.4",
     "nyc": "^15.0.1",
     "pinst": "^2.0.0",
@@ -124,7 +128,7 @@
       ".svelte"
     ]
   },
-  "dependencies": {
-    "svelte-navigator-history": "^0.1.1"
+  "lint-staged": {
+    "*": ["eslint", "prettier --check"]
   }
 }
