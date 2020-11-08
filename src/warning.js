@@ -13,6 +13,8 @@ export const USE_PARAMS_ID = 8;
 export const USE_RESOLVABLE_ID = 9;
 export const USE_RESOLVE_ID = 10;
 export const NAVIGATE_ID = 11;
+export const LINK_ACTION_ID = 12;
+export const LINKS_ACTION_ID = 13;
 
 const labels = {
 	[LINK_ID]: "Link",
@@ -26,20 +28,32 @@ const labels = {
 	[USE_RESOLVABLE_ID]: "useResolvable",
 	[USE_RESOLVE_ID]: "useResolve",
 	[NAVIGATE_ID]: "navigate",
+	[LINK_ACTION_ID]: "use:link",
+	[LINKS_ACTION_ID]: "use:links",
 };
 
 export const createLabel = labelId => labels[labelId];
 
 export function createIdentifier(labelId, props) {
 	let attr;
+	let tag = createLabel(labelId);
 	if (labelId === ROUTE_ID) {
 		attr = props.path ? `path="${props.path}"` : "default";
 	} else if (labelId === LINK_ID) {
 		attr = `to="${props.to}"`;
 	} else if (labelId === ROUTER_ID) {
 		attr = `basepath="${props.basepath || ""}"`;
+	} else if (labelId === LINK_ACTION_ID) {
+		tag = "a use:link";
+		attr = `href="${props.href || ""}"`;
+		if (props.replace) {
+			attr += " replace";
+		}
+	} else if (labelId === LINKS_ACTION_ID) {
+		tag = "a";
+		attr = `href="${props.href || ""}"`;
 	}
-	return `<${createLabel(labelId)} ${attr || ""} />`;
+	return `<${tag} ${attr || ""} />`;
 }
 
 export function createMessage(labelId, message, props, originId) {
@@ -59,3 +73,9 @@ export const fail = createMessageHandler(message => {
 
 // eslint-disable-next-line no-console
 export const warn = createMessageHandler(console.warn);
+
+export const failProd = componentId => {
+	throw new Error(
+		`<SvelteNavigator>: An error occurred in ${createLabel(componentId)}.`,
+	);
+};

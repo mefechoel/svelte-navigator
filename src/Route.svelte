@@ -93,7 +93,7 @@
 	}
 </script>
 
-<div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
+<div style="display:none;" aria-hidden="true" data-svnv-route-start={id} />
 {#if isActive}
 	<Router {primary}>
 		<!--
@@ -119,4 +119,4 @@
 		{/if}
 	</Router>
 {/if}
-<div style="display:none;" aria-hidden="true" data-svnav-route-end={id} />
+<div style="display:none;" aria-hidden="true" data-svnv-route-end={id} />

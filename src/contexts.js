@@ -4,7 +4,7 @@
  * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
  */
 
-const createKey = ctxName => `@@svnav-ctx__${ctxName}`;
+const createKey = ctxName => `@@svnv-ctx__${ctxName}`;
 
 // Use strings instead of objects, so different versions of
 // svelte-navigator can potentially still work together

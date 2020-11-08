@@ -1,0 +1,7 @@
+{
+  "main": "dist/svelte-navigator__memory.umd.js",
+  "unpkg": "dist/svelte-navigator__memory.umd.min.js",
+  "module": "dist/svelte-navigator__memory.module.mjs",
+  "svelte": "index.js",
+  "types": "../types/memory/index.d.ts"
+}

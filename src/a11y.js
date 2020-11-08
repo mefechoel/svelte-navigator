@@ -19,10 +19,10 @@ export let initialNavigation = true;
  * @param {number} routerIdB The second Routers id
  */
 function isAbove(routerIdA, routerIdB) {
-	const routerMarkers = document.querySelectorAll("[data-svnav-router]");
+	const routerMarkers = document.querySelectorAll("[data-svnv-router]");
 	for (let i = 0; i < routerMarkers.length; i++) {
 		const node = routerMarkers[i];
-		const currentId = Number(node.dataset.svnavRouter);
+		const currentId = Number(node.dataset.svnvRouter);
 		if (currentId === routerIdA) return true;
 		if (currentId === routerIdB) return false;
 	}
@@ -99,7 +99,7 @@ export function focus(elem) {
 }
 
 export function isEndMarker(elem, id) {
-	return Number(elem.dataset.svnavRouteEnd) === id;
+	return Number(elem.dataset.svnvRouteEnd) === id;
 }
 
 export function isHeading(elem) {
@@ -111,7 +111,7 @@ function query(selector, parent = document) {
 }
 
 export function queryHeading(id) {
-	const marker = query(`[data-svnav-route-start="${id}"]`);
+	const marker = query(`[data-svnv-route-start="${id}"]`);
 	let current = marker.nextElementSibling;
 	while (!isEndMarker(current, id)) {
 		if (isHeading(current)) {
@@ -129,17 +129,19 @@ export function queryHeading(id) {
 export function handleFocus(route) {
 	Promise.resolve(get(route.focusElement)).then(elem => {
 		const focusElement = elem || queryHeading(route.id);
-		if (!focusElement) {
-			warn(
-				ROUTER_ID,
-				"Could not find an element to focus. " +
-					"You should always render a header for accessibility reasons, " +
-					'or set a custom focus element via the "useFocus" hook. ' +
-					"If you don't want this Route or Router to manage focus, " +
-					'pass "primary={false}" to it.',
-				route,
-				ROUTE_ID,
-			);
+		if (process.env.NODE_ENV !== "production") {
+			if (!focusElement) {
+				warn(
+					ROUTER_ID,
+					"Could not find an element to focus. " +
+						"You should always render a header for accessibility reasons, " +
+						'or set a custom focus element via the "useFocus" hook. ' +
+						"If you don't want this Route or Router to manage focus, " +
+						'pass "primary={false}" to it.',
+					route,
+					ROUTE_ID,
+				);
+			}
 		}
 		const headingFocused = focus(focusElement);
 		if (headingFocused) return;

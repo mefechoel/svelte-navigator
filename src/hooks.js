@@ -15,6 +15,7 @@ import {
 	USE_NAVIGATE_ID,
 	USE_MATCH_ID,
 	USE_PARAMS_ID,
+	failProd,
 } from "./warning";
 
 /**
@@ -33,12 +34,17 @@ export function usePreflightCheck(
 ) {
 	const ctx = getContext(ctxKey);
 	if (!ctx) {
-		fail(
-			componentId,
-			label =>
-				`You cannot use ${label} outside of a ${createLabel(ctxProviderId)}.`,
-			props,
-		);
+		if (process.env.NODE_ENV !== "production") {
+			fail(
+				componentId,
+				label =>
+					`You cannot use ${label} outside of a ${createLabel(ctxProviderId)}.`,
+				props,
+			);
+		}
+		if (process.env.NODE_ENV === "production") {
+			failProd(componentId);
+		}
 	}
 }
 

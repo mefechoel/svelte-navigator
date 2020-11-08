@@ -26,20 +26,21 @@
 	const location = useLocation();
 	const dispatch = createEventDispatcher();
 	const resolve = useResolve();
-	const { navigate } = useHistory();
+	const { navigate, createHref } = useHistory();
 
 	// We need to pass location here to force re-resolution of the link,
 	// when the pathname changes. Otherwise we could end up with stale path params,
 	// when for example an :id changes in the parent Routes path
-	$: href = resolve(to, $location);
-	$: isPartiallyCurrent = startsWith($location.pathname, href);
-	$: isCurrent = href === $location.pathname;
+	$: path = resolve(to, $location);
+	$: href = createHref(path);
+	$: isPartiallyCurrent = startsWith($location.pathname, path);
+	$: isCurrent = path === $location.pathname;
 	$: ariaCurrent = isCurrent ? { "aria-current": "page" } : {};
 	$: props = (() => {
 		if (isFunction(getProps)) {
 			const dynamicProps = getProps({
 				location: $location,
-				href,
+				href: path,
 				isPartiallyCurrent,
 				isCurrent,
 			});

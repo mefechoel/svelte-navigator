@@ -10,7 +10,7 @@ import {
 	stripSplat,
 	normalizePath,
 } from "./paths";
-import { ROUTER_ID, fail } from "./warning";
+import { ROUTER_ID, fail, failProd } from "./warning";
 import { isUndefined } from "./utils";
 
 const SEGMENT_POINTS = 4;
@@ -261,10 +261,15 @@ export function normalizeLocation(location, basepath) {
 	const pathSegments = segmentize(pathname, true);
 	while (baseSegments.length) {
 		if (baseSegments[0] !== pathSegments[0]) {
-			fail(
-				ROUTER_ID,
-				`Invalid state: All locations must begin with the basepath "${basepath}", found "${pathname}"`,
-			);
+			if (process.env.NODE_ENV !== "production") {
+				fail(
+					ROUTER_ID,
+					`Invalid state: All locations must begin with the basepath "${basepath}", found "${pathname}"`,
+				);
+			}
+			if (process.env.NODE_ENV === "production") {
+				failProd(ROUTER_ID);
+			}
 		}
 		baseSegments.shift();
 		pathSegments.shift();

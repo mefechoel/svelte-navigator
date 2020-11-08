@@ -19,7 +19,7 @@
 	import { normalizePath } from "./paths";
 	import { pick, match, normalizeLocation } from "./routes";
 	import { isSSR } from "./utils";
-	import { warn, fail, ROUTER_ID } from "./warning";
+	import { warn, fail, ROUTER_ID, failProd } from "./warning";
 	import {
 		pushFocusCandidate,
 		visuallyHiddenStyle,
@@ -65,10 +65,15 @@
 	const level = isTopLevelRouter ? 0 : routerContext.level + 1;
 
 	if (isTopLevelRouter && !history) {
-		fail(
-			ROUTER_ID,
-			"Top level Routers require a history, but none was supplied",
-		);
+		if (process.env.NODE_ENV !== "production") {
+			fail(
+				ROUTER_ID,
+				"Top level Routers require a history, but none was supplied",
+			);
+		}
+		if (process.env.NODE_ENV === "production") {
+			failProd(ROUTER_ID);
+		}
 	}
 
 	const location = isTopLevelRouter
@@ -123,14 +128,21 @@
 		routes.update(createRouteFilter(routeId));
 	}
 
-	if (!isTopLevelRouter && basepath !== defaultBasepath) {
+	if (
+		process.env.NODE_ENV !== "production" &&
+		!isTopLevelRouter &&
+		basepath !== defaultBasepath
+	) {
 		warn(
 			ROUTER_ID,
 			'Only top-level Routers can have a "basepath" prop. It is ignored.',
 			{ basepath },
 		);
 	}
-	$: if (basepath !== initialBasepath) {
+	$: if (
+		process.env.NODE_ENV !== "production" &&
+		basepath !== initialBasepath
+	) {
 		warn(ROUTER_ID, 'You cannot change the "basepath" prop. It is ignored.');
 	}
 
@@ -195,7 +207,7 @@
 	});
 </script>
 
-<div style="display:none;" aria-hidden="true" data-svnav-router={routerId} />
+<div style="display:none;" aria-hidden="true" data-svnv-router={routerId} />
 
 <slot />
 

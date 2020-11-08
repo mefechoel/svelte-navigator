@@ -1,0 +1,7 @@
+{
+  "main": "dist/svelte-navigator__auto.umd.js",
+  "unpkg": "dist/svelte-navigator__auto.umd.min.js",
+  "module": "dist/svelte-navigator__auto.module.mjs",
+  "svelte": "index.js",
+  "types": "../types/auto/index.d.ts"
+}

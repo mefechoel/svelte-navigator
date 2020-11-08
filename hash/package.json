@@ -1,0 +1,7 @@
+{
+  "main": "dist/svelte-navigator__hash.umd.js",
+  "unpkg": "dist/svelte-navigator__hash.umd.min.js",
+  "module": "dist/svelte-navigator__hash.module.mjs",
+  "svelte": "index.js",
+  "types": "../types/hash/index.d.ts"
+}
