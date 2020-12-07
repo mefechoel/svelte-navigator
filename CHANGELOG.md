@@ -1,3 +1,10 @@
+# 3.1.4
+
+## Fix:
+
+- Fix untyped Link and Route props
+  [#21](https://github.com/mefechoel/svelte-navigator/issues/21)
+
 # 3.1.3
 
 ## Fix:
