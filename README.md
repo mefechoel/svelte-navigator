@@ -4,6 +4,8 @@
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/svelte-navigator?style=flat-square)](https://bundlephobia.com/result?p=svelte-navigator)
 [![NPM](https://img.shields.io/npm/l/svelte-navigator?style=flat-square)](https://github.com/mefechoel/svelte-navigator/blob/main/LICENSE)
 [![GitHub last commit](https://img.shields.io/github/last-commit/mefechoel/svelte-navigator?style=flat-square)](https://github.com/mefechoel/svelte-navigator/commits/main)
+[![Code Style Prettier](https://img.shields.io/badge/code%20style-prettier-ff7fe1.svg?style=flat-square)](https://github.com/prettier/prettier#readme)
+[![Build Status](https://img.shields.io/github/workflow/status/mefechoel/svelte-navigator/Test?style=flat-square)](https://github.com/mefechoel/svelte-navigator/actions?query=workflow%3ATest)
 
 > Simple, accessible routing for Svelte.
 

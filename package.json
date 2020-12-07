@@ -129,8 +129,10 @@
     ]
   },
   "lint-staged": {
+    "*.{js,ts,svelte}": [
+      "eslint"
+    ],
     "*": [
-      "eslint",
       "prettier --check"
     ]
   }
