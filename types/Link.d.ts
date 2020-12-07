@@ -1,3 +1,4 @@
+import "svelte2tsx/svelte-jsx";
 import { LocalComponent } from "./SvelteInternal";
 import NavigatorLocation from "./NavigatorLocation";
 import AnyObject from "./AnyObject";
@@ -18,7 +19,7 @@ declare namespace Link {
 	}: GetPropsParams) => SpreadProps;
 }
 
-export interface LinkProps<State extends AnyObject = AnyObject> {
+interface LinkOnlyProps<State extends AnyObject = AnyObject> {
 	/**
 	 * URL the component should link to. It will be resolved relative
 	 * to the current Route.
@@ -43,7 +44,18 @@ export interface LinkProps<State extends AnyObject = AnyObject> {
 	 * to see how you can build your own link components with this.
 	 */
 	getProps?: Link.GetProps;
+	/**
+	 * The class that will be passed to the underlying `<a>` tag.
+	 */
+	class?: string;
 }
+
+export type LinkProps<State extends AnyObject = AnyObject> = Omit<
+	LinkOnlyProps<State> &
+		svelte.JSX.HTMLProps<HTMLAnchorElement> &
+		svelte.JSX.SapperAnchorProps,
+	"href"
+>;
 
 /**
  * A component used to navigate around the application. It will automatically

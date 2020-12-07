@@ -64,6 +64,9 @@
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
   },
+  "dependencies": {
+    "svelte2tsx": "^0.1.151"
+  },
   "peerDependencies": {
     "svelte": "3.x"
   },
