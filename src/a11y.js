@@ -174,7 +174,9 @@ export const createTriggerFocus = (a11yConfig, announcementText, location) => (
 	});
 
 export const visuallyHiddenStyle =
-	"position:absolute;" +
+	"position:fixed;" +
+	"top:-1px;" +
+	"left:0;" +
 	"width:1px;" +
 	"height:1px;" +
 	"padding:0;" +
