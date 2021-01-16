@@ -1,3 +1,14 @@
+# 3.1.5
+
+## Fix:
+
+- Prevent status div messing with layout
+  [#28](https://github.com/mefechoel/svelte-navigator/issues/28)
+
+## Other:
+
+- Update dependencies
+
 # 3.1.4
 
 ## Fix:
