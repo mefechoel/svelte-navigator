@@ -20,12 +20,6 @@
 	}
 </script>
 
-<style>
-	form {
-		display: inline-block;
-	}
-</style>
-
 <div>
 	<button type="submit" on:click={() => navigate(-1)}>&lt;-</button>
 	<button type="submit" on:click={() => navigate(1)}>-&gt;</button>
@@ -34,3 +28,9 @@
 		<button type="submit">GO</button>
 	</form>
 </div>
+
+<style>
+	form {
+		display: inline-block;
+	}
+</style>

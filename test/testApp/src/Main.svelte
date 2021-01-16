@@ -21,11 +21,14 @@
 		<Link
 			data-spread-attr
 			data-duplicate-attr="rest"
-			getProps={() => ({ 'data-testid': 'link-get-props', 'data-has-attr': true, 'data-duplicate-attr': 'getProps' })}
+			getProps={() => ({
+				"data-testid": "link-get-props",
+				"data-has-attr": true,
+				"data-duplicate-attr": "getProps",
+			})}
 			to="about"
+		>GET PROPS</Link
 		>
-			GET PROPS
-		</Link>
 		<Link data-testid="link-about-rel" to="about">ABOUT REL</Link>
 		<Link data-testid="link-about-abs" to="/about">ABOUT ABS</Link>
 		<Link data-testid="link-app-home" to="/">APP HOME</Link>
@@ -37,27 +40,25 @@
 			Pauls Dashboard
 		</Link>
 		<Link data-testid="link-nowhere" to="nowhere">NOWHERE</Link>
-		<Link data-testid="link-state" to="/" state={{ value: 'test-state' }}>
+		<Link data-testid="link-state" to="/" state={{ value: "test-state" }}>
 			HOME STATE
 		</Link>
 		<Link
 			data-testid="link-about-push-state"
 			to="about"
-			state={{ value: 'test-push-state' }}
+			state={{ value: "test-push-state" }}
+		>ABOUT PUSH STATE</Link
 		>
-			ABOUT PUSH STATE
-		</Link>
 		<Link data-testid="link-about-replace" to="about" replace>
 			ABOUT REPLACE
 		</Link>
 		<Link
 			data-testid="link-about-replace-state"
 			to="about"
-			state={{ value: 'test-replace-state' }}
+			state={{ value: "test-replace-state" }}
 			replace
+		>ABOUT REPLACE STATE</Link
 		>
-			ABOUT REPLACE STATE
-		</Link>
 		<Link data-testid="link-blog" to="blog">BLOG</Link>
 		<Link data-testid="link-blog-match-empty" to="blog/match">MATCH EMPTY</Link>
 		<Link data-testid="link-blog-match-to" to="blog/match/some-path">
@@ -66,9 +67,8 @@
 		<Link
 			data-testid="link-blog-match-to-splat"
 			to="blog/match/some-path/some-splat"
+		>MATCH SOME PATH AND SPLAT</Link
 		>
-			MATCH SOME PATH AND SPLAT
-		</Link>
 
 		<div use:links>
 			<a href="/about">
@@ -100,10 +100,7 @@
 		<a
 			use:link={customNavigate}
 			data-testid="action-link-custom-navigate"
-			href="/about"
-		>
-			ACTION LINK ABOUT CUSTOM NAVIGATE
-		</a>
+			href="/about"> ACTION LINK ABOUT CUSTOM NAVIGATE </a>
 	</nav>
 	<br />
 	<main>

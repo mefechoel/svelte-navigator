@@ -4,6 +4,7 @@ import svelte from "rollup-plugin-svelte";
 import babel from "@rollup/plugin-babel";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import css from "rollup-plugin-css-only";
 
 rimraf.sync(path.join(__dirname, "public/build"));
 
@@ -16,17 +17,9 @@ export default {
 		dir: path.join(__dirname, "public/build"),
 	},
 	plugins: [
-		svelte({
-			dev: true,
-			css: css => {
-				css.write("bundle.css");
-			},
-		}),
-		nodeResolve({
-			browser: true,
-			dedupe: importee =>
-				importee === "svelte" || importee.startsWith("svelte/"),
-		}),
+		svelte({ compilerOptions: { dev: true } }),
+		css({ output: "bundle.css" }),
+		nodeResolve({ browser: true, dedupe: ["svelte"] }),
 		commonjs(),
 		babel({
 			babelHelpers: "bundled",

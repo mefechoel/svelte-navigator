@@ -47,7 +47,7 @@
 			<div data-testid="route-blog-id">ARTICLE_ID:{params.id}</div>
 		</Route>
 		<Route path="other/*" let:params>
-			<div data-testid="route-blog-id">SPLAT:{params['*']}</div>
+			<div data-testid="route-blog-id">SPLAT:{params["*"]}</div>
 		</Route>
 		<Route path="whatever/*splat" let:params>
 			<div data-testid="route-blog-id">NAMED_SPLAT:{params.splat}</div>

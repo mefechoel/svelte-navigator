@@ -5,12 +5,6 @@
 	import A11y from "./A11y.svelte";
 </script>
 
-<style>
-	:global(*:focus) {
-		border: 2px dotted green;
-	}
-</style>
-
 <Main />
 
 <br />
@@ -27,3 +21,9 @@
 <br />
 
 <A11y />
+
+<style>
+	:global(*:focus) {
+		border: 2px dotted green;
+	}
+</style>

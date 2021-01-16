@@ -56,9 +56,9 @@ export declare function useMatch<Params extends RouteParams>(
 /**
  * Access the parent Routes matched params and wildcards.
  */
-export declare function useParams<Params extends RouteParams>(): Readable<
-	Params
->;
+export declare function useParams<
+	Params extends RouteParams
+>(): Readable<Params>;
 
 /**
  * Provide a custom element to focus, when the parent route is visited.
