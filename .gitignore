@@ -1,6 +1,7 @@
 /**/node_modules
 example/**/public/build
 example/**/yarn.lock
+example/**/package-lock.json
 test/testApp/public/build
 .vscode
 dist

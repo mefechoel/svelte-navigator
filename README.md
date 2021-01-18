@@ -45,22 +45,22 @@ React-esque hooks.
 - [Testing](#testing)
 - [API](#api)
   - [Components](#components)
-    - [Router](#router)
-    - [Link](#link)
-    - [Route](#route)
+    - [`Router`](#router)
+    - [`Link`](#link)
+    - [`Route`](#route)
   - [Hooks](#hooks)
-    - [useNavigate](#usenavigate)
-    - [useLocation](#uselocation)
-    - [useResolve](#useresolve)
-    - [useResolvable](#useresolvable)
-    - [useMatch](#usematch)
-    - [useParams](#useparams)
-    - [useFocus](#usefocus)
+    - [`useNavigate`](#usenavigate)
+    - [`useLocation`](#uselocation)
+    - [`useResolve`](#useresolve)
+    - [`useResolvable`](#useresolvable)
+    - [`useMatch`](#usematch)
+    - [`useParams`](#useparams)
+    - [`useFocus`](#usefocus)
   - [Programmatic Navigation](#programmatic-navigation)
-    - [navigate](#navigate)
+    - [`navigate`](#navigate)
   - [Actions](#actions)
-    - [link](#link-1)
-    - [links](#links)
+    - [`link`](#link-1)
+    - [`links`](#links)
   - [Custom History](#custom-history)
 
 ## Getting started
@@ -79,6 +79,8 @@ React-esque hooks.
 	https://github.com/mefechoel/svelte-navigator/tree/master/example/ssr
 [example-url-bar]:
 	https://github.com/mefechoel/svelte-navigator/tree/master/example/url-bar
+[example-transitions]:
+	https://github.com/mefechoel/svelte-navigator/tree/master/example/transitions
 [repl-basic-client-side]:
 	https://svelte.dev/repl/451fd183e0d3403cb7800101f7d799fb
 [repl-custom-hash-history]:
@@ -86,6 +88,7 @@ React-esque hooks.
 [repl-private-routes]: https://svelte.dev/repl/c81d8f3dff584065a82b2d3ea7cd4aee
 [repl-lazy-loading]: https://svelte.dev/repl/09abb8c287f745169f66f62d51f766d5
 [repl-url-bar]: https://svelte.dev/repl/dc82bb89447647edb0d7ed8cbe7999ae
+[repl-transitions]: https://svelte.dev/repl/c81d8f3dff584065a82b2d3ea7cd4aee
 
 Look at the [example folder][example-folder-url] for a few example project
 setups, or checkout the examples in the Svelte REPL:
@@ -101,6 +104,8 @@ setups, or checkout the examples in the Svelte REPL:
 - SSR ([examples][example-ssr])
 - Using hash based navigation with a custom history
   ([examples][example-custom-hash-history], [REPL][repl-custom-hash-history])
+- Smoothly transitioning between route views using svelte transitions
+  ([examples][example-transitions], [REPL][repl-transitions])
 
 ## Installation
 
@@ -127,6 +132,7 @@ Basic Setup for a client-side SPA:
 	import Home from "./routes/Home.svelte";
 	import About from "./routes/About.svelte";
 	import Blog from "./routes/Blog.svelte";
+	import Search from "./routes/Search.svelte";
 </script>
 
 <Router>
@@ -145,6 +151,9 @@ Basic Setup for a client-side SPA:
 				<Blog />
 			</Route>
 			<Route path=":id" component={BlogPost} />
+		</Route>
+		<Route path="search/:query" let:params>
+			<Search query={params.query} />
 		</Route>
 	</div>
 </Router>
@@ -387,25 +396,37 @@ export default renderWithRouter;
 </Router>
 ```
 
+Then import it in your test script:
+
+```js
+import MyComponent from "./MyComponent.svelte";
+import renderWithRouter from "../test/renderWithRouter";
+
+it("works", () => {
+	const { getByTestId } = renderWithRouter(MyComponent);
+	expect(getByTestId("my-input")).toHaveValue("my-value");
+});
+```
+
 ## API
 
 - [Components](#components)
-  - [Router](#router)
-  - [Link](#link)
-  - [Route](#route)
+  - [`Router`](#router)
+  - [`Link`](#link)
+  - [`Route`](#route)
 - [Hooks](#hooks)
-  - [useNavigate](#usenavigate)
-  - [useLocation](#uselocation)
-  - [useResolve](#useresolve)
-  - [useResolvable](#useresolvable)
-  - [useMatch](#usematch)
-  - [useParams](#useparams)
-  - [useFocus](#usefocus)
+  - [`useNavigate`](#usenavigate)
+  - [`useLocation`](#uselocation)
+  - [`useResolve`](#useresolve)
+  - [`useResolvable`](#useresolvable)
+  - [`useMatch`](#usematch)
+  - [`useParams`](#useparams)
+  - [`useFocus`](#usefocus)
 - [Programmatic Navigation](#programmatic-navigation)
-  - [navigate](#navigate)
+  - [`navigate`](#navigate)
 - [Actions](#actions)
-  - [link](#link-1)
-  - [links](#links)
+  - [`link`](#link-1)
+  - [`links`](#links)
 - [Custom History](#custom-history)
 
 ### Components
