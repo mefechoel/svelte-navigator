@@ -41,6 +41,8 @@ React-esque hooks.
 - [Installation](#installation)
 - [Usage](#usage)
 - [SSR Caveat](#ssr-caveat)
+- [FAQ](#faq)
+- [Testing](#testing)
 - [API](#api)
   - [Components](#components)
     - [Router](#router)
@@ -168,6 +170,222 @@ completed, and a document with no matching Route will be returned.
 We therefore resort to picking the first matching `Route` that is registered on
 the server, so it is of utmost importance that you **sort your Route components
 from the most specific to the least specific if you are using SSR**.
+
+## FAQ
+
+### I'm coming from `svelte-routing`. How can I switch to `svelte-navigator`?
+
+`svelte-navigator` started as a fork of
+[`svelte-routing`](https://github.com/EmilTholin/svelte-routing). Its API is
+largely identical. Svelte Navigator mainly adds functionality through hooks.
+Things that work in Svelte Routing should just work in Svelte Navigator as well.
+Switching libraries is as easy as updating your imports:
+
+```js
+// Change your imports from
+import { Router, Route /* , ... */ } from "svelte-routing";
+// to
+import { Router, Route /* , ... */ } from "svelte-navigator";
+```
+
+Enjoy added functionality, like access to the current location or params through
+hooks, scoped paths in `navigate` with `useNavigate`, nested `Route`s, improved
+accessibility and more.
+
+### Why am I getting a warning about unused props for my route components?
+
+To be precise, this warning:
+`<Svelte component> was created with unknown prop 'location' & 'navigate'`.
+
+This happens, because Svelte Navigator injects the current `location` and a
+scoped `navigate` function to components rendered via the `Route`'s `component`
+prop. To avoid the warning, you can instead render your components as `Route`
+children:
+
+```html
+<!-- No unknown props will be injected -->
+<Route path="my/path">
+	<MyComponent />
+</Route>
+
+<!-- `location` and `navigate` props will be injected -->
+<Route path="my/path" component="{MyComponent}" />
+```
+
+Read more in the [`Route` section of the API docs](#route).
+
+### Why don't CSS classes work with `Link`?
+
+```html
+<style>
+	/*
+		Svelte will mark this class as unused and will remove it from
+		the CSS output.
+	*/
+	.my-link { /* ... */ }
+</style>
+
+<Link class="my-link" to="my-path">...</Link>
+```
+
+Having a class attribute on Svelte components does not work with Svelte's CSS
+scoping. Svelte does not treat class props to components as special props and
+does not recognize them as classnames either. Theoretically `Link` could use the
+`class` prop for something entirely different than styling, so Svelte can't make
+any assumptions about it. As far as Svelte is concerned the `class="my-link"`
+attribute and the `.my-link` are totally unrelated.
+
+To work around this, you can often make use of the scoping of a wrapping or an
+inner html element:
+
+```html
+<style>
+	/*
+		`.wrapper` is a standard html element, so Svelte will recognize its
+		`class` attribute and scope any styles accordingly.
+		Since part of the selector is scoped you don't need to worry about the
+		global part leaking styles.
+	*/
+	.wrapper :global(.my-link) { /* ... */ }
+
+	/*
+		Again, scoping works just fine with `.link-content`, so it can be styled
+		as expected. This way you don't have direct access to the `<a />` tag of
+		the `Link` however.
+	*/
+	.link-content { /* ... */ }
+</style>
+
+<div class="wrapper">
+	<Link class="my-link" to="my-path">...</Link>
+</div>
+
+<Link to="my-path">
+	<span class="link-content">...</span>
+</Link>
+```
+
+If that does not work for you, you can use the `use:link` action instead (which
+has its limitations though, see [`link` section in the API docs](#link-1)).
+
+```html
+<script>
+	import { link } from "svelte-navigator";
+</script>
+
+<style>
+	/* This works as expected */
+	.my-link {
+		/* ... */
+	}
+</style>
+
+<a class="my-link" href="my-path" use:link>...</a>
+```
+
+### What are the weird rectangles around the headings in my app?
+
+<img
+	alt="Focus outline around heading"
+	src="./assets/focus-ring.png"
+	width="300"
+/>
+
+These outlines appear, because Svelte Navigator focuses a heading inside the
+`Route` that was rendered after a navigation. This helps people relying on
+assistive technology, such as screen reader users, orientate on your website. If
+the router didn't take focus, and you were to click a link, it would remain
+focused after the navigation. Screenreader users would just not know that
+something changed on the page. (This is a
+[common problem with spa routers](https://medium.com/@robdel12/single-page-apps-routers-are-broken-255daa310cf)).
+The idea of focusing a heading is, that it gives the user a starting point from
+where they can tab to the changed content. Since it is just the starting point,
+you can disable the focus ring for just the headers, which aren't focusable by
+default anyway. Or you could style them to better suit your design (see this
+[article about styling focus indicators](https://css-tricks.com/having-a-little-fun-with-custom-focus-styles/)).
+But please, don't disable focus rings alltogether!
+
+## Testing
+
+When testing your app's components it is sometimes neccessary to have them
+rendered inside an instance of `Router` or `Route`. A component could for
+example use the `useNavigate` hook to redirect after some user interaction. This
+will however fail if the component is not somewhere inside a `Router`. Similarly
+useing the `useFocus` hook will only work when the component is somewhere inside
+a `Route`.
+
+If you're testing your app with
+[`@testing-library/svelte`](https://github.com/testing-library/svelte-testing-library)
+a custom `render` function and a `WrapRouter` component can do the trick:
+
+```js
+// renderWithRouter.js
+import { render } from "@testing-library/svelte";
+import WrapRouter from "./WrapRouter.svelte";
+
+/**
+ * Test-render a component, that relies on some of svelte-navigator's
+ * features, inside a Router.
+ *
+ * @param component The component you want to wrap in a Router
+ * @param componentProps The props you want to pass to it
+ * @param routerOptions Futher configuration (`onNavigate`,
+ * `withRoute`, `initialPathname`)
+ * @param options Options for testing library's `render` function
+ */
+const renderWithRouter = (component, componentProps, routerOptions, options) =>
+	render(WrapRouter, { component, componentProps, ...routerOptions }, options);
+
+export default renderWithRouter;
+```
+
+```html
+<!-- WrapRouter.svelte -->
+<script>
+	import { onDestroy } from "svelte";
+	import {
+		Router,
+		Route,
+		createMemorySource,
+		createHistory,
+	} from "svelte-navigator";
+
+	/** The component you want to wrap in a Router */
+	export let component;
+	/** The props you want to pass to it */
+	export let componentProps;
+	/**
+	 * A callback you can use to check if a navigation has occurred.
+	 * It will be called with the new location and the action that lead
+	 * to the navigation.
+	 */
+	export let onNavigate = () => {};
+	/**
+	 * If true, the component will be wrapped in a Route component as well.
+	 * Some features of svelte-navigator can only be used inside a Route,
+	 * for example `useParams`.
+	 */
+	export let withRoute = false;
+	/** Supply an initial location to the Router */
+	export let initialPathname = "/";
+
+	const history = createHistory(createMemorySource(initialPathname));
+
+	const unlisten = history.listen(onNavigate);
+
+	onDestroy(unlisten);
+</script>
+
+<Router {history}>
+	{#if withRoute}
+	<Route path="*">
+		<svelte:component this="{component}" {...componentProps} />
+	</Route>
+	{:else}
+	<svelte:component this="{component}" {...componentProps} />
+	{/if}
+</Router>
+```
 
 ## API
 
