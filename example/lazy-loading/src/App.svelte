@@ -45,3 +45,9 @@
 		</Route>
 	</main>
 </Router>
+
+<style>
+	:global(body) {
+		font-family: sans-serif;
+	}
+</style>

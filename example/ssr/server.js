@@ -19,8 +19,8 @@ server.get("*", (req, res) => {
           name="viewport"
           content="width=device-width,initial-scale=1"
         />
-        <link rel='stylesheet' href='/global.css'>
-        <link rel='stylesheet' href='/bundle.css'>
+        <link rel="stylesheet" href="/global.css">
+        <link rel="stylesheet" href="/bundle.css">
       </head>
       <body>
         <div id="app">${html}</div>

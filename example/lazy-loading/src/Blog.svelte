@@ -17,7 +17,7 @@
 		Read about interesting stuff here, like
 		<Link to="svelte">Svelte</Link>
 		or
-		<Link to="navigator">Svlete Navigator</Link>
+		<Link to="navigator">Svelte Navigator</Link>
 	</p>
 
 	<article>

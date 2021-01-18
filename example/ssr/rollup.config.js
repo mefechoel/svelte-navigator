@@ -1,7 +1,9 @@
 import svelte from "rollup-plugin-svelte";
-import resolve from "@rollup/plugin-node-resolve";
+import { nodeResolve as resolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
+import replace from "@rollup/plugin-replace";
+import css from "rollup-plugin-css-only";
 import { terser } from "rollup-plugin-terser";
 
 const isDev = Boolean(process.env.ROLLUP_WATCH);
@@ -18,13 +20,21 @@ export default [
 		},
 		plugins: [
 			svelte({
-				hydratable: true,
-				css: css => {
-					css.write("public/bundle.css");
+				compilerOptions: {
+					hydratable: true,
+					// enable run-time checks when not in production
+					dev: isDev,
 				},
 			}),
-			resolve(),
+			css({ output: "bundle.css" }),
+			resolve({
+				browser: true,
+				dedupe: ["svelte"],
+			}),
 			commonjs(),
+			replace({
+				process: `(${JSON.stringify({ env: { NODE_ENV: "development" } })})`,
+			}),
 			// App.js will be built after bundle.js, so we only need to watch that.
 			// By setting a small delay the Node server has a chance to restart before reloading.
 			isDev &&
@@ -46,10 +56,19 @@ export default [
 		},
 		plugins: [
 			svelte({
-				generate: "ssr",
+				compilerOptions: {
+					generate: "ssr",
+				},
 			}),
-			resolve(),
+			css({ output: false }),
+			resolve({
+				browser: true,
+				dedupe: ["svelte"],
+			}),
 			commonjs(),
+			replace({
+				process: `(${JSON.stringify({ env: { NODE_ENV: "development" } })})`,
+			}),
 			!isDev && terser(),
 		],
 	},

@@ -49,7 +49,7 @@ const source = {
 ```bash
 git clone https://github.com/mefechoel/svelte-navigator.git
 cd svelte-navigator/example/custom-hash-history
-yarn install # if you're using npm run 'npm install'
-yarn start # 'npm start'
+npm install # if you're using yarn run 'yarn install'
+npm start # 'yarn start'
 # open browser at 'http://localhost:6061'
 ```
