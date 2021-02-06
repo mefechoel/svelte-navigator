@@ -89,7 +89,7 @@ React-esque hooks.
 	https://svelte.dev/repl/195011a49a714e22b1a335037e124458
 [repl-private-routes]: https://svelte.dev/repl/c81d8f3dff584065a82b2d3ea7cd4aee
 [repl-private-routes-async]:
-	https://svelte.dev/repl/97dc69c41e484b18971decfc46bcef4f
+	https://svelte.dev/repl/5fe05802b7ad468188cb41f5df5bd5d5
 [repl-lazy-loading]: https://svelte.dev/repl/09abb8c287f745169f66f62d51f766d5
 [repl-url-bar]: https://svelte.dev/repl/dc82bb89447647edb0d7ed8cbe7999ae
 [repl-transitions]: https://svelte.dev/repl/c81d8f3dff584065a82b2d3ea7cd4aee
