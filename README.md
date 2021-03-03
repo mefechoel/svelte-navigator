@@ -92,7 +92,7 @@ React-esque hooks.
 	https://svelte.dev/repl/5fe05802b7ad468188cb41f5df5bd5d5
 [repl-lazy-loading]: https://svelte.dev/repl/09abb8c287f745169f66f62d51f766d5
 [repl-url-bar]: https://svelte.dev/repl/dc82bb89447647edb0d7ed8cbe7999ae
-[repl-transitions]: https://svelte.dev/repl/c81d8f3dff584065a82b2d3ea7cd4aee
+[repl-transitions]: https://svelte.dev/repl/321f1f8a46f1437eb171ece35681c66a
 
 Look at the [example folder][example-folder-url] for a few example project
 setups, or checkout the examples in the Svelte REPL:
