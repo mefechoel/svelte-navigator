@@ -189,6 +189,26 @@ from the most specific to the least specific if you are using SSR**.
 
 ## FAQ
 
+### I'm using Vite. Why am I getting errors with `svelte-navigator`?
+
+Vite tries to optimize the dependencies of your app. Unfortunately, this process
+can break `svelte-navigator`, because it creates two versions of a variable,
+`svelte-navigator` uses internally. To fix this update your `vite.config.js` (or
+`vite.config.ts`) file:
+
+```js
+import { defineConfig } from "vite";
+import svelte from "@sveltejs/vite-plugin-svelte";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+	// ... your config ...
+	plugins: [svelte() /* ... your plugins ... */],
+	// Add this line:
+	optimizeDeps: { exclude: ["svelte-routing"] },
+});
+```
+
 ### I'm coming from `svelte-routing`. How can I switch to `svelte-navigator`?
 
 `svelte-navigator` started as a fork of
