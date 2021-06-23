@@ -205,7 +205,7 @@ export default defineConfig({
 	// ... your config ...
 	plugins: [svelte() /* ... your plugins ... */],
 	// Add this line:
-	optimizeDeps: { exclude: ["svelte-routing"] },
+	optimizeDeps: { exclude: ["svelte-navigator"] },
 });
 ```
 
