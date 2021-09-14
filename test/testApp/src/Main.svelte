@@ -3,6 +3,7 @@
 	import LocationChange from "./LocationChange.svelte";
 	import Blog from "./Blog.svelte";
 	import Redirect from "./Redirect.svelte";
+	import Form from "./Form.svelte";
 
 	function appChange(state) {
 		window.appState = state;
@@ -101,6 +102,8 @@
 			use:link={customNavigate}
 			data-testid="action-link-custom-navigate"
 			href="/about"> ACTION LINK ABOUT CUSTOM NAVIGATE </a>
+
+		<Link to="form">FORM</Link>
 	</nav>
 	<br />
 	<main>
@@ -138,6 +141,9 @@
 		</Route>
 		<Route path="redirect-target">
 			<div data-testid="redirect-target">REDIRECT-TARGET</div>
+		</Route>
+		<Route path="form">
+			<Form />
 		</Route>
 	</main>
 </Router>

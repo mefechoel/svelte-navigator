@@ -22,33 +22,109 @@ function getLocation(source) {
 }
 
 function createHistory(source) {
+	let promptHandlers = [];
 	let listeners = [];
 	let location = getLocation(source);
 	let action = POP;
 
+	const notifyPromptHandlers = () => {
+		for (let i = 0, l = promptHandlers.length; i < l; i++) {
+			const promptHandler = promptHandlers[i];
+			const result = promptHandler({ location, action });
+			if (result !== undefined) {
+				return result;
+			}
+		}
+		return undefined;
+	};
+	const promptIfNecessary = () => {
+		const message = notifyPromptHandlers();
+		return message !== undefined
+			? // eslint-disable-next-line no-alert
+			  window.confirm(message)
+			: true;
+	};
+
 	const notifyListeners = (listenerFns = listeners) =>
 		listenerFns.forEach(listener => listener({ location, action }));
+
+	let popstateUnlisten;
+	const registerPopstateListener = () => {
+		if (popstateUnlisten === undefined) {
+			popstateUnlisten = addListener(source, "popstate", () => {
+				if (promptIfNecessary()) {
+					location = getLocation(source);
+					action = POP;
+					notifyListeners();
+				} else {
+					window.history.pushState(
+						location.state,
+						location.title,
+						location.href,
+					);
+				}
+			});
+		}
+	};
+	const removePopstateListener = () => {
+		if (popstateUnlisten !== undefined) {
+			popstateUnlisten();
+			popstateUnlisten = undefined;
+		}
+	};
+
+	let beforeUnloadUnlisten;
+	const registerBeforeUnloadListener = () => {
+		if (beforeUnloadUnlisten === undefined) {
+			beforeUnloadUnlisten = addListener(window, "beforeunload", e => {
+				const message = notifyPromptHandlers();
+				if (message !== undefined) {
+					e.preventDefault();
+					e.returnValue = message;
+				}
+			});
+		}
+	};
+	const removeBeforeUnloadListener = () => {
+		if (beforeUnloadUnlisten !== undefined) {
+			beforeUnloadUnlisten();
+			beforeUnloadUnlisten = undefined;
+		}
+	};
 
 	return {
 		get location() {
 			return location;
 		},
-		listen(listener) {
-			listeners.push(listener);
+		prompt(promptHandler) {
+			registerPopstateListener();
+			registerBeforeUnloadListener();
 
-			const popstateListener = () => {
-				location = getLocation(source);
-				action = POP;
-				notifyListeners([listener]);
+			promptHandlers.push(promptHandler);
+
+			return () => {
+				promptHandlers = promptHandlers.filter(fn => fn !== promptHandler);
+				if (promptHandlers.length === 0 && listeners.length === 0) {
+					removePopstateListener();
+					removeBeforeUnloadListener();
+				}
 			};
+		},
+		listen(listener) {
+			registerPopstateListener();
+			registerBeforeUnloadListener();
+
+			listeners.push(listener);
 
 			// Call listener when it is registered
 			notifyListeners([listener]);
 
-			const unlisten = addListener(source, "popstate", popstateListener);
 			return () => {
-				unlisten();
 				listeners = listeners.filter(fn => fn !== listener);
+				if (promptHandlers.length === 0 && listeners.length === 0) {
+					removePopstateListener();
+					removeBeforeUnloadListener();
+				}
 			};
 		},
 		/**
@@ -64,6 +140,10 @@ function createHistory(source) {
 		 * stack, instead of pushing on a new one
 		 */
 		navigate(to, options) {
+			if (!promptIfNecessary()) {
+				return;
+			}
+
 			const { state = {}, replace = false } = options || {};
 			action = replace ? REPLACE : PUSH;
 			if (isNumber(to)) {
