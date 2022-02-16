@@ -343,11 +343,11 @@ But please, don't disable focus rings alltogether!
 
 ## Testing
 
-When testing your app's components it is sometimes neccessary to have them
+When testing your app's components it is sometimes necessary to have them
 rendered inside an instance of `Router` or `Route`. A component could for
 example use the `useNavigate` hook to redirect after some user interaction. This
 will however fail if the component is not somewhere inside a `Router`. Similarly
-useing the `useFocus` hook will only work when the component is somewhere inside
+using the `useFocus` hook will only work when the component is somewhere inside
 a `Route`.
 
 If you're testing your app with
