@@ -1,5 +1,5 @@
 <script>
-	import { Router, Route, Link, link, links, navigate } from "../../../src";
+	import { Router, Route, Link, link, links, navigate } from "../../../auto";
 	import LocationChange from "./LocationChange.svelte";
 	import Blog from "./Blog.svelte";
 	import Redirect from "./Redirect.svelte";

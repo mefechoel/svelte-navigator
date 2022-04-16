@@ -1,15 +1,16 @@
 <script>
 	import {
-		Router,
+		GenericRouter as Router,
 		Route,
 		Link,
-		createHistory,
-		createMemorySource,
+		// createHistory,
+		// createMemorySource,
+		createMemoryHistory,
 	} from "../../../src";
 	import UseFocus from "./UseFocus.svelte";
 	import UseFocusAsync from "./UseFocusAsync.svelte";
 
-	const memoryHistory = createHistory(createMemorySource());
+	const memoryHistory = createMemoryHistory(); // createHistory(createMemorySource());
 </script>
 
 <Router history={memoryHistory}>

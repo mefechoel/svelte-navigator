@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { browserHistory, memoryHistory } from "svelte-navigator-history";
+import { browserHistory, memoryHistory } from "@svelte-navigator/history";
 import { isSSR } from "../src/utils";
 
 const canUseDOM = !!(

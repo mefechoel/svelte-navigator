@@ -4,10 +4,6 @@
  * https://github.com/EmilTholin/svelte-routing/blob/master/LICENSE
  */
 
-import shimEnv from "./envShim";
-
-shimEnv();
-
 export {
 	createBrowserHistory,
 	createHashHistory,
@@ -15,8 +11,8 @@ export {
 	browserHistory,
 	hashHistory,
 	memoryHistory,
-} from "svelte-navigator-history";
-export { default as Router } from "./Router.svelte";
+} from "@svelte-navigator/history";
+export { default as GenericRouter } from "./GenericRouter.svelte";
 export { default as Route } from "./Route.svelte";
 export { default as Link } from "./Link.svelte";
 export { createLink, createLinks } from "./actions";

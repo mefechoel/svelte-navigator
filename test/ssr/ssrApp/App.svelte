@@ -1,5 +1,5 @@
 <script>
-	import { Router, Route, Link } from "../../../src";
+	import { Router, Route, Link } from "../../../browser";
 	import Home from "./Home.svelte";
 	import About from "./About.svelte";
 	import Blog from "./Blog.svelte";

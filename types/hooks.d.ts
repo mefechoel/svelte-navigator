@@ -2,14 +2,14 @@ import { Readable } from "svelte/store";
 import NavigatorLocation from "./NavigatorLocation";
 import { LocalAction } from "./SvelteInternal";
 import RouteParams from "./RouteParam";
-import AnyObject from "./AnyObject";
+import UnknownObject from "./UnknownObject";
 import { NavigateFn } from "./history";
 
 /**
  * Access the current location via a readable store.
  */
 export declare function useLocation<
-	State extends AnyObject = AnyObject
+	State extends UnknownObject = UnknownObject
 >(): Readable<NavigatorLocation<State>>;
 
 /**
@@ -56,9 +56,9 @@ export declare function useMatch<Params extends RouteParams>(
 /**
  * Access the parent Routes matched params and wildcards.
  */
-export declare function useParams<Params extends RouteParams>(): Readable<
-	Params
->;
+export declare function useParams<
+	Params extends RouteParams
+>(): Readable<Params>;
 
 /**
  * Provide a custom element to focus, when the parent route is visited.

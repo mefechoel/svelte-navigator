@@ -1,13 +1,14 @@
 <script>
 	import {
-		Router,
+		GenericRouter as Router,
 		Route,
 		Link,
-		createHistory,
-		createMemorySource,
+		// createHistory,
+		// createMemorySource,
+		createMemoryHistory,
 	} from "../../../src";
 
-	const memoryHistoryA = createHistory(createMemorySource());
+	const memoryHistoryA = createMemoryHistory(); // createHistory(createMemorySource());
 </script>
 
 <Router history={memoryHistoryA} name="memA">

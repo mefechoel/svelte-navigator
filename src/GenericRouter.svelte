@@ -14,7 +14,7 @@
 
 	import { getContext, setContext, onMount } from "svelte";
 	import { writable } from "svelte/store";
-	import { parsePath } from "svelte-navigator-history";
+	import { parsePath } from "@svelte-navigator/history";
 	import { LOCATION, ROUTER } from "./contexts";
 	import { normalizePath } from "./paths";
 	import { pick, match, normalizeLocation } from "./routes";
@@ -28,9 +28,9 @@
 
 	const defaultBasepath = "/";
 
+	export let history;
 	export let basepath = defaultBasepath;
 	export let url = null;
-	export let history = null;
 	export let primary = true;
 	export let a11y = {};
 
@@ -180,9 +180,9 @@
 		// The topmost Router in the tree is responsible for updating
 		// the location store and supplying it through context.
 		onMount(() => {
-			const unlisten = history.listen(changedHistory => {
+			const unlisten = history.subscribe(update => {
 				const normalizedLocation = normalizeLocation(
-					changedHistory.location,
+					update.location,
 					normalizedBasepath,
 				);
 				prevLocation.set($location);

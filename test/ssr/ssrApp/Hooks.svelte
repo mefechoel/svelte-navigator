@@ -1,5 +1,5 @@
 <script>
-	import { useLocation, useMatch, useParams } from "../../../src";
+	import { useLocation, useMatch, useParams } from "../../../browser";
 
 	const location = useLocation();
 	const relMatch = useMatch(":id/*splash");

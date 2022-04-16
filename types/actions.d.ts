@@ -1,6 +1,10 @@
+import { NavigatorHistory } from "@svelte-navigator/history";
 import { LocalAction } from "./SvelteInternal";
-import { NavigateFn } from "./history";
 
-export declare const link: LocalAction<NavigateFn>;
+export declare function createLink<State = unknown>(
+	history: NavigatorHistory<State>,
+): LocalAction<{ history: NavigatorHistory }>;
 
-export declare const links: LocalAction<NavigateFn>;
+export declare function createLinks<State = unknown>(
+	history: NavigatorHistory<State>,
+): LocalAction<{ history: NavigatorHistory }>;

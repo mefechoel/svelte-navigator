@@ -1,4 +1,4 @@
-import Router from "./Router";
+import GenericRouter from "./GenericRouter";
 import Route from "./Route";
 import Link from "./Link";
 import RouteInstance from "./RouteInstance";
@@ -13,7 +13,7 @@ import {
 	NavigateOptions,
 	NavigateFn,
 } from "./history";
-import { link, links } from "./actions";
+import { createLink, createLinks } from "./actions";
 import {
 	useLocation,
 	useResolve,
@@ -25,7 +25,7 @@ import {
 } from "./hooks";
 
 export {
-	Router,
+	GenericRouter,
 	Route,
 	Link,
 	RouteInstance,
@@ -39,8 +39,8 @@ export {
 	createHistory,
 	createMemorySource,
 	globalHistory,
-	link,
-	links,
+	createLink,
+	createLinks,
 	useLocation,
 	useResolve,
 	useResolvable,

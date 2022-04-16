@@ -1,8 +1,8 @@
 import { NavigatorHistory } from "./NavigatorHistory";
 import HistorySource from "./HistorySource";
-import AnyObject from "./AnyObject";
+import UnknownObject from "./UnknownObject";
 
-export interface NavigateOptions<State extends AnyObject = AnyObject> {
+export interface NavigateOptions<State extends UnknownObject = UnknownObject> {
 	/**
 	 * The state will be accessible through `location.state`
 	 */
@@ -14,7 +14,7 @@ export interface NavigateOptions<State extends AnyObject = AnyObject> {
 	replace?: boolean;
 }
 
-type NavigateFn<State extends AnyObject = AnyObject> = {
+export type NavigateFn<State extends UnknownObject = UnknownObject> = {
 	/**
 	 * Navigate to a new route.
 	 * @param to The path to navigate to.

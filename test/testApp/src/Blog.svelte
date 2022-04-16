@@ -1,7 +1,8 @@
 <script>
-	import Router from "../../../src/Router.svelte";
-	import Route from "../../../src/Route.svelte";
-	import Link from "../../../src/Link.svelte";
+	// import Router from "../../../src/Router.svelte";
+	// import Route from "../../../src/Route.svelte";
+	// import Link from "../../../src/Link.svelte";
+	import { Router, Route, Link } from "../../../auto";
 	import LinkResolve from "./LinkResolve.svelte";
 	import Navigate from "./Navigate.svelte";
 	import Match from "./Match.svelte";

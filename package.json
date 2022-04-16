@@ -1,6 +1,6 @@
 {
   "name": "svelte-navigator",
-  "version": "3.1.3",
+  "version": "4.0.0-alpha.0",
   "description": "Simple, accessible routing for Svelte",
   "main": "dist/svelte-navigator.umd.js",
   "unpkg": "dist/svelte-navigator.umd.min.js",
@@ -65,7 +65,7 @@
     "postpack": "pinst --enable"
   },
   "dependencies": {
-    "svelte-navigator-history": "^0.1.1"
+    "@svelte-navigator/history": "^0.3.2"
   },
   "peerDependencies": {
     "svelte": "3.x"
@@ -89,7 +89,7 @@
     "babel-jest": "^26.5.2",
     "babel-plugin-istanbul": "^6.0.0",
     "cheerio": "^1.0.0-rc.3",
-    "cypress": "^5.4.0",
+    "cypress": "^5.6.0",
     "eslint": "^7.11.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-base": "^14.2.0",
@@ -109,7 +109,8 @@
     "prettier-plugin-svelte": "^1.4.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.32.0",
-    "rollup-plugin-svelte": "^6.0.1",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-svelte": "^7.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "sirv-cli": "^1.0.7",
     "start-server-and-test": "^1.11.5",

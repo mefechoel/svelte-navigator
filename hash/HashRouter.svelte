@@ -1,6 +1,8 @@
 <script>
 	import { globalHistory } from "./history";
-	import Router from "../src/Router.svelte";
+	import GenericRouter from "../src/GenericRouter.svelte";
+	import checkRouterHistoryType from "../src/checkRouterHistoryType";
+	import { HASH_ROUTER_ID } from "../src/warning";
 
 	const UNDEF = undefined;
 	export let basepath = UNDEF;
@@ -8,8 +10,10 @@
 	export let primary = UNDEF;
 	export let a11y = UNDEF;
 	export let history = globalHistory;
+
+	checkRouterHistoryType(HASH_ROUTER_ID, history, "hash", "Hash");
 </script>
 
-<Router {a11y} {basepath} {url} {primary} {history}>
+<GenericRouter {a11y} {basepath} {url} {primary} {history}>
 	<slot />
-</Router>
+</GenericRouter>

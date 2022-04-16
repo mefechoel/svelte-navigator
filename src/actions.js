@@ -5,10 +5,30 @@
  */
 
 import { shouldNavigate, addListener, isFunction } from "./utils";
-import { createLabel, LINKS_ACTION_ID, LINK_ACTION_ID, warn } from "./warning";
+import {
+	createLabel,
+	fail,
+	failProd,
+	LINKS_ACTION_ID,
+	LINK_ACTION_ID,
+	warn,
+} from "./warning";
 
-const adjustHref = (node, history) => {
+const adjustHref = (node, history, labelId) => {
 	const nodeHref = node.getAttribute("href");
+	if (nodeHref[0] !== "/" && nodeHref[0] !== "?" && nodeHref[0] !== "#") {
+		if (process.env.NODE_ENV !== "production") {
+			fail(
+				labelId,
+				`Unexpected relative link ${nodeHref}. Relative links ` +
+					`are not supported in ${createLabel(labelId)} actions. ` +
+					"They may cause unexpected routing behaviour. Use absolute links or " +
+					'resolve a relative link yourself using "useResolve".',
+			);
+		} else {
+			failProd(labelId);
+		}
+	}
 	if (
 		nodeHref &&
 		nodeHref !== history.createHref(node.dataset.svnvHref || "")
@@ -84,9 +104,8 @@ const createActionFactory = (getAnchor, setup, labelId) => defaultHistory => (
 	}
 
 	return {
-		// eslint-disable-next-line no-shadow
-		update(options) {
-			history = (options && options.history) || defaultHistory;
+		update(nextOptions) {
+			history = (nextOptions && nextOptions.history) || defaultHistory;
 			setup(node, history);
 		},
 		destroy() {
@@ -112,7 +131,7 @@ export const createLink = createActionFactory(
 				);
 			}
 		}
-		adjustHref(node, history);
+		adjustHref(node, history, LINK_ACTION_ID);
 	},
 	LINK_ACTION_ID,
 );
@@ -128,7 +147,7 @@ export const createLinks = createActionFactory(
 	(node, history) => {
 		walkChildren(node, child => {
 			if (isLink(child) && !isNoRoute(child)) {
-				adjustHref(child, history);
+				adjustHref(child, history, LINKS_ACTION_ID);
 			}
 		});
 	},

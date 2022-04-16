@@ -1,15 +1,16 @@
 <script>
 	import {
-		Router,
+		GenericRouter as Router,
 		Route,
 		Link,
-		createHistory,
-		createMemorySource,
+		// createHistory,
+		// createMemorySource,
+		createMemoryHistory,
 	} from "../../../src";
 	import LocationChange from "./LocationChange.svelte";
 	import MemoryBlog from "./MemoryBlog.svelte";
 
-	const memoryHistoryB = createHistory(createMemorySource("/base/path"));
+	const memoryHistoryB = createMemoryHistory("/base/path"); // createHistory(createMemorySource("/base/path"));
 
 	function memoryBChange(state) {
 		window.memoryBState = state;

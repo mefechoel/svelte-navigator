@@ -1,47 +1,28 @@
-import { LocalComponent } from "./SvelteInternal";
-import { NavigatorHistory } from "./NavigatorHistory";
-import RouteInstance from "./RouteInstance";
-import NavigatorLocation from "./NavigatorLocation";
-import RouteParams from "./RouteParam";
-import AnyObject from "./AnyObject";
+import { LocalComponent } from "../SvelteInternal";
+import RouteParams from "../RouteParam";
+import UnknownObject from "../UnknownObject";
+import GenericRouter from "../GenericRouter";
 
-declare namespace Router {
+declare namespace BrowserRouter {
 	namespace A11yConfig {
 		type CreateAnnouncementFn<
 			Params extends RouteParams = RouteParams,
-			Meta extends AnyObject = AnyObject,
-			State extends AnyObject = AnyObject
-		> = (
-			route: RouteInstance<Params, Meta>,
-			location: NavigatorLocation<State>,
-		) => string | Promise<string>;
+			Meta extends UnknownObject = UnknownObject,
+			State extends UnknownObject = UnknownObject
+		> = GenericRouter.A11yConfig.CreateAnnouncementFn<Params, Meta, State>;
 	}
 
-	interface A11yConfig<
+	type A11yConfig<
 		Params extends RouteParams = RouteParams,
-		Meta extends AnyObject = AnyObject,
-		State extends AnyObject = AnyObject
-	> {
-		/**
-		 * Function to create an announcement message, that is read by screen readers
-		 * on navigation. It takes the matched `Route` and the current `location` as
-		 * arguments and returns a `string` or a `Promise`, that resolves to a
-		 * `string`.
-		 *
-		 * The default is `route => 'Navigated to ${route.uri}'`.
-		 */
-		createAnnouncement?: A11yConfig.CreateAnnouncementFn<Params, Meta, State>;
-		/**
-		 * Set it to false, to disable screen reader announcements.
-		 */
-		announcements?: boolean;
-	}
+		Meta extends UnknownObject = UnknownObject,
+		State extends UnknownObject = UnknownObject
+	> = GenericRouter.A11yConfig<Params, Meta, State>;
 }
 
-export interface RouterProps<
+export interface BrowserRouterProps<
 	Params extends RouteParams = RouteParams,
-	Meta extends AnyObject = AnyObject,
-	State extends AnyObject = AnyObject
+	Meta extends UnknownObject = UnknownObject,
+	State extends UnknownObject = UnknownObject
 > {
 	/**
 	 * The `basepath` property will be added to all `path` properties of `Route`
@@ -75,7 +56,7 @@ export interface RouterProps<
 	/**
 	 * Configuration object for Svelte Navigators accessibility features.
 	 */
-	a11y?: Router.A11yConfig<Params, Meta, State>;
+	a11y?: BrowserRouter.A11yConfig<Params, Meta, State>;
 }
 
 /**
@@ -84,6 +65,6 @@ export interface RouterProps<
  * at the top of your application. It assigns a score to all its `Route`
  * descendants and picks the best match to render.
  */
-declare class Router extends LocalComponent<RouterProps> {}
+declare class BrowserRouter extends LocalComponent<BrowserRouterProps> {}
 
-export default Router;
+export default BrowserRouter;

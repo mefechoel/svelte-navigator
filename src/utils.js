@@ -54,3 +54,6 @@ export function addListener(target, type, handler) {
 	target.addEventListener(type, handler);
 	return () => target.removeEventListener(type, handler);
 }
+
+export const truncate = (str, length) =>
+	str.substr(0, length) + (str.length >= length ? " ..." : "");

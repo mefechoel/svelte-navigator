@@ -1,10 +1,10 @@
 import { LocalComponent } from "./SvelteInternal";
-import AnyObject from "./AnyObject";
+import UnknownObject from "./UnknownObject";
 import RouteParams from "./RouteParam";
 import NavigatorLocation from "./NavigatorLocation";
 import { NavigateFn } from "./history";
 
-export interface RouteProps<Meta extends AnyObject = AnyObject> {
+export interface RouteProps<Meta extends UnknownObject = UnknownObject> {
 	/**
 	 * The path for when this component should be rendered. If no `path` is
 	 * given the `Route` will act as the default that matches if no other
@@ -32,7 +32,7 @@ export interface RouteProps<Meta extends AnyObject = AnyObject> {
 
 interface RouteSlots<
 	Params extends RouteParams = RouteParams,
-	State extends AnyObject = AnyObject
+	State extends UnknownObject = UnknownObject
 > {
 	default: {
 		params: Params;

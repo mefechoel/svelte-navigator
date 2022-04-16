@@ -14,7 +14,7 @@
 
 	import { getContext, onDestroy, setContext } from "svelte";
 	import { writable, get } from "svelte/store";
-	import Router from "./Router.svelte";
+	import Router from "./GenericRouter.svelte";
 	import { ROUTER, ROUTE, ROUTE_PARAMS, FOCUS_ELEM } from "./contexts";
 	import {
 		useLocation,

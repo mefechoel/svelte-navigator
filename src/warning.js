@@ -15,6 +15,10 @@ export const USE_RESOLVE_ID = 10;
 export const NAVIGATE_ID = 11;
 export const LINK_ACTION_ID = 12;
 export const LINKS_ACTION_ID = 13;
+export const BROWSER_ROUTER_ID = 14;
+export const HASH_ROUTER_ID = 15;
+export const MEMORY_ROUTER_ID = 16;
+export const AUTO_ROUTER_ID = 17;
 
 const labels = {
 	[LINK_ID]: "Link",
@@ -30,6 +34,10 @@ const labels = {
 	[NAVIGATE_ID]: "navigate",
 	[LINK_ACTION_ID]: "use:link",
 	[LINKS_ACTION_ID]: "use:links",
+	[BROWSER_ROUTER_ID]: "BrowserRouter",
+	[HASH_ROUTER_ID]: "HashRouter",
+	[MEMORY_ROUTER_ID]: "MemoryRouter",
+	[AUTO_ROUTER_ID]: "AutoRouter",
 };
 
 export const createLabel = labelId => labels[labelId];

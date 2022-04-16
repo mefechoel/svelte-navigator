@@ -1,9 +1,9 @@
 import RouteParams from "./RouteParam";
-import AnyObject from "./AnyObject";
+import UnknownObject from "./UnknownObject";
 
 interface RouteInstance<
 	Params extends RouteParams = RouteParams,
-	Meta extends AnyObject = AnyObject
+	Meta extends UnknownObject = UnknownObject
 > {
 	/**
 	 * The path, the `Route` matched against.

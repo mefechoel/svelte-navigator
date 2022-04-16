@@ -1,5 +1,5 @@
 <script>
-	import { useMatch } from "../../../src";
+	import { useMatch } from "../../../auto";
 
 	const relMatch = useMatch(":to/*somewhere");
 	const absMatch = useMatch("/blog/match/:to/*somewhere");

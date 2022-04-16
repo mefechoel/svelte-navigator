@@ -1,5 +1,5 @@
 <script>
-	import { useResolve } from "../../../src";
+	import { useResolve } from "../../../auto";
 
 	const resolve = useResolve();
 

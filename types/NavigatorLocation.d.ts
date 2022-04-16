@@ -1,6 +1,6 @@
-import AnyObject from "./AnyObject";
+import UnknownObject from "./UnknownObject";
 
-interface NavigatorLocation<State extends AnyObject = AnyObject> {
+interface NavigatorLocation<State extends UnknownObject = UnknownObject> {
 	/**
 	 * The current normalized pathname. Normalized meaning, that a potential
 	 * `basepath` is removed, so your app alway behaves the same, regardeless

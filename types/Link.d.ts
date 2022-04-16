@@ -1,6 +1,6 @@
 import { LocalComponent } from "./SvelteInternal";
 import NavigatorLocation from "./NavigatorLocation";
-import AnyObject from "./AnyObject";
+import UnknownObject from "./UnknownObject";
 
 declare namespace Link {
 	interface GetPropsParams {
@@ -10,7 +10,7 @@ declare namespace Link {
 		isCurrent: boolean;
 	}
 
-	type GetProps<SpreadProps extends AnyObject = AnyObject> = ({
+	type GetProps<SpreadProps extends UnknownObject = UnknownObject> = ({
 		location,
 		href,
 		isPartiallyCurrent,
@@ -18,7 +18,7 @@ declare namespace Link {
 	}: GetPropsParams) => SpreadProps;
 }
 
-export interface LinkProps<State extends AnyObject = AnyObject> {
+export interface LinkProps<State extends UnknownObject = UnknownObject> {
 	/**
 	 * URL the component should link to. It will be resolved relative
 	 * to the current Route.
