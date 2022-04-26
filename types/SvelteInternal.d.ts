@@ -1,5 +1,7 @@
+import type { SvelteComponentTyped } from "svelte";
+
 // eslint-disable-next-line @typescript-eslint/ban-types
-export declare class LocalComponent<Props = {}, Slots = {}> {
+export declare class LocalComponent<Props = {}, Slots = {}> extends SvelteComponentTyped<Props> {
 	// eslint-disable-next-line camelcase
 	$$prop_def: Props;
 
