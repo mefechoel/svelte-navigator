@@ -65,7 +65,7 @@
     "postpack": "pinst --enable"
   },
   "dependencies": {
-    "@svelte-navigator/history": "^0.3.2"
+    "@svelte-navigator/history": "^0.4.0"
   },
   "peerDependencies": {
     "svelte": "3.x"
