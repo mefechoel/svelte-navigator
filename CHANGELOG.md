@@ -1,3 +1,12 @@
+# 3.1.6
+
+## Fix:
+
+- Fix TypeScript component typings
+  [#69](https://github.com/mefechoel/svelte-navigator/issues/69)
+  ([PR #70](https://github.com/mefechoel/svelte-navigator/pull/70), thanks to
+  [Chunxei](https://github.com/Chunxei))
+
 # 3.1.5
 
 ## Fix:
