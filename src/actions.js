@@ -83,7 +83,7 @@ const createActionFactory = (getAnchor, setup) => defaultHistory => (
 
 export const createLink = createActionFactory(
 	event => event.currentTarget,
-	(node) => {
+	node => {
 		if (process.env.NODE_ENV !== "production") {
 			if (!isLink(node)) {
 				const truncate = (str, length) =>
@@ -108,7 +108,7 @@ export const createLinks = createActionFactory(
 		}
 		return null;
 	},
-	(node) => {
+	node => {
 		walkChildren(node, child => {
 			if (isLink(child) && !isNoRoute(child)) {
 				assertAbsolutePath(child, LINKS_ACTION_ID);
