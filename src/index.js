@@ -8,9 +8,6 @@ export {
 	createBrowserHistory,
 	createHashHistory,
 	createMemoryHistory,
-	browserHistory,
-	hashHistory,
-	memoryHistory,
 } from "@svelte-navigator/history";
 export { default as GenericRouter } from "./GenericRouter.svelte";
 export { default as Route } from "./Route.svelte";

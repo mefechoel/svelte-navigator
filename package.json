@@ -64,9 +64,6 @@
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
   },
-  "dependencies": {
-    "@svelte-navigator/history": "^0.4.0"
-  },
   "peerDependencies": {
     "svelte": "3.x"
   },
@@ -110,7 +107,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.32.0",
     "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-svelte": "^7.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "sirv-cli": "^1.0.7",
     "start-server-and-test": "^1.11.5",
@@ -135,5 +132,8 @@
       "eslint",
       "prettier --check"
     ]
+  },
+  "dependencies": {
+    "@svelte-navigator/history": "^0.5.0"
   }
 }

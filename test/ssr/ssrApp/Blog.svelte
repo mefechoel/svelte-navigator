@@ -1,5 +1,5 @@
 <script>
-	import { Link, Route } from "../../../auto";
+	import { Link, Route } from "../../../auto/index";
 </script>
 
 <div data-testid="blog">BLOG</div>

@@ -10,7 +10,11 @@ rimraf.sync(join(__dirname, "../dist"));
 async function main() {
 	const bundle = await rollup({
 		input: join(__dirname, "../ssrApp/App.svelte"),
-		plugins: [svelte({ generate: "ssr" }), nodeResolve(), commonjs()],
+		plugins: [
+			svelte({ compilerOptions: { generate: "ssr" } }),
+			nodeResolve(),
+			commonjs(),
+		],
 	});
 	await bundle.write({
 		format: "umd",

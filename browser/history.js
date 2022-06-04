@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { browserHistory } from "@svelte-navigator/history";
+import { createBrowserHistory } from "@svelte-navigator/history";
 
-export const globalHistory = browserHistory;
+export const globalHistory = createBrowserHistory();
 
 export const { navigate } = globalHistory;

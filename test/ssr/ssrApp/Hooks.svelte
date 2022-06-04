@@ -1,5 +1,5 @@
 <script>
-	import { useLocation, useMatch, useParams } from "../../../auto";
+	import { useLocation, useMatch, useParams } from "../../../auto/index";
 
 	const location = useLocation();
 	const relMatch = useMatch(":id/*splash");
