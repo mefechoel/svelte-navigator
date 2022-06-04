@@ -14,7 +14,7 @@ import {
 	warn,
 } from "./warning";
 
-const adjustHref = (node, history, labelId) => {
+const assertAbsolutePath = (node, labelId) => {
 	const nodeHref = node.getAttribute("href");
 	if (nodeHref[0] !== "/" && nodeHref[0] !== "?" && nodeHref[0] !== "#") {
 		if (process.env.NODE_ENV !== "production") {
@@ -28,14 +28,6 @@ const adjustHref = (node, history, labelId) => {
 		} else {
 			failProd(labelId);
 		}
-	}
-	if (
-		nodeHref &&
-		nodeHref !== history.createHref(node.dataset.svnvHref || "")
-	) {
-		// eslint-disable-next-line no-param-reassign
-		node.dataset.svnvHref = nodeHref;
-		node.setAttribute("href", history.createHref(nodeHref));
 	}
 };
 
@@ -60,7 +52,7 @@ const findClosestLink = element => {
 	return element;
 };
 
-const createActionFactory = (getAnchor, setup, labelId) => defaultHistory => (
+const createActionFactory = (getAnchor, setup) => defaultHistory => (
 	node,
 	options,
 ) => {
@@ -69,57 +61,29 @@ const createActionFactory = (getAnchor, setup, labelId) => defaultHistory => (
 		const anchor = getAnchor(event);
 		if (anchor && anchor.target === "" && shouldNavigate(event)) {
 			event.preventDefault();
-			const to = anchor.dataset.svnvHref;
+			const to = anchor.getAttribute("href");
 			history.navigate(to, { replace: anchor.hasAttribute("replace") });
 		}
 	};
 
 	const unlisten = addListener(node, "click", handleClick);
 
-	setup(node, history);
-
-	let observer;
-	if (process.env.NODE_ENV !== "production") {
-		observer = new MutationObserver(mutations => {
-			mutations.forEach(({ type, target }) => {
-				if (type === "attributes" && isLink(target) && !isNoRoute(target)) {
-					warn(
-						labelId,
-						"You cannot update the href attributes when using the " +
-							`"${createLabel(labelId)}" action. Consider using a <Link /> ` +
-							"component instead.",
-						{
-							href: target.dataset.svnvHref,
-							replace: target.hasAttribute("replace"),
-						},
-					);
-				}
-			});
-		});
-		observer.observe(node, {
-			attributes: true,
-			attributeFilter: ["href"],
-			subtree: true,
-		});
-	}
+	setup(node);
 
 	return {
 		update(nextOptions) {
 			history = (nextOptions && nextOptions.history) || defaultHistory;
-			setup(node, history);
+			setup(node);
 		},
 		destroy() {
 			unlisten();
-			if (process.env.NODE_ENV !== "production") {
-				observer.disconnect();
-			}
 		},
 	};
 };
 
 export const createLink = createActionFactory(
 	event => event.currentTarget,
-	(node, history) => {
+	(node) => {
 		if (process.env.NODE_ENV !== "production") {
 			if (!isLink(node)) {
 				const truncate = (str, length) =>
@@ -131,7 +95,7 @@ export const createLink = createActionFactory(
 				);
 			}
 		}
-		adjustHref(node, history, LINK_ACTION_ID);
+		assertAbsolutePath(node, LINK_ACTION_ID);
 	},
 	LINK_ACTION_ID,
 );
@@ -144,10 +108,10 @@ export const createLinks = createActionFactory(
 		}
 		return null;
 	},
-	(node, history) => {
+	(node) => {
 		walkChildren(node, child => {
 			if (isLink(child) && !isNoRoute(child)) {
-				adjustHref(child, history, LINKS_ACTION_ID);
+				assertAbsolutePath(child, LINKS_ACTION_ID);
 			}
 		});
 	},
