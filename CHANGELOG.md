@@ -1,3 +1,10 @@
+# 4.0.0
+
+## Breaking:
+
+- Actions take an object that can contain a custom history, instead of taking a
+  custom navigate fn
+
 # 3.1.3
 
 ## Fix:
