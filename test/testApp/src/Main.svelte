@@ -1,5 +1,12 @@
 <script>
-	import { Router, Route, Link, link, links, navigate } from "../../../auto";
+	import {
+		Router,
+		Route,
+		Link,
+		link,
+		links,
+		navigate,
+	} from "../../../auto/index";
 	import LocationChange from "./LocationChange.svelte";
 	import Blog from "./Blog.svelte";
 	import Redirect from "./Redirect.svelte";
@@ -12,6 +19,8 @@
 		window.customNavigateCalled = true;
 		navigate(...args);
 	}
+
+	const customActionOptions = { navigate: customNavigate };
 </script>
 
 <Router name="hist">
@@ -79,7 +88,7 @@
 			</a>
 		</div>
 
-		<div use:links={customNavigate}>
+		<div use:links={customActionOptions}>
 			<a data-testid="action-links-custom-navigate" href="/about">
 				ACTION LINKS ABOUT CUSTOM NAVIGATE
 			</a>
@@ -98,7 +107,7 @@
 			ACTION LINK ABOUT REPLACE
 		</a>
 		<a
-			use:link={customNavigate}
+			use:link={customActionOptions}
 			data-testid="action-link-custom-navigate"
 			href="/about"
 		>
