@@ -20,7 +20,7 @@
 		navigate(...args);
 	}
 
-	const customActionOptions = { navigate: customNavigate };
+	const customActionOptions = { history: { navigate: customNavigate } };
 </script>
 
 <Router name="hist">
