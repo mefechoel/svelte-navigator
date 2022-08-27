@@ -74,7 +74,7 @@ describe("Router", () => {
 		describe("Root", () => {
 			it("absolute and relative link work the same in root", () => {
 				getByTestId("route-home").should("be.visible");
-				getByTestId("route-about").should("not.be.visible");
+				getByTestId("route-about").should("not.exist");
 
 				getByTestId("link-about-rel").click();
 				getByTestId("route-about").should("be.visible");
@@ -83,7 +83,7 @@ describe("Router", () => {
 				getByTestId("link-app-home").click();
 
 				getByTestId("route-home").should("be.visible");
-				getByTestId("route-about").should("not.be.visible");
+				getByTestId("route-about").should("not.exist");
 				assertPath("/");
 
 				getByTestId("link-about-abs").click();
@@ -112,7 +112,7 @@ describe("Router", () => {
 			it("renders default route, when no path could be matched", () => {
 				getByTestId("link-nowhere").click();
 				assertPath("/nowhere");
-				getByTestId("route-home").should("not.be.visible");
+				getByTestId("route-home").should("not.exist");
 				getByTestId("route-default").should("be.visible");
 			});
 		});
@@ -136,7 +136,7 @@ describe("Router", () => {
 				assertPath("/blog");
 
 				getByTestId("link-app-blog-svelte-abs").click();
-				getByTestId("route-blog-svelte").should("not.be.visible");
+				getByTestId("route-blog-svelte").should("not.exist");
 				assertPath("/svelte");
 			});
 
@@ -148,11 +148,11 @@ describe("Router", () => {
 				getByTestId("link-blog-home").click();
 
 				getByTestId("route-blog-home").should("be.visible");
-				getByTestId("route-blog-svelte").should("not.be.visible");
+				getByTestId("route-blog-svelte").should("not.exist");
 				assertPath("/blog");
 
 				getByTestId("link-blog-svelte-abs").click();
-				getByTestId("route-blog-svelte").should("not.be.visible");
+				getByTestId("route-blog-svelte").should("not.exist");
 				getByTestId("route-default").should("be.visible");
 				assertPath("/svelte");
 			});
@@ -484,7 +484,7 @@ describe("Router", () => {
 	describe("Memory History", () => {
 		it("works", () => {
 			getByTestId("route-memory-a-home").should("be.visible");
-			getByTestId("route-memory-a-about").should("not.be.visible");
+			getByTestId("route-memory-a-about").should("not.exist");
 
 			getByTestId("link-memory-a-about").click();
 			getByTestId("route-memory-a-about").should("be.visible");
@@ -503,7 +503,7 @@ describe("Router", () => {
 
 		it("works", () => {
 			getByTestId("route-memory-b-home").should("be.visible");
-			getByTestId("route-memory-b-about").should("not.be.visible");
+			getByTestId("route-memory-b-about").should("not.exist");
 			pathnameMatches("/");
 
 			getByTestId("link-memory-b-about").click();
