@@ -55,6 +55,10 @@
 	const manageFocus = primary && !(routerContext && !routerContext.manageFocus);
 	const announcementText = writable("");
 
+	const shouldDisableInlineStyles = routerContext
+		? routerContext.disableInlineStyles
+		: disableInlineStyles;
+
 	const routes = writable([]);
 	const activeRoute = writable(null);
 	// Used in SSR to synchronously set that a Route is active.
@@ -186,11 +190,14 @@
 		id: routerId,
 		history: isTopLevelRouter ? history : routerContext.history,
 		basepath: isTopLevelRouter ? normalizedBasepath : routerContext.basepath,
-		disableInlineStyles,
+		disableInlineStyles: shouldDisableInlineStyles,
 	});
 </script>
 
-<div {...createMarkerProps(disableInlineStyles)} data-svnav-router={routerId} />
+<div
+	{...createMarkerProps(shouldDisableInlineStyles)}
+	data-svnav-router={routerId}
+/>
 
 <slot />
 
@@ -200,7 +207,7 @@
 		aria-atomic="true"
 		aria-live="polite"
 		data-svnav-announcer
-		{...createInlineStyle(disableInlineStyles, visuallyHiddenStyle)}
+		{...createInlineStyle(shouldDisableInlineStyles, visuallyHiddenStyle)}
 	>
 		{$announcementText}
 	</div>
