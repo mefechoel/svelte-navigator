@@ -1,6 +1,6 @@
 {
   "name": "svelte-navigator",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "Simple, accessible routing for Svelte",
   "main": "dist/svelte-navigator.umd.js",
   "unpkg": "dist/svelte-navigator.umd.min.js",
@@ -10,7 +10,8 @@
   "files": [
     "src",
     "dist",
-    "types"
+    "types",
+    "svelte-navigator.css"
   ],
   "author": "Michel Strelow @mefechoel",
   "license": "MIT",

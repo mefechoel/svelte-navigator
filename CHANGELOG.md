@@ -1,3 +1,9 @@
+# 3.2.2
+
+## Fix
+
+- Add missing `svelte-navigator.css` to npm package
+
 # 3.2.1
 
 ## Fix
