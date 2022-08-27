@@ -1,6 +1,6 @@
 <script context="module">
 	// eslint-disable-next-line import/order
-	import { createCounter } from "./utils";
+	import { createCounter, createInlineStyle, createMarkerProps } from "./utils";
 
 	const createId = createCounter();
 </script>
@@ -33,6 +33,7 @@
 	export let history = globalHistory;
 	export let primary = true;
 	export let a11y = {};
+	export let disableInlineStyles = false;
 
 	const a11yConfig = {
 		createAnnouncement: route => `Navigated to ${route.uri}`,
@@ -185,10 +186,11 @@
 		id: routerId,
 		history: isTopLevelRouter ? history : routerContext.history,
 		basepath: isTopLevelRouter ? normalizedBasepath : routerContext.basepath,
+		disableInlineStyles,
 	});
 </script>
 
-<div style="display:none;" aria-hidden="true" data-svnav-router={routerId} />
+<div {...createMarkerProps(disableInlineStyles)} data-svnav-router={routerId} />
 
 <slot />
 
@@ -197,7 +199,8 @@
 		role="status"
 		aria-atomic="true"
 		aria-live="polite"
-		style={visuallyHiddenStyle}
+		data-svnav-announcer
+		{...createInlineStyle(disableInlineStyles, visuallyHiddenStyle)}
 	>
 		{$announcementText}
 	</div>

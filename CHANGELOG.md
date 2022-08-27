@@ -1,5 +1,11 @@
 # Next
 
+## Features:
+
+- Add `disableInlineStyles` prop to `Router`, so `svelte-navigator` can be used
+  with strict CSP configuration
+  [#83](https://github.com/mefechoel/svelte-navigator/issues/83)
+
 ## Fix
 
 - State should only be replaced when all of the location is identical, not just

@@ -54,3 +54,10 @@ export function addListener(target, type, handler) {
 	target.addEventListener(type, handler);
 	return () => target.removeEventListener(type, handler);
 }
+
+export const createInlineStyle = (disableInlineStyles, style) =>
+	disableInlineStyles ? {} : { style };
+export const createMarkerProps = disableInlineStyles => ({
+	"aria-hidden": "true",
+	...createInlineStyle(disableInlineStyles, "display:none;"),
+});

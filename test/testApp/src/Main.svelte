@@ -14,7 +14,7 @@
 	}
 </script>
 
-<Router name="hist">
+<Router name="hist" disableInlineStyles>
 	<LocationChange onChange={appChange} />
 	<nav>
 		<Link data-has-attr data-testid="link-props" to="/">PROPS</Link>

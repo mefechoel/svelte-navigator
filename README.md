@@ -620,6 +620,20 @@ history][example-custom-hash-history]).
 </Router>
 ```
 
+If you have a strict Content Security Policy, inline styles might be forbidden.
+Svelte-Navigator makes some use of inline styles though for internal marker
+elements and for screen reader announcements. If that is the case, you can
+disable inline styles, though you need to import those styles manually. If you
+have a bundler set up, that will be as easy as adding one import statement to
+your applications entry point. Otherwise, you might need to copy the contents of
+[`svelte-navigator.css`](https://github.com/mefechoel/svelte-navigator/blob/main/svelte-navigator.css)
+into your applications css.
+
+```js
+// In your applications entrypoint, such as `index.js` or `main.js`
+import "svelte-navigator/svelte-navigator.css";
+```
+
 ###### Properties
 
 |         Property          |         Type         |             Default Value              | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -631,6 +645,7 @@ history][example-custom-hash-history]).
 |          `a11y`           |       `object`       |                                        | Configuration object for Svelte Navigators accessibility features                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `a11y.createAnnouncement` | `CreateAnnouncement` | `route => 'Navigated to ${route.uri}'` | Function to create an announcement message, that is read by screen readers on navigation. It takes the matched `Route` and the current `location` as arguments and returns a `string` or a `Promise`, that resolves to a `string`.                                                                                                                                                                                                                                                                                                        |
 |   `a11y.announcements`    |      `boolean`       |                 `true`                 | Set it to false, to disable screen reader announcements                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|   `disableInlineStyles`   |      `boolean`       |                `false`                 | Disable the inline styles, that are used internally by svelte-navigator. This might be necessary when your Content Security Policy disallows inline styles. To still remain functional, be sure to include the [`svelte-navigator.css`](https://github.com/mefechoel/svelte-navigator/blob/main/svelte-navigator.css) in your application.                                                                                                                                                                                                |
 
 Where:
 

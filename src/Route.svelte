@@ -1,6 +1,6 @@
 <script context="module">
 	// eslint-disable-next-line import/order
-	import { createCounter } from "./utils";
+	import { createCounter, createMarkerProps } from "./utils";
 
 	const createId = createCounter();
 </script>
@@ -36,7 +36,12 @@
 
 	const id = createId();
 
-	const { registerRoute, unregisterRoute, activeRoute } = getContext(ROUTER);
+	const {
+		registerRoute,
+		unregisterRoute,
+		activeRoute,
+		disableInlineStyles,
+	} = getContext(ROUTER);
 	const parentBase = useRouteBase();
 	const location = useLocation();
 	const focusElement = writable(null);
@@ -93,7 +98,7 @@
 	}
 </script>
 
-<div style="display:none;" aria-hidden="true" data-svnav-route-start={id} />
+<div {...createMarkerProps(disableInlineStyles)} data-svnav-route-start={id} />
 {#if isActive}
 	<Router {primary}>
 		<!--
@@ -119,4 +124,4 @@
 		{/if}
 	</Router>
 {/if}
-<div style="display:none;" aria-hidden="true" data-svnav-route-end={id} />
+<div {...createMarkerProps(disableInlineStyles)} data-svnav-route-end={id} />

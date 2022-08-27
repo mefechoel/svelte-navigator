@@ -76,6 +76,13 @@ export interface RouterProps<
 	 * Configuration object for Svelte Navigators accessibility features.
 	 */
 	a11y?: Router.A11yConfig<Params, Meta, State>;
+	/**
+	 * Disable the inline styles, that are used internally by svelte-navigator.
+	 * This might be necessary when your Content Security Policy disallows inline
+	 * styles. To still remain functional, be sure to include the
+	 * `svelte-navigator.css` in your application.
+	 */
+	disableInlineStyles?: boolean;
 }
 
 /**
