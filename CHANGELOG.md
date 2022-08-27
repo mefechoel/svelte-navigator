@@ -1,3 +1,9 @@
+# 3.2.1
+
+## Fix
+
+- Fix `disableInlineStyles` prop being ignored in nested `Router`s
+
 # 3.2.0
 
 ## Features:
