@@ -4,7 +4,7 @@
  * https://github.com/reach/router/blob/master/LICENSE
  */
 
-import { createLocation } from "./routes";
+import { parsePath } from "./routes";
 import { createGlobalId, isSSR, isNumber, addListener } from "./utils";
 import { warn, NAVIGATE_ID } from "./warning";
 
@@ -98,7 +98,7 @@ function createHistory(source) {
 }
 
 function createStackFrame(state, uri) {
-	return { ...createLocation(uri), state };
+	return { ...parsePath(uri), state };
 }
 
 // Stores history entries in memory for testing or other platforms like Native

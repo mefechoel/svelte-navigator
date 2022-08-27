@@ -1,3 +1,10 @@
+# Next
+
+## Fix
+
+- State should only be replaced when all of the location is identical, not just
+  the pathname [#86](https://github.com/mefechoel/svelte-navigator/issues/86)
+
 # 3.1.6
 
 ## Fix:

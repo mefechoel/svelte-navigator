@@ -9,6 +9,7 @@ import {
 	isDynamic,
 	stripSplat,
 	normalizePath,
+	substr,
 } from "./paths";
 import { ROUTER_ID, fail } from "./warning";
 import { isUndefined } from "./utils";
@@ -284,24 +285,59 @@ const normalizeUrlFragment = frag => (frag.length === 1 ? "" : frag);
  * It is used to create a location from the url prop used in SSR
  *
  * @param {string} url The url string (e.g. "/path/to/somewhere")
- *
  * @returns {{ pathname: string; search: string; hash: string }} The location
+ *
+ * @example
+ * ```js
+ * const path = "/search?q=falafel#result-3";
+ * const location = parsePath(path);
+ * // -> {
+ * //   pathname: "/search",
+ * //   search: "?q=falafel",
+ * //   hash: "#result-3",
+ * // };
+ * ```
  */
-export function createLocation(url) {
-	const searchIndex = url.indexOf("?");
-	const hashIndex = url.indexOf("#");
+export const parsePath = path => {
+	const searchIndex = path.indexOf("?");
+	const hashIndex = path.indexOf("#");
 	const hasSearchIndex = searchIndex !== -1;
 	const hasHashIndex = hashIndex !== -1;
-	const hash = hasHashIndex ? normalizeUrlFragment(url.substr(hashIndex)) : "";
-	const pathnameAndSearch = hasHashIndex ? url.substr(0, hashIndex) : url;
-	const search = hasSearchIndex
-		? normalizeUrlFragment(pathnameAndSearch.substr(searchIndex))
+	const hash = hasHashIndex
+		? normalizeUrlFragment(substr(path, hashIndex))
 		: "";
-	const pathname = hasSearchIndex
-		? pathnameAndSearch.substr(0, searchIndex)
-		: pathnameAndSearch;
+	const pathnameAndSearch = hasHashIndex ? substr(path, 0, hashIndex) : path;
+	const search = hasSearchIndex
+		? normalizeUrlFragment(substr(pathnameAndSearch, searchIndex))
+		: "";
+	const pathname =
+		(hasSearchIndex
+			? substr(pathnameAndSearch, 0, searchIndex)
+			: pathnameAndSearch) || "/";
 	return { pathname, search, hash };
-}
+};
+
+/**
+ * Joins a location object to one path string.
+ *
+ * @param {{ pathname: string; search: string; hash: string }} location The location object
+ * @returns {string} A path, created from the location
+ *
+ * @example
+ * ```js
+ * const location = {
+ *   pathname: "/search",
+ *   search: "?q=falafel",
+ *   hash: "#result-3",
+ * };
+ * const path = stringifyPath(location);
+ * // -> "/search?q=falafel#result-3"
+ * ```
+ */
+export const stringifyPath = location => {
+	const { pathname, search, hash } = location;
+	return pathname + search + hash;
+};
 
 /**
  * Resolves a link relative to the parent Route and the Routers basepath.

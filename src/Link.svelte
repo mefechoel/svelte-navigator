@@ -15,6 +15,7 @@
 	import { shouldNavigate, isFunction } from "./utils";
 	import { startsWith } from "./paths";
 	import { LINK_ID } from "./warning";
+	import { parsePath, stringifyPath } from "./routes";
 
 	export let to;
 	export let replace = false;
@@ -34,6 +35,7 @@
 	$: href = resolve(to, $location);
 	$: isPartiallyCurrent = startsWith($location.pathname, href);
 	$: isCurrent = href === $location.pathname;
+	$: isExactCurrent = parsePath(href) === stringifyPath($location);
 	$: ariaCurrent = isCurrent ? { "aria-current": "page" } : {};
 	$: props = (() => {
 		if (isFunction(getProps)) {
@@ -55,7 +57,7 @@
 			event.preventDefault();
 			// Don't push another entry to the history stack when the user
 			// clicks on a Link to the page they are currently on.
-			const shouldReplace = isCurrent || replace;
+			const shouldReplace = isExactCurrent || replace;
 			navigate(href, { state, replace: shouldReplace });
 		}
 	}

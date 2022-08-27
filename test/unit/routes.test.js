@@ -4,7 +4,7 @@ import {
 	resolve,
 	resolveLink,
 	normalizeLocation,
-	createLocation,
+	parsePath,
 } from "../../src/routes";
 import { testRoutes } from "./testRoutes";
 
@@ -226,19 +226,19 @@ describe("normalizeLocation", () => {
 	});
 });
 
-describe("createLocation", () => {
+describe("parsePath", () => {
 	it("happy path", () => {
-		expect(createLocation("/path?search#hash")).toEqual({
+		expect(parsePath("/path?search#hash")).toEqual({
 			pathname: "/path",
 			search: "?search",
 			hash: "#hash",
 		});
-		expect(createLocation("/path?search")).toEqual({
+		expect(parsePath("/path?search")).toEqual({
 			pathname: "/path",
 			search: "?search",
 			hash: "",
 		});
-		expect(createLocation("/path#hash")).toEqual({
+		expect(parsePath("/path#hash")).toEqual({
 			pathname: "/path",
 			search: "",
 			hash: "#hash",
@@ -246,17 +246,17 @@ describe("createLocation", () => {
 	});
 
 	it("removes empty hash or search", () => {
-		expect(createLocation("/path?#hash")).toEqual({
+		expect(parsePath("/path?#hash")).toEqual({
 			pathname: "/path",
 			search: "",
 			hash: "#hash",
 		});
-		expect(createLocation("/path?search#")).toEqual({
+		expect(parsePath("/path?search#")).toEqual({
 			pathname: "/path",
 			search: "?search",
 			hash: "",
 		});
-		expect(createLocation("/path?#")).toEqual({
+		expect(parsePath("/path?#")).toEqual({
 			pathname: "/path",
 			search: "",
 			hash: "",

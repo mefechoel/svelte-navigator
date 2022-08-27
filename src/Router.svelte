@@ -17,7 +17,7 @@
 	import { LOCATION, ROUTER } from "./contexts";
 	import { globalHistory } from "./history";
 	import { normalizePath } from "./paths";
-	import { pick, match, normalizeLocation, createLocation } from "./routes";
+	import { pick, match, normalizeLocation, parsePath } from "./routes";
 	import { isSSR } from "./utils";
 	import { warn, ROUTER_ID } from "./warning";
 	import {
@@ -67,7 +67,7 @@
 	// If we're running an SSR we force the location to the `url` prop
 	const getInitialLocation = () =>
 		normalizeLocation(
-			isSSR ? createLocation(url) : history.location,
+			isSSR ? parsePath(url) : history.location,
 			normalizedBasepath,
 		);
 	const location = isTopLevelRouter

@@ -1,5 +1,7 @@
 export const paramRegex = /^:(.+)/;
 
+export const substr = (str, start, end) => str.substr(start, end);
+
 /**
  * Check if `string` starts with `search`
  * @param {string} string
@@ -7,7 +9,7 @@ export const paramRegex = /^:(.+)/;
  * @return {boolean}
  */
 export const startsWith = (string, search) =>
-	string.substr(0, search.length) === search;
+	substr(string, 0, search.length) === search;
 
 /**
  * Check if `segment` is a root segment
