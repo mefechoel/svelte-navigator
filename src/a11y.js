@@ -147,31 +147,30 @@ export function handleFocus(route) {
 	});
 }
 
-export const createTriggerFocus = (a11yConfig, announcementText, location) => (
-	manageFocus,
-	announceNavigation,
-) =>
-	// Wait until the dom is updated, so we can look for headings
-	tick().then(() => {
-		if (!focusCandidate || initialNavigation) {
-			initialNavigationOccurred();
-			return;
-		}
-		if (manageFocus) {
-			handleFocus(focusCandidate.route);
-		}
-		if (a11yConfig.announcements && announceNavigation) {
-			const { path, fullPath, meta, params, uri } = focusCandidate.route;
-			const announcementMessage = a11yConfig.createAnnouncement(
-				{ path, fullPath, meta, params, uri },
-				get(location),
-			);
-			Promise.resolve(announcementMessage).then(message => {
-				announcementText.set(message);
-			});
-		}
-		clearFocusCandidate();
-	});
+export const createTriggerFocus =
+	(a11yConfig, announcementText, location) =>
+	(manageFocus, announceNavigation) =>
+		// Wait until the dom is updated, so we can look for headings
+		tick().then(() => {
+			if (!focusCandidate || initialNavigation) {
+				initialNavigationOccurred();
+				return;
+			}
+			if (manageFocus) {
+				handleFocus(focusCandidate.route);
+			}
+			if (a11yConfig.announcements && announceNavigation) {
+				const { path, fullPath, meta, params, uri } = focusCandidate.route;
+				const announcementMessage = a11yConfig.createAnnouncement(
+					{ path, fullPath, meta, params, uri },
+					get(location),
+				);
+				Promise.resolve(announcementMessage).then(message => {
+					announcementText.set(message);
+				});
+			}
+			clearFocusCandidate();
+		});
 
 export const visuallyHiddenStyle =
 	"position:fixed;" +

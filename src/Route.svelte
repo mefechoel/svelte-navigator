@@ -36,12 +36,8 @@
 
 	const id = createId();
 
-	const {
-		registerRoute,
-		unregisterRoute,
-		activeRoute,
-		disableInlineStyles,
-	} = getContext(ROUTER);
+	const { registerRoute, unregisterRoute, activeRoute, disableInlineStyles } =
+		getContext(ROUTER);
 	const parentBase = useRouteBase();
 	const location = useLocation();
 	const focusElement = writable(null);

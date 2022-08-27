@@ -10,7 +10,7 @@ declare namespace Router {
 		type CreateAnnouncementFn<
 			Params extends RouteParams = RouteParams,
 			Meta extends AnyObject = AnyObject,
-			State extends AnyObject = AnyObject
+			State extends AnyObject = AnyObject,
 		> = (
 			route: RouteInstance<Params, Meta>,
 			location: NavigatorLocation<State>,
@@ -20,7 +20,7 @@ declare namespace Router {
 	interface A11yConfig<
 		Params extends RouteParams = RouteParams,
 		Meta extends AnyObject = AnyObject,
-		State extends AnyObject = AnyObject
+		State extends AnyObject = AnyObject,
 	> {
 		/**
 		 * Function to create an announcement message, that is read by screen readers
@@ -41,7 +41,7 @@ declare namespace Router {
 export interface RouterProps<
 	Params extends RouteParams = RouteParams,
 	Meta extends AnyObject = AnyObject,
-	State extends AnyObject = AnyObject
+	State extends AnyObject = AnyObject,
 > {
 	/**
 	 * The `basepath` property will be added to all `path` properties of `Route`

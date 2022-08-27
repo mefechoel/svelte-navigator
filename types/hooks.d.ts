@@ -9,7 +9,7 @@ import { NavigateFn } from "./history";
  * Access the current location via a readable store.
  */
 export declare function useLocation<
-	State extends AnyObject = AnyObject
+	State extends AnyObject = AnyObject,
 >(): Readable<NavigatorLocation<State>>;
 
 /**
@@ -57,7 +57,7 @@ export declare function useMatch<Params extends RouteParams>(
  * Access the parent Routes matched params and wildcards.
  */
 export declare function useParams<
-	Params extends RouteParams
+	Params extends RouteParams,
 >(): Readable<Params>;
 
 /**

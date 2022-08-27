@@ -5,13 +5,8 @@
 	export let onChange = () => {};
 
 	const location = getContext(LOCATION);
-	const {
-		activeRoute,
-		base,
-		registerRoute,
-		unregisterRoute,
-		history,
-	} = getContext(ROUTER);
+	const { activeRoute, base, registerRoute, unregisterRoute, history } =
+		getContext(ROUTER);
 
 	$: onChange({
 		location: $location,

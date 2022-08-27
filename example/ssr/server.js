@@ -1,6 +1,6 @@
 const path = require("path");
 const express = require("express");
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved, import/extensions
 const app = require("./public/App.js");
 
 const server = express();

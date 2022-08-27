@@ -36,7 +36,7 @@ export interface RouteProps<Meta extends AnyObject = AnyObject> {
 
 interface RouteSlots<
 	Params extends RouteParams = RouteParams,
-	State extends AnyObject = AnyObject
+	State extends AnyObject = AnyObject,
 > {
 	default: {
 		params: Params;

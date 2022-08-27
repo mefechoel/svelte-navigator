@@ -50,8 +50,10 @@ export function createMessage(labelId, message, props, originId) {
 	return `<${label}> ${msg}${originMsg}`;
 }
 
-export const createMessageHandler = handler => (...args) =>
-	handler(createMessage(...args));
+export const createMessageHandler =
+	handler =>
+	(...args) =>
+		handler(createMessage(...args));
 
 export const fail = createMessageHandler(message => {
 	throw new Error(message);

@@ -3,7 +3,7 @@ import AnyObject from "./AnyObject";
 
 interface RouteInstance<
 	Params extends RouteParams = RouteParams,
-	Meta extends AnyObject = AnyObject
+	Meta extends AnyObject = AnyObject,
 > {
 	/**
 	 * The path, the `Route` matched against.

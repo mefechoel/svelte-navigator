@@ -26,8 +26,7 @@
 				"data-has-attr": true,
 				"data-duplicate-attr": "getProps",
 			})}
-			to="about"
-		>GET PROPS</Link
+			to="about">GET PROPS</Link
 		>
 		<Link data-testid="link-about-rel" to="about">ABOUT REL</Link>
 		<Link data-testid="link-about-abs" to="/about">ABOUT ABS</Link>
@@ -46,8 +45,7 @@
 		<Link
 			data-testid="link-about-push-state"
 			to="about"
-			state={{ value: "test-push-state" }}
-		>ABOUT PUSH STATE</Link
+			state={{ value: "test-push-state" }}>ABOUT PUSH STATE</Link
 		>
 		<Link data-testid="link-about-replace" to="about" replace>
 			ABOUT REPLACE
@@ -56,8 +54,7 @@
 			data-testid="link-about-replace-state"
 			to="about"
 			state={{ value: "test-replace-state" }}
-			replace
-		>ABOUT REPLACE STATE</Link
+			replace>ABOUT REPLACE STATE</Link
 		>
 		<Link data-testid="link-blog" to="blog">BLOG</Link>
 		<Link data-testid="link-blog-match-empty" to="blog/match">MATCH EMPTY</Link>
@@ -66,8 +63,7 @@
 		</Link>
 		<Link
 			data-testid="link-blog-match-to-splat"
-			to="blog/match/some-path/some-splat"
-		>MATCH SOME PATH AND SPLAT</Link
+			to="blog/match/some-path/some-splat">MATCH SOME PATH AND SPLAT</Link
 		>
 
 		<div use:links>
@@ -100,7 +96,10 @@
 		<a
 			use:link={customNavigate}
 			data-testid="action-link-custom-navigate"
-			href="/about"> ACTION LINK ABOUT CUSTOM NAVIGATE </a>
+			href="/about"
+		>
+			ACTION LINK ABOUT CUSTOM NAVIGATE
+		</a>
 	</nav>
 	<br />
 	<main>
