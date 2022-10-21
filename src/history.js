@@ -145,6 +145,23 @@ function createMemorySource(initialPathname = "/") {
 	};
 }
 
+function wrapHistory(wrapped){
+	return {
+		get location(){
+			return wrapped.location();
+		},
+		listen(listener){
+			return wrapped.listen(listener);
+		},
+		navigate(to, options) {
+			return wrapped.navigate(to, options);
+		},
+		setHistory(history){
+			wrapped = history;
+		}
+	}
+}
+
 // Global history uses window.history as the source if available,
 // otherwise a memory history
 const canUseDOM = !!(
@@ -154,9 +171,9 @@ const canUseDOM = !!(
 );
 // Use memory history in iframes (for example in Svelte REPL)
 const isEmbeddedPage = !isSSR && window.location.origin === "null";
-const globalHistory = createHistory(
+const globalHistory = wrapHistory(createHistory(
 	canUseDOM && !isEmbeddedPage ? window : createMemorySource(),
-);
-const { navigate } = globalHistory;
+));
+const { navigate, setHistory: setGlobalHistory } = globalHistory;
 
-export { globalHistory, navigate, createHistory, createMemorySource };
+export { globalHistory, navigate, createHistory, createMemorySource, setGlobalHistory };
