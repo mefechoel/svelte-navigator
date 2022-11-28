@@ -1368,10 +1368,12 @@ example][example-custom-hash-history].
 
 ## Deploying to Vercel
 
-To make sure your deeplinks work when you deploy to vercel remember to add this rule to your `vercel.json` file
+To make sure your deeplinks work when you deploy to vercel remember to add this
+rule to your `vercel.json` file
+
 ```json
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+	"rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
 ```
 
