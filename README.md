@@ -62,6 +62,7 @@ React-esque hooks.
     - [`link`](#link-1)
     - [`links`](#links)
   - [Custom History](#custom-history)
+  - [Deploying to Vercel](#deploying-to-vercel)
 
 ## Getting started
 
@@ -1364,6 +1365,17 @@ different history for each one.
 
 For a more advanced example, checkout the [Custom Hash History
 example][example-custom-hash-history].
+
+## Deploying to Vercel
+
+To make sure your deeplinks work when you deploy to vercel remember to add this
+rule to your `vercel.json` file
+
+```json
+{
+	"rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
+```
 
 ## License
 
