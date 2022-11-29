@@ -39,3 +39,9 @@ export declare function createMemorySource(
 	initialPathname?: string,
 ): HistorySource;
 export declare const globalHistory: NavigatorHistory;
+
+/**
+ * Set the global history
+ * @param history The new global history
+ */
+export declare function setGlobalHistory(history: NavigatorHistory);
