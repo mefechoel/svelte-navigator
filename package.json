@@ -70,7 +70,7 @@
     "svelte2tsx": "^0.1.151"
   },
   "peerDependencies": {
-    "svelte": "3.x"
+    "svelte": "4.x"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
