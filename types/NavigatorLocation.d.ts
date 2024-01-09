@@ -21,7 +21,7 @@ interface NavigatorLocation<State extends AnyObject = AnyObject> {
 	/**
 	 * An arbitrary object, that has been pushed to the history stack.
 	 */
-	state: State;
+	state: State | null;
 }
 
 export default NavigatorLocation;
