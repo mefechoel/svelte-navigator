@@ -29,6 +29,13 @@
 	const resolve = useResolve();
 	const { navigate } = useHistory();
 
+	let href;
+	let isPartiallyCurrent;
+	let isCurrent;
+	let isExactCurrent;
+	let props;
+	let ariaCurrent;
+
 	// We need to pass location here to force re-resolution of the link,
 	// when the pathname changes. Otherwise we could end up with stale path params,
 	// when for example an :id changes in the parent Routes path

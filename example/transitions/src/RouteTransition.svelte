@@ -6,13 +6,15 @@
 	/** @type {"forward"|"backward"} */
 	export let direction = "forward";
 
+	let directionFactor;
+
 	$: directionFactor = direction === "forward" ? 1 : -1;
 </script>
 
 <div
 	class="route-wrapper"
-	in:fly={{ x: x * directionFactor, duration }}
-	out:fly={{ x: -x * directionFactor, duration }}
+	in:fly|global={{ x: x * directionFactor, duration }}
+	out:fly|global={{ x: -x * directionFactor, duration }}
 >
 	<slot />
 </div>

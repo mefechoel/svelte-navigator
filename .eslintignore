@@ -2,6 +2,7 @@
 /**/dist/
 /**/build/
 /**/coverage/
+/**/example/
 /**/coverage-cypress/
 /**/coverage-jest/
 /**/.nyc_output

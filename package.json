@@ -1,11 +1,16 @@
 {
   "name": "svelte-navigator",
-  "version": "3.2.2",
+  "version": "4.0.0",
   "description": "Simple, accessible routing for Svelte",
   "main": "dist/svelte-navigator.umd.js",
   "unpkg": "dist/svelte-navigator.umd.min.js",
   "module": "dist/svelte-navigator.module.mjs",
   "svelte": "src/index.js",
+	"exports": {
+		".": {
+		"svelte": "src/index.js"
+		}
+  },
   "types": "types/index.d.ts",
   "files": [
     "src",
@@ -42,7 +47,7 @@
   "sideEffects": false,
   "private": false,
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup --bundleConfigAsCjs -c",
     "test:unit": "jest test/unit",
     "test:unit:watch": "jest test/unit --watch",
     "test:integ": "start-server-and-test cy:start:quiet http-get://localhost:7070 cy:run",
@@ -50,7 +55,7 @@
     "test:ssr:watch": "npm run test:ssr:build && jest test/ssr --env=node --watch",
     "test:ssr:build": "node test/ssr/scripts/build",
     "cy:open": "cypress open",
-    "cy:build": "rollup -c test/testApp/rollup.config.js",
+    "cy:build": "rollup --bundleConfigAsCjs -c test/testApp/rollup.config.js",
     "cy:serve": "sirv test/testApp/public --single --port 7070",
     "cy:serve:quiet": "sirv test/testApp/public --single --port 7070 --quiet",
     "cy:start": "npm run cy:build && npm run cy:serve",
@@ -67,10 +72,10 @@
     "postpack": "pinst --enable"
   },
   "dependencies": {
-    "svelte2tsx": "^0.1.151"
+    "svelte2tsx": "^0.6.19"
   },
   "peerDependencies": {
-    "svelte": "3.x"
+    "svelte": "4.x"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -79,15 +84,18 @@
     "@babel/plugin-transform-template-literals": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
     "@cypress/code-coverage": "^3.10.0",
-    "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.1.0",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.8.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/svelte": "^3.0.3",
+    "@testing-library/svelte": "^4.0.3",
     "@types/jest": "^26.0.20",
-    "@typescript-eslint/eslint-plugin": "^4.13.0",
-    "@typescript-eslint/parser": "^4.13.0",
-    "babel-jest": "^26.6.3",
+    "@typescript-eslint/eslint-plugin": "5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^6.0.0",
     "cheerio": "^1.0.0-rc.5",
     "cypress": "^9.7.0",
@@ -98,26 +106,26 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-svelte3": "^3.0.0",
+    "eslint-plugin-svelte": "^2.43.0",
+    "globals": "^15.8.0",
     "husky": "^5.0.6",
     "is-ci": "^2.0.0",
-    "jest": "^26.6.3",
+    "jest": "^29.7.0",
     "lint-staged": "^10.5.3",
     "mkdirp": "^1.0.4",
     "nyc": "^15.1.0",
     "pinst": "^2.1.1",
-    "prettier": "^2.2.1",
-    "prettier-plugin-svelte": "^2.1.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.2.6",
     "rimraf": "^3.0.2",
-    "rollup": "^2.36.2",
-    "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.2",
+    "rollup": "^4.19.0",
+    "rollup-plugin-css-only": "^4.5.2",
+    "rollup-plugin-svelte": "^7.2.2",
     "sirv-cli": "^1.0.10",
-    "start-server-and-test": "^1.11.7",
-    "svelte": "^3.31.2",
-    "svelte-jester": "^1.3.0",
-    "typescript": "4.1.3"
+    "start-server-and-test": "^2.0.4",
+    "svelte": "^4.1.1",
+    "svelte-jester": "^5.0.0",
+    "typescript": "5.1.6"
   },
   "nyc": {
     "report-dir": "coverage-cypress",

@@ -1,5 +1,5 @@
-import { get } from "svelte/store";
 import { tick } from "svelte";
+import { get } from "svelte/store";
 import { warn, ROUTER_ID, ROUTE_ID } from "./warning";
 import { addListener } from "./utils";
 

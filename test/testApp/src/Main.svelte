@@ -126,7 +126,7 @@
 				Article 987
 			</Link>
 			<Route path="/">Hello {params.username}!</Route>
-			<Route path="articles/:articleId" let:params>
+			<Route path="articles/:articleId">
 				Article
 				{params.articleId}
 			</Route>

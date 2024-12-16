@@ -45,6 +45,7 @@
 	// In SSR we cannot wait for $activeRoute to update,
 	// so we use the match returned from `registerRoute` instead
 	let ssrMatch;
+	let isActive;
 
 	const route = writable();
 	$: {

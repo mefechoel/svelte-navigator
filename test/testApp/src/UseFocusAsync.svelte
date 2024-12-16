@@ -7,7 +7,7 @@
 </script>
 
 <h2 data-testid="a11y-route-e">Path D</h2>
-{#await timeout then _}
+{#await timeout}
 	<p data-testid="a11y-route-e-focus" use:registerFocus>
 		Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laborum, quas?
 	</p>

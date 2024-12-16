@@ -3,7 +3,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import svelte from "rollup-plugin-svelte";
 import babel from "@rollup/plugin-babel";
-import { terser } from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 import rimraf from "rimraf";
 import pkg from "./package.json";
 
@@ -45,7 +45,7 @@ function createConfig({ file, format, minify = false }) {
 			format,
 			...(isUmd ? { name: "SvelteNavigator", exports: "named" } : {}),
 		},
-		external: ["svelte", "svelte/store", "svelte/internal"],
+		//		external: ["svelte", "svelte/store", "svelte/internal"],
 		plugins: [
 			svelte(),
 			nodeResolve({

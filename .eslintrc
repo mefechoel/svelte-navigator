@@ -1,6 +1,6 @@
 {
-	"plugins": ["svelte3", "react"],
-	"extends": ["airbnb"],
+	"plugins": ["react"],
+	"extends": ["airbnb", "eslint:recommended", "plugin:svelte/recommended"],
 	"rules": {
 		"quotes": "off",
 		"indent": "off",
@@ -20,11 +20,13 @@
 	"env": {
 		"es6": true,
 		"browser": true,
-		"jest": true
+		"jest": true,
+		"node": true
 	},
 	"parserOptions": {
 		"ecmaVersion": 2020,
-		"sourceType": "module"
+		"sourceType": "module",
+		"extraFileExtensions": [".svelte"]
 	},
 	"overrides": [
 		{
@@ -35,7 +37,6 @@
 		},
 		{
 			"files": ["**/*.svelte"],
-			"processor": "svelte3/svelte3",
 			"rules": {
 				"import/first": "off",
 				"import/no-duplicates": "off",
@@ -78,6 +79,12 @@
 	"settings": {
 		"react": {
 			"version": "16.13"
-		}
+		},
+		"import/resolver": {
+            "node": {
+                "paths": ["src"],
+                "extensions": [".js", ".ts", ".d.ts", ".tsx"]
+            }
+        }
 	}
 }

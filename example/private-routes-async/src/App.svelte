@@ -35,7 +35,7 @@
 			<p>That's what it's all about!</p>
 		</Route>
 
-		<PrivateRoute path="profile" let:location let:registerFocus>
+		<PrivateRoute path="profile" let:registerFocus>
 			<h3 use:registerFocus>Welcome {$user.username}</h3>
 			<button on:click={handleLogout}>Logout</button>
 		</PrivateRoute>

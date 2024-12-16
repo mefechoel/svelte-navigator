@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`pick pick /* 1`] = `
-Object {
+{
   "fullPath": "/*",
-  "params": Object {
+  "params": {
     "*": "whatever/else",
   },
   "uri": "/",
@@ -11,10 +11,10 @@ Object {
 `;
 
 exports[`pick pick return value 1`] = `
-Object {
+{
   "fullPath": "/:one/:two/:three/:four/:five",
   "meta": "Fiver",
-  "params": Object {
+  "params": {
     "five": "five",
     "four": "four",
     "one": "one",
@@ -26,10 +26,10 @@ Object {
 `;
 
 exports[`pick splat return value 1`] = `
-Object {
+{
   "fullPath": "/files/*",
   "meta": "FilesDeep",
-  "params": Object {
+  "params": {
     "*": "some/deep/path",
   },
   "uri": "/files",

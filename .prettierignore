@@ -11,3 +11,7 @@
 **/tmp
 **/package.json
 **/package-lock.json
+**/test/unit/**/*.snap
+**/.eslintignore
+**/.eslintrc
+**/.prettierignore
