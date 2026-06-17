@@ -841,7 +841,7 @@ Svelte Navigator exposes a few React-esque hooks to access parts of the
 `Router`s context. These hooks **must always be called during component
 initialization**, because thats when Sveltes `getContext` must be called.
 
-All navigator hooks return either a readable store you can subscibe to, or a
+All navigator hooks return either a readable store you can subscribe to, or a
 function, that internally interacts with the Routers context.
 
 #### `useNavigate`
